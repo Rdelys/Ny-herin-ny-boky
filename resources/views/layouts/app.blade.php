@@ -58,6 +58,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {{-- Drapeaux en SVG (les emoji 🇫🇷🇲🇬🇬🇧 ne s'affichent pas sur tous les OS, ex. Windows) --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/7.2.3/css/flag-icons.min.css">
 
     <style>
         :root{
@@ -143,7 +145,7 @@
             gap: 22px;
         }
         .main-nav ul{ display: flex; gap: 30px; }
-        .main-nav a{
+        .main-nav > ul a{
             color: var(--cream-dim);
             font-size: .97rem;
             font-weight: 500;
@@ -174,6 +176,15 @@
         }
         .lang-toggle:hover{ background: rgba(246,239,221,.14); }
         .lang-toggle[aria-expanded="true"]{ background: rgba(246,239,221,.18); border-color: rgba(246,239,221,.32); }
+        .lang-flag{
+            width: 18px;
+            height: 13px;
+            border-radius: 2px;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 0 0 1px rgba(0,0,0,.15);
+        }
         .lang-chevron{ transition: transform .2s ease; color: var(--gold); }
         .lang-toggle[aria-expanded="true"] .lang-chevron{ transform: rotate(180deg); }
 
@@ -209,6 +220,7 @@
         .lang-menu a:hover, .lang-menu a:focus-visible{ background: rgba(246,239,221,.09); color: var(--cream); }
         .lang-menu a.active{ color: var(--gold); font-weight: 600; }
         .lang-menu a.active::after{ content: '✓'; font-size: .78rem; }
+        .lang-option{ display: flex; align-items: center; gap: 9px; }
 
         /* ---- auth buttons ---- */
         .auth-actions{
@@ -218,25 +230,31 @@
             flex-shrink: 0;
         }
         .btn-auth{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             padding: 9px 18px;
             border-radius: 999px;
             font-size: .87rem;
             font-weight: 600;
+            line-height: 1.3;
             white-space: nowrap;
+            border: 1px solid transparent;
             transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, transform .15s ease;
         }
         .btn-auth:hover{ transform: translateY(-1px); }
         .btn-login{
             color: var(--cream);
-            border: 1px solid rgba(246,239,221,.35);
+            border-color: rgba(246,239,221,.35);
             background: transparent;
         }
-        .btn-login:hover{ border-color: var(--cream); }
+        .btn-login:hover{ border-color: var(--cream); background: rgba(246,239,221,.06); }
         .btn-register{
             background: var(--gold);
+            border-color: var(--gold);
             color: var(--maroon-950);
         }
-        .btn-register:hover{ box-shadow: 0 8px 18px -8px rgba(233,178,63,.6); }
+        .btn-register:hover{ background: #f0c168; box-shadow: 0 8px 18px -8px rgba(233,178,63,.6); }
 
         .menu-toggle{
             display: none;
@@ -375,25 +393,39 @@
             white-space: nowrap;
         }
 
-        /* ---------- book grid (photos + tags) ---------- */
+        /* ---------- book grid — style innovant : prix flottant,
+           favoris, aperçu rapide au survol, bouton ajouter animé ---------- */
         .book-grid{
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 26px;
         }
         .book-card{
+            position: relative;
             background: #fffdf7;
-            border: 1px solid rgba(85,16,29,.09);
-            border-radius: var(--radius);
+            border-radius: 20px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transition: transform .18s ease, box-shadow .18s ease;
+            box-shadow: 0 1px 2px rgba(61,11,21,.06), 0 12px 24px -18px rgba(61,11,21,.25);
+            transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease;
+        }
+        .book-card::after{
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            box-shadow: inset 0 0 0 1.5px rgba(233,178,63,.65);
+            opacity: 0;
+            transition: opacity .25s ease;
+            pointer-events: none;
         }
         .book-card:hover{
-            transform: translateY(-4px);
-            box-shadow: 0 18px 32px -18px rgba(61,11,21,.35);
+            transform: translateY(-6px);
+            box-shadow: 0 24px 40px -20px rgba(61,11,21,.4);
         }
+        .book-card:hover::after{ opacity: 1; }
+
         .book-cover{
             position: relative;
             aspect-ratio: 3/4;
@@ -404,35 +436,106 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform .35s ease;
+            transition: transform .5s cubic-bezier(.2,.8,.2,1);
         }
-        .book-card:hover .book-cover img{ transform: scale(1.06); }
+        .book-card:hover .book-cover img{ transform: scale(1.08); }
+        .book-cover-gradient{
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(20,4,7,.55) 100%);
+            pointer-events: none;
+        }
+
         .book-tag{
             position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: .7rem;
+            top: 12px;
+            left: 12px;
+            font-size: .68rem;
             font-weight: 700;
-            padding: 4px 10px;
+            letter-spacing: .02em;
+            padding: 5px 11px;
             border-radius: 999px;
-            background: rgba(92,138,55,.92);
+            background: rgba(92,138,55,.95);
             color: var(--cream);
             box-shadow: 0 4px 10px -4px rgba(0,0,0,.4);
         }
         .book-tag.occasion{ background: rgba(233,178,63,.95); color: #4a3208; }
-        .book-body{ padding: 16px 18px 20px; }
-        .book-genre{
-            display: block;
-            font-size: .72rem;
+
+        .book-wishlist{
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,253,247,.92);
+            color: var(--maroon-800);
+            border: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .18s ease, color .18s ease, transform .18s ease;
+        }
+        .book-wishlist:hover{ background: var(--gold); color: var(--maroon-950); transform: scale(1.08); }
+
+        .book-price-float{
+            position: absolute;
+            left: 12px;
+            bottom: 12px;
+            font-family: var(--serif);
             font-weight: 600;
+            font-size: .96rem;
+            color: var(--cream);
+            background: rgba(61,11,21,.55);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            padding: 6px 13px;
+            border-radius: 999px;
+            box-shadow: 0 6px 14px -6px rgba(0,0,0,.5);
+        }
+
+        .book-quickview{
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .72rem;
+            font-weight: 700;
+            color: var(--maroon-950);
+            background: var(--gold);
+            padding: 7px 13px;
+            border-radius: 999px;
+            border: 0;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity .2s ease, transform .2s ease;
+        }
+        .book-card:hover .book-quickview{ opacity: 1; transform: translateY(0); }
+
+        .book-body{
+            padding: 16px 18px 18px;
+            display: flex;
+            flex-direction: column;
+        }
+        .book-genre{
+            display: inline-block;
+            align-self: flex-start;
+            font-size: .68rem;
+            font-weight: 700;
             letter-spacing: .04em;
             text-transform: uppercase;
             color: var(--green-700);
-            margin-bottom: 6px;
+            background: rgba(92,138,55,.12);
+            padding: 3px 10px;
+            border-radius: 999px;
+            margin-bottom: 9px;
         }
         .book-title{
             font-family: var(--serif);
             font-size: 1.05rem;
+            line-height: 1.25;
             margin: 0 0 4px;
             color: var(--ink);
         }
@@ -446,19 +549,32 @@
             align-items: center;
             justify-content: space-between;
             gap: 8px;
-            flex-wrap: wrap;
-        }
-        .book-price{
-            font-family: var(--serif);
-            font-weight: 600;
-            font-size: 1.02rem;
-            color: var(--maroon-800);
+            padding-top: 12px;
+            border-top: 1px dashed rgba(85,16,29,.14);
         }
         .book-loc{
+            display: flex;
+            align-items: center;
+            gap: 5px;
             font-size: .78rem;
             color: #96897d;
             white-space: nowrap;
         }
+        .book-loc svg{ flex-shrink: 0; color: var(--maroon-700); }
+        .book-add{
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--maroon-900);
+            color: var(--cream);
+            border: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background .18s ease, transform .25s ease;
+        }
+        .book-add:hover{ background: var(--green-700); transform: rotate(90deg); }
 
         /* ---------- sellers ---------- */
         .sellers{ background: var(--maroon-950); color: var(--cream); }
@@ -626,23 +742,45 @@
                 transform: translateY(0);
             }
             .main-nav ul{ flex-direction: column; gap: 2px; }
-            .main-nav a{
+            .main-nav > ul a{
                 display: block;
                 padding: 13px 10px;
                 font-size: 1.02rem;
                 border-bottom: 1px solid rgba(246,239,221,.1);
             }
-            .main-nav .lang-switch{
-                margin-top: 10px;
-                justify-content: center;
-                background: rgba(246,239,221,.08);
-                width: 100%;
+            /* le dropdown de langue devient un bloc plein-largeur, dépliable sur place */
+            .main-nav .lang-dropdown{ width: 100%; margin-top: 10px; }
+            .main-nav .lang-toggle{ width: 100%; justify-content: space-between; }
+            .main-nav .lang-menu{
+                position: static;
+                opacity: 1;
+                transform: none;
+                pointer-events: auto;
+                box-shadow: none;
+                border: none;
+                background: rgba(246,239,221,.06);
+                margin-top: 8px;
+                display: none;
+                min-width: 0;
             }
-            .main-nav .lang-switch a{ flex: 1; text-align: center; }
+            .main-nav .lang-menu.open{ display: block; }
+
+            /* boutons connexion / inscription empilés en bas du panneau */
+            .main-nav .auth-actions{
+                flex-direction: column;
+                width: 100%;
+                gap: 8px;
+                margin-top: 14px;
+                padding-top: 14px;
+                border-top: 1px solid rgba(246,239,221,.12);
+            }
+            .main-nav .btn-auth{ width: 100%; text-align: center; padding: 12px; }
 
             .menu-toggle{ display: block; }
 
             .book-grid{ grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+            /* le survol n'existe pas au tactile : on garde ces éléments visibles */
+            .book-quickview, .book-price-float{ opacity: 1; transform: none; }
             .seller-grid{ grid-template-columns: 1fr; }
             .cta-band{ padding: 30px 22px; }
             section{ padding: 52px 0; }
@@ -659,13 +797,15 @@
             .book-grid{ grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .book-body{ padding: 12px 14px 16px; }
             .book-title{ font-size: .96rem; }
+            .book-quickview{ padding: 6px 10px; font-size: .66rem; }
+            .book-price-float{ font-size: .84rem; padding: 5px 10px; }
             .cta-band{ flex-direction: column; align-items: flex-start; }
         }
 
         /* Très petits téléphones */
         @media (max-width: 360px){
             .book-grid{ grid-template-columns: 1fr 1fr; gap: 10px; }
-            .lang-switch a{ padding: 6px 8px; font-size: .74rem; }
+            .book-quickview{ display: none; }
         }
 
         @media (prefers-reduced-motion: reduce){
@@ -708,6 +848,27 @@
                 nav.classList.remove('open');
                 toggle.setAttribute('aria-expanded', 'false');
             });
+
+            var langToggle = document.getElementById('langToggle');
+            var langMenu = document.getElementById('langMenu');
+            if (langToggle && langMenu) {
+                langToggle.addEventListener('click', function(){
+                    var open = langMenu.classList.toggle('open');
+                    langToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                });
+                document.addEventListener('click', function(e){
+                    if (!langMenu.classList.contains('open')) return;
+                    if (langMenu.contains(e.target) || langToggle.contains(e.target)) return;
+                    langMenu.classList.remove('open');
+                    langToggle.setAttribute('aria-expanded', 'false');
+                });
+                document.addEventListener('keydown', function(e){
+                    if (e.key === 'Escape') {
+                        langMenu.classList.remove('open');
+                        langToggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
         })();
     </script>
 

@@ -6,7 +6,7 @@
 @section('content')
 
     {{-- ============ HERO ============ --}}
-    {{-- Fond : public/hero.jpg (voir .hero dans layouts/app.blade.php).
+    {{-- Fond : public/hero.png (voir .hero dans layouts/app.blade.php).
          L'illustration SVG du livre a été retirée. --}}
     <section class="hero">
         <div class="wrap">
@@ -34,14 +34,14 @@
             </div>
 
             @php
-                // NOTE TEST : les photos utilisent picsum.photos (aléatoire, seedé pour
-                // rester stable au reload). Remplacez 'image' par vos vraies URLs / uploads
+                // NOTE TEST : les photos utilisent des URLs de démo (aléatoire, seedées pour
+                // rester stables au reload). Remplacez 'image' par vos vraies URLs / uploads
                 // (ex: asset('storage/livres/xxx.jpg')) avant la mise en production.
                 $books = $books ?? collect([
-                    ['title' => 'Ny Ombalahibemaso', 'author' => 'Conte traditionnel', 'price' => '15 000 Ar', 'city' => 'Antananarivo', 'state' => 'neuf', 'genre' => 'Conte', 'image' => 'https://plus.unsplash.com/premium_photo-1677187301660-5e557d9c0724?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8bGl2cmV8ZW58MHx8MHx8fDA%3D'],
-                    ['title' => 'Ny Fitiavana Very', 'author' => 'Jean-Joseph Rabearivelo', 'price' => '9 500 Ar', 'city' => 'Fianarantsoa', 'state' => 'occasion', 'genre' => 'Poésie', 'image' => 'https://plus.unsplash.com/premium_photo-1677187301660-5e557d9c0724?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8bGl2cmV8ZW58MHx8MHx8fDA%3D'],
-                    ['title' => 'Dinitra sy Aretina', 'author' => 'Rado', 'price' => '12 000 Ar', 'city' => 'Toamasina', 'state' => 'neuf', 'genre' => 'Poésie', 'image' => 'https://plus.unsplash.com/premium_photo-1677187301660-5e557d9c0724?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8bGl2cmV8ZW58MHx8MHx8fDA%3D'],
-                    ['title' => 'Iarivointsara', 'author' => 'Elie Rajaonarison', 'price' => '8 000 Ar', 'city' => 'Mahajanga', 'state' => 'occasion', 'genre' => 'Roman', 'image' => 'https://plus.unsplash.com/premium_photo-1677187301660-5e557d9c0724?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8bGl2cmV8ZW58MHx8MHx8fDA%3D'],
+                    ['title' => 'Ny Ombalahibemaso', 'author' => 'Conte traditionnel', 'price' => '15 000 Ar', 'city' => 'Antananarivo', 'state' => 'neuf', 'genre' => 'Conte', 'image' => 'https://media.istockphoto.com/id/2263560827/fr/photo/livres-dans-la-biblioth%C3%A8que.webp?a=1&b=1&s=612x612&w=0&k=20&c=-Ma1T5ApOQYiWSZ-2cefogQDE1kbzIbXjdOPA11NcQs='],
+                    ['title' => 'Ny Fitiavana Very', 'author' => 'Jean-Joseph Rabearivelo', 'price' => '9 500 Ar', 'city' => 'Fianarantsoa', 'state' => 'occasion', 'genre' => 'Poésie', 'image' => 'https://media.istockphoto.com/id/2263560827/fr/photo/livres-dans-la-biblioth%C3%A8que.webp?a=1&b=1&s=612x612&w=0&k=20&c=-Ma1T5ApOQYiWSZ-2cefogQDE1kbzIbXjdOPA11NcQs='],
+                    ['title' => 'Dinitra sy Aretina', 'author' => 'Rado', 'price' => '12 000 Ar', 'city' => 'Toamasina', 'state' => 'neuf', 'genre' => 'Poésie', 'image' => 'https://media.istockphoto.com/id/2263560827/fr/photo/livres-dans-la-biblioth%C3%A8que.webp?a=1&b=1&s=612x612&w=0&k=20&c=-Ma1T5ApOQYiWSZ-2cefogQDE1kbzIbXjdOPA11NcQs='],
+                    ['title' => 'Iarivointsara', 'author' => 'Elie Rajaonarison', 'price' => '8 000 Ar', 'city' => 'Mahajanga', 'state' => 'occasion', 'genre' => 'Roman', 'image' => 'https://media.istockphoto.com/id/2263560827/fr/photo/livres-dans-la-biblioth%C3%A8que.webp?a=1&b=1&s=612x612&w=0&k=20&c=-Ma1T5ApOQYiWSZ-2cefogQDE1kbzIbXjdOPA11NcQs='],
                 ]);
             @endphp
 
@@ -50,17 +50,39 @@
                     <article class="book-card">
                         <div class="book-cover">
                             <img src="{{ $book['image'] }}" alt="{{ $book['title'] }}" loading="lazy">
+                            <div class="book-cover-gradient"></div>
+
                             <span class="book-tag {{ $book['state'] === 'occasion' ? 'occasion' : '' }}">
                                 {{ $book['state'] === 'occasion' ? __('home.books_tag_used') : __('home.books_tag_new') }}
                             </span>
+
+                            <button type="button" class="book-wishlist" aria-label="{{ __('home.books_wishlist') }}">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path d="M12 21s-7.5-4.6-10-9.1C.6 8.4 2 4.9 5.4 4.1c2-.5 4 .3 5 2 1-1.7 3-2.5 5-2 3.4.8 4.8 4.3 3.4 7.8C19.5 16.4 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+
+                            <span class="book-price-float">{{ $book['price'] }}</span>
+
+                            <button type="button" class="book-quickview">{{ __('home.books_quick_view') }}</button>
                         </div>
                         <div class="book-body">
                             <span class="book-genre">{{ $book['genre'] }}</span>
                             <h3 class="book-title">{{ $book['title'] }}</h3>
                             <p class="book-author">{{ $book['author'] }}</p>
                             <div class="book-foot">
-                                <span class="book-price">{{ $book['price'] }}</span>
-                                <span class="book-loc">{{ $book['city'] }}</span>
+                                <span class="book-loc">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path d="M12 22s7-7.58 7-13A7 7 0 1 0 5 9c0 5.42 7 13 7 13z" stroke="currentColor" stroke-width="1.8"/>
+                                        <circle cx="12" cy="9" r="2.4" stroke="currentColor" stroke-width="1.8"/>
+                                    </svg>
+                                    {{ $book['city'] }}
+                                </span>
+                                <button type="button" class="book-add" aria-label="{{ __('home.books_add') }}">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path d="M5 12H19M12 5V19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </article>

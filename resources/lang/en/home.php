@@ -7,6 +7,8 @@ return [
 
     'nav_home' => 'Home',
     'nav_seller' => 'Seller',
+    'nav_login' => 'Log in',
+    'nav_register' => 'Sign up',
 
     'hero_eyebrow' => "Ny Herin'ny Boky",
     'hero_title' => 'Every book deserves a second life',
@@ -19,6 +21,9 @@ return [
     'books_see_all' => 'See all books',
     'books_tag_new' => 'New',
     'books_tag_used' => 'Used',
+    'books_quick_view' => 'Quick view',
+    'books_wishlist' => 'Add to wishlist',
+    'books_add' => 'Add to cart',
 
     'sellers_heading' => 'Available sellers',
     'sellers_subheading' => 'Readers like you, giving their books a second life.',

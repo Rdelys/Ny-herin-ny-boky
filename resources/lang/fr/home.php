@@ -7,6 +7,8 @@ return [
 
     'nav_home' => 'Accueil',
     'nav_seller' => 'Vendeur',
+    'nav_login' => 'Se connecter',
+    'nav_register' => "S'inscrire",
 
     'hero_eyebrow' => "Ny Herin'ny Boky",
     'hero_title' => 'Chaque livre mérite une seconde vie',
@@ -19,6 +21,9 @@ return [
     'books_see_all' => 'Voir tous les livres',
     'books_tag_new' => 'Neuf',
     'books_tag_used' => 'Occasion',
+    'books_quick_view' => 'Aperçu rapide',
+    'books_wishlist' => 'Ajouter aux favoris',
+    'books_add' => 'Ajouter au panier',
 
     'sellers_heading' => 'Vendeurs disponibles',
     'sellers_subheading' => 'Des lecteurs comme vous, qui donnent une seconde vie à leurs livres.',

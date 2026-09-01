@@ -7,6 +7,8 @@ return [
 
     'nav_home' => 'Fandraisana',
     'nav_seller' => 'Mpivarotra',
+    'nav_login' => 'Hiditra',
+    'nav_register' => 'Misoratra anarana',
 
     'hero_eyebrow' => "Ny Herin'ny Boky",
     'hero_title' => "Manana fiainana faharoa ny boky tsirairay",
@@ -19,6 +21,9 @@ return [
     'books_see_all' => 'Jereo ny boky rehetra',
     'books_tag_new' => 'Vaovao',
     'books_tag_used' => 'Efa nampiasaina',
+    'books_quick_view' => 'Jereo haingana',
+    'books_wishlist' => "Ampio amin'ny tiana",
+    'books_add' => 'Ampio ao anaty sobiky',
 
     'sellers_heading' => 'Mpivarotra misy',
     'sellers_subheading' => "Mpamaky toa anao, izay manome fiainana faharoa ny bokiny.",
