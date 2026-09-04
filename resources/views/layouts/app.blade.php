@@ -943,6 +943,83 @@
         .book-delete-form{ position: absolute; top: 10px; right: 10px; z-index: 2; }
         .book-delete-form .book-wishlist{ position: static; }
 
+        /* ---------- tableau "Mes livres" (espace vendeur) ---------- */
+        .table-scroll{ overflow-x: auto; border-radius: 16px; border: 1px solid rgba(85,16,29,.09); }
+        .seller-table{
+            width: 100%;
+            border-collapse: collapse;
+            background: #fffdf7;
+            font-size: .88rem;
+        }
+        .seller-table thead th{
+            text-align: left;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            color: #8a7a6d;
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(85,16,29,.1);
+            white-space: nowrap;
+        }
+        .seller-table tbody td{
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(85,16,29,.06);
+            vertical-align: middle;
+        }
+        .seller-table-row{ cursor: pointer; transition: background .12s ease; }
+        .seller-table-row:hover{ background: rgba(233,178,63,.08); }
+        .seller-table-row:last-child td{ border-bottom: 0; }
+        .seller-table-thumb{ width: 52px; }
+        .seller-table-thumb img{
+            width: 44px; height: 58px; object-fit: cover; border-radius: 6px;
+        }
+        .seller-table-thumb-empty{
+            width: 44px; height: 58px; border-radius: 6px; background: var(--cream-dim);
+        }
+        .seller-table-sub{ font-size: .78rem; color: #96897d; }
+        .seller-table-actions{ display: flex; gap: 12px; white-space: nowrap; }
+        .table-action-link{
+            background: none; border: 0; padding: 0; font: inherit;
+            color: var(--maroon-800); font-weight: 600; font-size: .82rem; cursor: pointer;
+        }
+        .table-action-link:hover{ text-decoration: underline; }
+        .table-action-danger{ color: #b3261e; }
+
+        /* ---------- pagination ---------- */
+        .pager{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 22px;
+        }
+        .pager-btn{
+            font-size: .85rem;
+            font-weight: 600;
+            color: var(--maroon-800);
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(85,16,29,.16);
+            transition: background .15s ease;
+        }
+        .pager-btn:hover{ background: rgba(85,16,29,.06); }
+        .pager-btn.disabled{ color: #b8a99b; border-color: rgba(85,16,29,.08); pointer-events: none; }
+        .pager-info{ font-size: .82rem; color: #8a7a6d; }
+
+        /* ---------- variante claire des cartes vendeur (page /vendeur) ---------- */
+        .seller-grid-light .seller-card{
+            background: #fffdf7;
+            border: 1px solid rgba(85,16,29,.09);
+        }
+        .seller-grid-light .seller-card:hover{
+            background: #fffdf7;
+            border-color: rgba(85,16,29,.2);
+        }
+        .seller-grid-light .seller-name{ color: var(--ink); }
+        .seller-grid-light .seller-meta{ color: #7a6a5d; }
+        .seller-grid-light .seller-stats{ color: var(--maroon-800); }
+
         /* ---------- sellers ---------- */
         .sellers{ background: var(--maroon-950); color: var(--cream); }
         .sellers .section-head h2{ color: var(--cream); }

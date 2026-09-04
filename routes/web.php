@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SellerController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -28,5 +29,17 @@ Route::post('/vendeur/livres', [BookController::class, 'store'])
 Route::delete('/vendeur/livres/{book}', [BookController::class, 'destroy'])
     ->middleware('auth')
     ->name('books.destroy');
- 
+
+
+Route::get('/vendeur/livres/{book}/modifier', [BookController::class, 'edit'])
+    ->middleware('auth')
+    ->name('books.edit');
+
+Route::put('/vendeur/livres/{book}', [BookController::class, 'update'])
+    ->middleware('auth')
+    ->name('books.update');
+
+// Page publique listant tous les vendeurs (lien "Vendeur" du menu)
+Route::get('/vendeur', [SellerController::class, 'index'])->name('sellers.index');
+
 // Route::get('/vendeur', [VendeurController::class, 'index'])->name('vendeur');

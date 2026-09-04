@@ -18,7 +18,7 @@ class ProfileController extends Controller
             return view('profile.seller', [
                 'user' => $user,
                 'profile' => $user->sellerProfile,
-                'books' => $user->books()->latest()->get(),
+                'books' => $user->books()->latest()->paginate(10),
             ]);
         }
 

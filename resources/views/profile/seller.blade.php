@@ -61,13 +61,18 @@
                 <form method="POST" action="{{ route('books.store') }}" enctype="multipart/form-data" class="modal-form">
                     @csrf
 
-                    <label>Titre
-                        <input type="text" name="titre" placeholder="Nom du livre" value="{{ old('titre') }}" required>
-                    </label>
+                    <div class="modal-form-row">
+                        <label>Titre
+                            <input type="text" name="titre" placeholder="Nom du livre" value="{{ old('titre') }}" required>
+                        </label>
+                        <label>Auteur
+                            <input type="text" name="auteur" placeholder="Nom de l'auteur" value="{{ old('auteur') }}">
+                        </label>
+                    </div>
                     @error('titre')<p class="modal-field-error">{{ $message }}</p>@enderror
 
                     <label>Description
-                        <textarea name="description" rows="3" placeholder="Mettez l'auteur, le nombre de pages, et une description brève">{{ old('description') }}</textarea>
+                        <textarea name="description" rows="3" placeholder="Nombre de pages, résumé bref...">{{ old('description') }}</textarea>
                     </label>
 
                     <div class="modal-form-row">
@@ -79,15 +84,38 @@
                         </label>
                     </div>
 
-                    <label>Catégorie
-                        <select name="categorie" required>
-                            <option value="">choisissez ...</option>
-                            @foreach(\App\Http\Controllers\BookController::CATEGORIES as $cat)
-                                <option value="{{ $cat }}" @selected(old('categorie') === $cat)>{{ $cat }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                    <div class="modal-form-row">
+                        <label>Catégorie
+                            <select name="categorie" required>
+                                <option value="">choisissez ...</option>
+                                @foreach(\App\Http\Controllers\BookController::CATEGORIES as $cat)
+                                    <option value="{{ $cat }}" @selected(old('categorie') === $cat)>{{ $cat }}</option>
+                                @endforeach
+                            </select>
+                        </label>
+                        <label>État
+                            <select name="etat" required>
+                                <option value="neuf" @selected(old('etat') === 'neuf')>Neuf</option>
+                                <option value="occasion" @selected(old('etat', 'occasion') === 'occasion')>Occasion</option>
+                            </select>
+                        </label>
+                    </div>
                     @error('categorie')<p class="modal-field-error">{{ $message }}</p>@enderror
+
+                    <fieldset class="modal-fieldset">
+                        <legend>Livraison</legend>
+                        <label class="modal-radio-card" id="shippingToggleCard">
+                            <input type="checkbox" name="livraison_disponible" value="1" id="shippingToggle" {{ old('livraison_disponible') ? 'checked' : '' }}>
+                            <span>
+                                <strong>Livraison disponible</strong>
+                                <small>Cochez si vous proposez la livraison pour ce livre</small>
+                            </span>
+                        </label>
+                        <label id="shippingFeeField" style="{{ old('livraison_disponible') ? '' : 'display:none;' }}">
+                            Frais de livraison (Ar)
+                            <input type="number" name="frais_livraison" min="0" placeholder="0 = livraison gratuite" value="{{ old('frais_livraison') }}">
+                        </label>
+                    </fieldset>
 
                     <label>Image du livre
                         <input type="file" name="image" accept="image/*">
@@ -102,44 +130,90 @@
             <div class="section-head">
                 <div>
                     <h2>Mes livres</h2>
-                    <p>{{ $books->count() }} livre(s) publié(s).</p>
+                    <p>{{ $books->total() }} livre(s) publié(s).</p>
                 </div>
             </div>
 
             @if($books->isEmpty())
                 <p style="color:#7a6a5d;">Vous n'avez pas encore ajouté de livre.</p>
             @else
-                <div class="book-grid">
-                    @foreach($books as $book)
-                        <article class="book-card">
-                            <div class="book-cover">
-                                @if($book->image_path)
-                                    <img src="{{ asset('storage/'.$book->image_path) }}" alt="{{ $book->titre }}" loading="lazy">
-                                @endif
-                                <div class="book-cover-gradient"></div>
-                                <form method="POST" action="{{ route('books.destroy', $book) }}" class="book-delete-form" onsubmit="return confirm('Supprimer ce livre ?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="book-wishlist" aria-label="Supprimer">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                        </svg>
-                                    </button>
-                                </form>
-                            </div>
-                            <div class="book-body">
-                                @if($book->categorie)
-                                    <span class="book-genre">{{ $book->categorie }}</span>
-                                @endif
-                                <h3 class="book-title">{{ $book->titre }}</h3>
-                                <div class="book-foot">
-                                    <span class="book-loc">{{ $book->prix_achat ? number_format($book->prix_achat, 0, ',', ' ').' Ar' : '—' }}</span>
-                                </div>
-                            </div>
-                        </article>
-                    @endforeach
+                <div class="table-scroll">
+                    <table class="seller-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Titre</th>
+                                <th>Catégorie</th>
+                                <th>Prix</th>
+                                <th>Livraison</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($books as $book)
+                                <tr class="seller-table-row" onclick="window.location='{{ route('books.edit', $book) }}'">
+                                    <td class="seller-table-thumb">
+                                        @if($book->image_path)
+                                            <img src="{{ asset('storage/'.$book->image_path) }}" alt="{{ $book->titre }}" loading="lazy">
+                                        @else
+                                            <div class="seller-table-thumb-empty"></div>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <strong>{{ $book->titre }}</strong>
+                                        @if($book->auteur)<br><span class="seller-table-sub">{{ $book->auteur }}</span>@endif
+                                    </td>
+                                    <td><span class="book-genre" style="margin:0;">{{ $book->categorie }}</span></td>
+                                    <td>{{ $book->prix_achat ? number_format($book->prix_achat, 0, ',', ' ').' Ar' : '—' }}</td>
+                                    <td>
+                                        @if($book->livraison_disponible)
+                                            <span class="book-tag" style="position:static;">Oui{{ $book->frais_livraison ? ' · '.number_format($book->frais_livraison, 0, ',', ' ').' Ar' : ' · gratuite' }}</span>
+                                        @else
+                                            <span style="color:#96897d;">Non</span>
+                                        @endif
+                                    </td>
+                                    <td class="seller-table-actions" onclick="event.stopPropagation();">
+                                        <a href="{{ route('books.edit', $book) }}" class="table-action-link">Modifier</a>
+                                        <form method="POST" action="{{ route('books.destroy', $book) }}" onsubmit="return confirm('Supprimer ce livre ?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="table-action-link table-action-danger">Supprimer</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
+
+                @if($books->hasPages())
+                    <div class="pager">
+                        @if($books->onFirstPage())
+                            <span class="pager-btn disabled">&larr; Précédent</span>
+                        @else
+                            <a href="{{ $books->previousPageUrl() }}" class="pager-btn">&larr; Précédent</a>
+                        @endif
+                        <span class="pager-info">Page {{ $books->currentPage() }} / {{ $books->lastPage() }}</span>
+                        @if($books->hasMorePages())
+                            <a href="{{ $books->nextPageUrl() }}" class="pager-btn">Suivant &rarr;</a>
+                        @else
+                            <span class="pager-btn disabled">Suivant &rarr;</span>
+                        @endif
+                    </div>
+                @endif
             @endif
         </div>
     </section>
+
+    <script>
+        (function(){
+            var toggle = document.getElementById('shippingToggle');
+            var feeField = document.getElementById('shippingFeeField');
+            if (toggle && feeField) {
+                toggle.addEventListener('change', function(){
+                    feeField.style.display = toggle.checked ? '' : 'none';
+                });
+            }
+        })();
+    </script>
 @endsection
