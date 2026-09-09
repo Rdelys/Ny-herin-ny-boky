@@ -1,19 +1,19 @@
 @extends('layouts.app')
 
-@section('meta_title', 'Nos vendeurs — ' . config('app.name'))
+@section('meta_title', __('home.sellers_page_title') . ' — ' . config('app.name'))
 
 @section('content')
     <section>
         <div class="wrap">
             <div class="section-head">
                 <div>
-                    <h2>Nos vendeurs</h2>
-                    <p>Tous les vendeurs inscrits sur Ny Herin'ny Boky.</p>
+                    <h2>{{ __('home.sellers_page_title') }}</h2>
+                    <p>{{ __('home.sellers_page_subtitle') }}</p>
                 </div>
             </div>
 
             @if($sellers->isEmpty())
-                <p style="color:#7a6a5d;">Aucun vendeur pour l'instant. Soyez le premier !</p>
+                <p style="color:#7a6a5d;">{{ __('home.sellers_page_none') }}</p>
             @else
                 <div class="seller-grid seller-grid-light">
                     @foreach($sellers as $seller)
@@ -23,7 +23,7 @@
                                 <h3 class="seller-name">{{ $seller->sellerProfile->nom_entreprise ?? $seller->name }}</h3>
                                 <p class="seller-meta">{{ $seller->sellerProfile->localisation ?? '—' }}</p>
                                 <div class="seller-stats">
-                                    <span>{{ $seller->books_count }} livre(s)</span>
+                                    <span>{{ $seller->books_count }} {{ __('home.sellers_books_count') }}</span>
                                 </div>
                             </div>
                         </article>
@@ -33,15 +33,15 @@
                 @if($sellers->hasPages())
                     <div class="pager">
                         @if($sellers->onFirstPage())
-                            <span class="pager-btn disabled">&larr; Précédent</span>
+                            <span class="pager-btn disabled">&larr; {{ __('home.pager_previous') }}</span>
                         @else
-                            <a href="{{ $sellers->previousPageUrl() }}" class="pager-btn">&larr; Précédent</a>
+                            <a href="{{ $sellers->previousPageUrl() }}" class="pager-btn">&larr; {{ __('home.pager_previous') }}</a>
                         @endif
-                        <span class="pager-info">Page {{ $sellers->currentPage() }} / {{ $sellers->lastPage() }}</span>
+                        <span class="pager-info">{{ __('home.pager_page_of') }} {{ $sellers->currentPage() }} / {{ $sellers->lastPage() }}</span>
                         @if($sellers->hasMorePages())
-                            <a href="{{ $sellers->nextPageUrl() }}" class="pager-btn">Suivant &rarr;</a>
+                            <a href="{{ $sellers->nextPageUrl() }}" class="pager-btn">{{ __('home.pager_next') }} &rarr;</a>
                         @else
-                            <span class="pager-btn disabled">Suivant &rarr;</span>
+                            <span class="pager-btn disabled">{{ __('home.pager_next') }} &rarr;</span>
                         @endif
                     </div>
                 @endif

@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('meta_title', 'Mon espace vendeur — ' . config('app.name'))
+@section('meta_title', __('home.profile_seller_title') . ' — ' . config('app.name'))
 
 @section('content')
     <section>
         <div class="wrap">
             <div class="section-head">
                 <div>
-                    <h2>Mon espace vendeur</h2>
+                    <h2>{{ __('home.profile_seller_title') }}</h2>
                     <p>{{ $profile->nom_entreprise ?? $user->name }}</p>
                 </div>
             </div>
@@ -30,21 +30,21 @@
                 @if($profile)
                     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:16px; width:100%;">
                         <div>
-                            <p class="book-genre" style="margin-bottom:4px;">Localisation</p>
+                            <p class="book-genre" style="margin-bottom:4px;">{{ __('home.profile_location') }}</p>
                             <p>{{ $profile->localisation ?: '—' }}</p>
                         </div>
                         <div>
-                            <p class="book-genre" style="margin-bottom:4px;">Code postal</p>
+                            <p class="book-genre" style="margin-bottom:4px;">{{ __('home.profile_postal_code') }}</p>
                             <p>{{ $profile->code_postal ?: '—' }}</p>
                         </div>
                         <div>
-                            <p class="book-genre" style="margin-bottom:4px;">Numéro pour recevoir l'argent</p>
+                            <p class="book-genre" style="margin-bottom:4px;">{{ __('home.profile_payment_number') }}</p>
                             <p>{{ $profile->numero_paiement ?: '—' }}</p>
                         </div>
                         <div>
-                            <p class="book-genre" style="margin-bottom:4px;">Mode de paiement</p>
+                            <p class="book-genre" style="margin-bottom:4px;">{{ __('home.profile_payment_mode') }}</p>
                             <p>
-                                {{ $profile->mode_paiement === 'abonnement' ? 'Abonnement' : 'Commission' }}
+                                {{ $profile->mode_paiement === 'abonnement' ? __('home.profile_payment_subscription') : __('home.profile_payment_commission') }}
                                 @if($profile->mode_paiement !== 'abonnement' && $profile->commission_status)
                                     <span class="book-tag" style="position:static; display:inline-block; margin-left:6px;">{{ $profile->commission_status }}</span>
                                 @endif
@@ -56,96 +56,96 @@
 
             {{-- ============ AJOUTER UN LIVRE ============ --}}
             <div class="add-book-card">
-                <h3 class="add-book-title">Ajouter un livre</h3>
+                <h3 class="add-book-title">{{ __('home.book_add_title') }}</h3>
 
                 <form method="POST" action="{{ route('books.store') }}" enctype="multipart/form-data" class="modal-form">
                     @csrf
 
                     <div class="modal-form-row">
-                        <label>Titre
-                            <input type="text" name="titre" placeholder="Nom du livre" value="{{ old('titre') }}" required>
+                        <label>{{ __('home.book_title_label') }}
+                            <input type="text" name="titre" placeholder="{{ __('home.book_title_placeholder') }}" value="{{ old('titre') }}" required>
                         </label>
-                        <label>Auteur
-                            <input type="text" name="auteur" placeholder="Nom de l'auteur" value="{{ old('auteur') }}">
+                        <label>{{ __('home.book_author_label') }}
+                            <input type="text" name="auteur" placeholder="{{ __('home.book_author_placeholder') }}" value="{{ old('auteur') }}">
                         </label>
                     </div>
                     @error('titre')<p class="modal-field-error">{{ $message }}</p>@enderror
 
-                    <label>Description
-                        <textarea name="description" rows="3" placeholder="Nombre de pages, résumé bref...">{{ old('description') }}</textarea>
+                    <label>{{ __('home.book_description_label') }}
+                        <textarea name="description" rows="3" placeholder="{{ __('home.book_description_placeholder') }}">{{ old('description') }}</textarea>
                     </label>
 
                     <div class="modal-form-row">
-                        <label>Prix d'achat (Ar)
+                        <label>{{ __('home.book_purchase_price') }}
                             <input type="number" name="prix_achat" min="0" value="{{ old('prix_achat') }}">
                         </label>
-                        <label>Prix de location (Ar)
+                        <label>{{ __('home.book_rental_price') }}
                             <input type="number" name="prix_location" min="0" value="{{ old('prix_location') }}">
                         </label>
                     </div>
 
                     <div class="modal-form-row">
-                        <label>Catégorie
+                        <label>{{ __('home.book_category') }}
                             <select name="categorie" required>
-                                <option value="">choisissez ...</option>
+                                <option value="">{{ __('home.auth_choose_placeholder') }}</option>
                                 @foreach(\App\Http\Controllers\BookController::CATEGORIES as $cat)
                                     <option value="{{ $cat }}" @selected(old('categorie') === $cat)>{{ $cat }}</option>
                                 @endforeach
                             </select>
                         </label>
-                        <label>État
+                        <label>{{ __('home.book_condition') }}
                             <select name="etat" required>
-                                <option value="neuf" @selected(old('etat') === 'neuf')>Neuf</option>
-                                <option value="occasion" @selected(old('etat', 'occasion') === 'occasion')>Occasion</option>
+                                <option value="neuf" @selected(old('etat') === 'neuf')>{{ __('home.book_condition_new') }}</option>
+                                <option value="occasion" @selected(old('etat', 'occasion') === 'occasion')>{{ __('home.book_condition_used') }}</option>
                             </select>
                         </label>
                     </div>
                     @error('categorie')<p class="modal-field-error">{{ $message }}</p>@enderror
 
                     <fieldset class="modal-fieldset">
-                        <legend>Livraison</legend>
+                        <legend>{{ __('home.book_shipping_legend') }}</legend>
                         <label class="modal-radio-card" id="shippingToggleCard">
                             <input type="checkbox" name="livraison_disponible" value="1" id="shippingToggle" {{ old('livraison_disponible') ? 'checked' : '' }}>
                             <span>
-                                <strong>Livraison disponible</strong>
-                                <small>Cochez si vous proposez la livraison pour ce livre</small>
+                                <strong>{{ __('home.book_shipping_available') }}</strong>
+                                <small>{{ __('home.book_shipping_desc') }}</small>
                             </span>
                         </label>
                         <label id="shippingFeeField" style="{{ old('livraison_disponible') ? '' : 'display:none;' }}">
-                            Frais de livraison (Ar)
-                            <input type="number" name="frais_livraison" min="0" placeholder="0 = livraison gratuite" value="{{ old('frais_livraison') }}">
+                            {{ __('home.book_shipping_fee') }}
+                            <input type="number" name="frais_livraison" min="0" placeholder="{{ __('home.book_shipping_fee_placeholder') }}" value="{{ old('frais_livraison') }}">
                         </label>
                     </fieldset>
 
-                    <label>Image du livre
+                    <label>{{ __('home.book_image_label') }}
                         <input type="file" name="image" accept="image/*">
                     </label>
-                    <p class="field-hint">Image (4 Mo max)</p>
+                    <p class="field-hint">{{ __('home.book_image_hint') }}</p>
                     @error('image')<p class="modal-field-error">{{ $message }}</p>@enderror
 
-                    <button type="submit" class="btn-modal-primary">Ajouter</button>
+                    <button type="submit" class="btn-modal-primary">{{ __('home.book_submit_add') }}</button>
                 </form>
             </div>
 
             <div class="section-head">
                 <div>
-                    <h2>Mes livres</h2>
-                    <p>{{ $books->total() }} livre(s) publié(s).</p>
+                    <h2>{{ __('home.book_my_books_title') }}</h2>
+                    <p>{{ $books->total() }} {{ __('home.book_count_suffix') }}</p>
                 </div>
             </div>
 
             @if($books->isEmpty())
-                <p style="color:#7a6a5d;">Vous n'avez pas encore ajouté de livre.</p>
+                <p style="color:#7a6a5d;">{{ __('home.book_none_yet') }}</p>
             @else
                 <div class="table-scroll">
                     <table class="seller-table">
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Titre</th>
-                                <th>Catégorie</th>
-                                <th>Prix</th>
-                                <th>Livraison</th>
+                                <th>{{ __('home.book_col_title') }}</th>
+                                <th>{{ __('home.book_col_category') }}</th>
+                                <th>{{ __('home.book_col_price') }}</th>
+                                <th>{{ __('home.book_col_shipping') }}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -167,17 +167,17 @@
                                     <td>{{ $book->prix_achat ? number_format($book->prix_achat, 0, ',', ' ').' Ar' : '—' }}</td>
                                     <td>
                                         @if($book->livraison_disponible)
-                                            <span class="book-tag" style="position:static;">Oui{{ $book->frais_livraison ? ' · '.number_format($book->frais_livraison, 0, ',', ' ').' Ar' : ' · gratuite' }}</span>
+                                            <span class="book-tag" style="position:static;">{{ __('home.book_shipping_yes') }}{{ $book->frais_livraison ? ' · '.number_format($book->frais_livraison, 0, ',', ' ').' Ar' : ' · '.__('home.book_shipping_free') }}</span>
                                         @else
-                                            <span style="color:#96897d;">Non</span>
+                                            <span style="color:#96897d;">{{ __('home.book_shipping_no') }}</span>
                                         @endif
                                     </td>
                                     <td class="seller-table-actions" onclick="event.stopPropagation();">
-                                        <a href="{{ route('books.edit', $book) }}" class="table-action-link">Modifier</a>
-                                        <form method="POST" action="{{ route('books.destroy', $book) }}" onsubmit="return confirm('Supprimer ce livre ?');">
+                                        <a href="{{ route('books.edit', $book) }}" class="table-action-link">{{ __('home.book_edit_link') }}</a>
+                                        <form method="POST" action="{{ route('books.destroy', $book) }}" onsubmit="return confirm('{{ __('home.book_confirm_delete') }}');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="table-action-link table-action-danger">Supprimer</button>
+                                            <button type="submit" class="table-action-link table-action-danger">{{ __('home.book_delete') }}</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -189,15 +189,15 @@
                 @if($books->hasPages())
                     <div class="pager">
                         @if($books->onFirstPage())
-                            <span class="pager-btn disabled">&larr; Précédent</span>
+                            <span class="pager-btn disabled">&larr; {{ __('home.pager_previous') }}</span>
                         @else
-                            <a href="{{ $books->previousPageUrl() }}" class="pager-btn">&larr; Précédent</a>
+                            <a href="{{ $books->previousPageUrl() }}" class="pager-btn">&larr; {{ __('home.pager_previous') }}</a>
                         @endif
-                        <span class="pager-info">Page {{ $books->currentPage() }} / {{ $books->lastPage() }}</span>
+                        <span class="pager-info">{{ __('home.pager_page_of') }} {{ $books->currentPage() }} / {{ $books->lastPage() }}</span>
                         @if($books->hasMorePages())
-                            <a href="{{ $books->nextPageUrl() }}" class="pager-btn">Suivant &rarr;</a>
+                            <a href="{{ $books->nextPageUrl() }}" class="pager-btn">{{ __('home.pager_next') }} &rarr;</a>
                         @else
-                            <span class="pager-btn disabled">Suivant &rarr;</span>
+                            <span class="pager-btn disabled">{{ __('home.pager_next') }} &rarr;</span>
                         @endif
                     </div>
                 @endif

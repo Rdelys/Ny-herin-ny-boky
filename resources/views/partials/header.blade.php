@@ -15,14 +15,16 @@
                 <li><a href="{{ url('/vendeur') }}">{{ __('home.nav_seller') }}</a></li>
             </ul>
 
-            {{-- Dropdown de langue stylé, avec drapeaux SVG (flag-icons) --}}
+            {{-- Dropdown de langue stylé, avec drapeaux SVG (flag-icons).
+                 Malagasy est la langue par défaut du site (route racine "/"),
+                 français et anglais utilisent le préfixe explicite /fr, /en. --}}
             @php
                 // Madagascar = mg, mais l'anglais utilise le drapeau britannique (gb)
                 $flagCodes = ['fr' => 'fr', 'mg' => 'mg', 'en' => 'gb'];
             @endphp
             <div class="lang-dropdown" id="langDropdown">
                 <button type="button" class="lang-toggle" id="langToggle" aria-haspopup="listbox" aria-expanded="false">
-                    <span class="fi fi-{{ $flagCodes[app()->getLocale()] ?? 'fr' }} lang-flag"></span>
+                    <span class="fi fi-{{ $flagCodes[app()->getLocale()] ?? 'mg' }} lang-flag"></span>
                     <span>{{ strtoupper(app()->getLocale()) }}</span>
                     <svg class="lang-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -30,13 +32,13 @@
                 </button>
                 <ul class="lang-menu" id="langMenu" role="listbox" aria-label="Choix de langue / Fifidianana fiteny / Language choice">
                     <li>
-                        <a href="{{ route('home') }}" hreflang="fr" role="option" class="{{ app()->getLocale() === 'fr' ? 'active' : '' }}">
-                            <span class="lang-option"><span class="fi fi-fr lang-flag"></span> Français</span>
+                        <a href="{{ route('home') }}" hreflang="mg" role="option" class="{{ app()->getLocale() === 'mg' ? 'active' : '' }}">
+                            <span class="lang-option"><span class="fi fi-mg lang-flag"></span> Malagasy</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('home.locale', 'mg') }}" hreflang="mg" role="option" class="{{ app()->getLocale() === 'mg' ? 'active' : '' }}">
-                            <span class="lang-option"><span class="fi fi-mg lang-flag"></span> Malagasy</span>
+                        <a href="{{ route('home.locale', 'fr') }}" hreflang="fr" role="option" class="{{ app()->getLocale() === 'fr' ? 'active' : '' }}">
+                            <span class="lang-option"><span class="fi fi-fr lang-flag"></span> Français</span>
                         </a>
                     </li>
                     <li>
@@ -65,7 +67,7 @@
                                     <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
                                     <path d="M4 20c0-3.9 3.6-7 8-7s8 3.1 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                                 </svg>
-                                {{ auth()->user()->isSeller() ? 'Mon espace vendeur' : 'Mon profil' }}
+                                {{ auth()->user()->isSeller() ? __('home.nav_my_seller_space') : __('home.nav_my_profile') }}
                             </a>
                         </li>
                         <li class="user-menu-divider"></li>
@@ -76,7 +78,7 @@
                                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <path d="M15 17l5-5-5-5M20 12H9M13 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
-                                    Se déconnecter
+                                    {{ __('home.nav_logout') }}
                                 </button>
                             </form>
                         </li>

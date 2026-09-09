@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('meta_title', 'Mon profil — ' . config('app.name'))
+@section('meta_title', __('home.profile_client_title') . ' — ' . config('app.name'))
 
 @section('content')
     <section>
         <div class="wrap" style="max-width: 720px;">
             <div class="section-head">
                 <div>
-                    <h2>Mon profil</h2>
-                    <p>Vos informations de compte, en tant que client.</p>
+                    <h2>{{ __('home.profile_client_title') }}</h2>
+                    <p>{{ __('home.profile_client_subtitle') }}</p>
                 </div>
             </div>
 
@@ -26,15 +26,15 @@
                 @if($profile)
                     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:16px; width:100%;">
                         <div>
-                            <p class="book-genre" style="margin-bottom:4px;">Localisation</p>
+                            <p class="book-genre" style="margin-bottom:4px;">{{ __('home.profile_location') }}</p>
                             <p>{{ $profile->localisation ?: '—' }}</p>
                         </div>
                         <div>
-                            <p class="book-genre" style="margin-bottom:4px;">Motif d'inscription</p>
+                            <p class="book-genre" style="margin-bottom:4px;">{{ __('home.profile_reason') }}</p>
                             <p>{{ $profile->motif_inscription ?: '—' }}</p>
                         </div>
                         <div>
-                            <p class="book-genre" style="margin-bottom:4px;">Livres recherchés</p>
+                            <p class="book-genre" style="margin-bottom:4px;">{{ __('home.profile_books_wanted') }}</p>
                             <p>{{ $profile->types_livres_recherches ?: '—' }}</p>
                         </div>
                     </div>

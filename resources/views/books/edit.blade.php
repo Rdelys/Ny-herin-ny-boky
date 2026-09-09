@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('meta_title', 'Modifier « ' . $book->titre . ' » — ' . config('app.name'))
+@section('meta_title', __('home.book_edit_title') . ' « ' . $book->titre . ' » — ' . config('app.name'))
 
 @section('content')
     <section>
         <div class="wrap" style="max-width: 640px;">
             <div class="section-head">
                 <div>
-                    <h2>Modifier le livre</h2>
+                    <h2>{{ __('home.book_edit_title') }}</h2>
                     <p>{{ $book->titre }}</p>
                 </div>
-                <a href="{{ route('profile') }}" class="see-all">&larr; Retour à mon espace</a>
+                <a href="{{ route('profile') }}" class="see-all">&larr; {{ __('home.book_back_to_profile') }}</a>
             </div>
 
             <div class="add-book-card" style="max-width:none;">
@@ -25,73 +25,73 @@
                     @endif
 
                     <div class="modal-form-row">
-                        <label>Titre
+                        <label>{{ __('home.book_title_label') }}
                             <input type="text" name="titre" value="{{ old('titre', $book->titre) }}" required>
                         </label>
-                        <label>Auteur
+                        <label>{{ __('home.book_author_label') }}
                             <input type="text" name="auteur" value="{{ old('auteur', $book->auteur) }}">
                         </label>
                     </div>
 
-                    <label>Description
+                    <label>{{ __('home.book_description_label') }}
                         <textarea name="description" rows="3">{{ old('description', $book->description) }}</textarea>
                     </label>
 
                     <div class="modal-form-row">
-                        <label>Prix d'achat (Ar)
+                        <label>{{ __('home.book_purchase_price') }}
                             <input type="number" name="prix_achat" min="0" value="{{ old('prix_achat', $book->prix_achat) }}">
                         </label>
-                        <label>Prix de location (Ar)
+                        <label>{{ __('home.book_rental_price') }}
                             <input type="number" name="prix_location" min="0" value="{{ old('prix_location', $book->prix_location) }}">
                         </label>
                     </div>
 
                     <div class="modal-form-row">
-                        <label>Catégorie
+                        <label>{{ __('home.book_category') }}
                             <select name="categorie" required>
                                 @foreach(\App\Http\Controllers\BookController::CATEGORIES as $cat)
                                     <option value="{{ $cat }}" @selected(old('categorie', $book->categorie) === $cat)>{{ $cat }}</option>
                                 @endforeach
                             </select>
                         </label>
-                        <label>État
+                        <label>{{ __('home.book_condition') }}
                             <select name="etat" required>
-                                <option value="neuf" @selected(old('etat', $book->etat) === 'neuf')>Neuf</option>
-                                <option value="occasion" @selected(old('etat', $book->etat) === 'occasion')>Occasion</option>
+                                <option value="neuf" @selected(old('etat', $book->etat) === 'neuf')>{{ __('home.book_condition_new') }}</option>
+                                <option value="occasion" @selected(old('etat', $book->etat) === 'occasion')>{{ __('home.book_condition_used') }}</option>
                             </select>
                         </label>
                     </div>
 
                     <fieldset class="modal-fieldset">
-                        <legend>Livraison</legend>
+                        <legend>{{ __('home.book_shipping_legend') }}</legend>
                         <label class="modal-radio-card">
                             <input type="checkbox" name="livraison_disponible" value="1" id="shippingToggle" {{ old('livraison_disponible', $book->livraison_disponible) ? 'checked' : '' }}>
                             <span>
-                                <strong>Livraison disponible</strong>
-                                <small>Cochez si vous proposez la livraison pour ce livre</small>
+                                <strong>{{ __('home.book_shipping_available') }}</strong>
+                                <small>{{ __('home.book_shipping_desc') }}</small>
                             </span>
                         </label>
                         <label id="shippingFeeField" style="{{ old('livraison_disponible', $book->livraison_disponible) ? '' : 'display:none;' }}">
-                            Frais de livraison (Ar)
-                            <input type="number" name="frais_livraison" min="0" placeholder="0 = livraison gratuite" value="{{ old('frais_livraison', $book->frais_livraison) }}">
+                            {{ __('home.book_shipping_fee') }}
+                            <input type="number" name="frais_livraison" min="0" placeholder="{{ __('home.book_shipping_fee_placeholder') }}" value="{{ old('frais_livraison', $book->frais_livraison) }}">
                         </label>
                     </fieldset>
 
-                    <label>Remplacer l'image
+                    <label>{{ __('home.book_image_replace') }}
                         <input type="file" name="image" accept="image/*">
                     </label>
-                    <p class="field-hint">Laissez vide pour garder l'image actuelle. Image (4 Mo max)</p>
+                    <p class="field-hint">{{ __('home.book_image_keep_hint') }}</p>
 
                     <div style="display:flex; gap:12px;">
-                        <button type="submit" class="btn-modal-primary" style="flex:2;">Enregistrer</button>
+                        <button type="submit" class="btn-modal-primary" style="flex:2;">{{ __('home.book_submit_save') }}</button>
                     </div>
                 </form>
 
-                <form method="POST" action="{{ route('books.destroy', $book) }}" onsubmit="return confirm('Supprimer définitivement ce livre ?');" style="margin-top:14px;">
+                <form method="POST" action="{{ route('books.destroy', $book) }}" onsubmit="return confirm('{{ __('home.book_confirm_delete') }}');" style="margin-top:14px;">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="table-action-link table-action-danger" style="width:100%; text-align:center; padding:12px; border:1px solid rgba(179,38,30,.3); border-radius:999px;">
-                        Supprimer ce livre
+                        {{ __('home.book_delete_permanent') }}
                     </button>
                 </form>
             </div>

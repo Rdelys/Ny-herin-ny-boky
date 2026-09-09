@@ -10,7 +10,7 @@ use App\Http\Controllers\SellerController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/{locale}', [HomeController::class, 'index'])
-    ->whereIn('locale', ['mg', 'en'])
+    ->whereIn('locale', ['fr', 'en'])
     ->name('home.locale');
 
 Route::post('/connexion', [AuthController::class, 'login'])->name('login');
@@ -43,3 +43,6 @@ Route::put('/vendeur/livres/{book}', [BookController::class, 'update'])
 Route::get('/vendeur', [SellerController::class, 'index'])->name('sellers.index');
 
 // Route::get('/vendeur', [VendeurController::class, 'index'])->name('vendeur');
+Route::view('/a-propos', 'pages.about')->name('pages.about');
+Route::view('/confidentialite', 'pages.privacy')->name('pages.privacy');
+Route::view('/cgv', 'pages.terms')->name('pages.terms');

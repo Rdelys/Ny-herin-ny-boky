@@ -32,7 +32,7 @@
             </div>
 
             @if($books->isEmpty())
-                <p style="color:#6b5a4d;">Aucun livre disponible pour l'instant.</p>
+                <p style="color:#6b5a4d;">{{ __('home.books_none_yet') }}</p>
             @else
                 <div class="book-grid">
                     @foreach($books as $book)
@@ -97,7 +97,7 @@
             </div>
 
             @if($sellers->isEmpty())
-                <p style="color:rgba(246,239,221,.65);">Aucun vendeur pour l'instant.</p>
+                <p style="color:rgba(246,239,221,.65);">{{ __('home.books_none_yet') }}</p>
             @else
                 <div class="seller-grid">
                     @foreach($sellers as $seller)
