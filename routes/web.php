@@ -10,7 +10,7 @@ use App\Http\Controllers\SellerController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/{locale}', [HomeController::class, 'index'])
-    ->whereIn('locale', ['fr', 'en'])
+    ->whereIn('locale', ['fr', 'mg', 'en'])   // mg ajouté
     ->name('home.locale');
 
 Route::post('/connexion', [AuthController::class, 'login'])->name('login');

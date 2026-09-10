@@ -32,7 +32,7 @@
                 </button>
                 <ul class="lang-menu" id="langMenu" role="listbox" aria-label="Choix de langue / Fifidianana fiteny / Language choice">
                     <li>
-                        <a href="{{ route('home') }}" hreflang="mg" role="option" class="{{ app()->getLocale() === 'mg' ? 'active' : '' }}">
+                        <a href="{{ route('home.locale', 'mg') }}" hreflang="mg" role="option" class="{{ app()->getLocale() === 'mg' ? 'active' : '' }}">
                             <span class="lang-option"><span class="fi fi-mg lang-flag"></span> Malagasy</span>
                         </a>
                     </li>
