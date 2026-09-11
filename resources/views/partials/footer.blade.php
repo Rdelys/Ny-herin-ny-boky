@@ -4,7 +4,6 @@
         <div class="foot-top">
             <div class="foot-brand">
                 <img src="{{ asset('logo.png') }}" alt="Ny Herin'ny Boky">
-                <span>Ny Herin'ny Boky</span>
             </div>
             <ul class="foot-links">
                 <li><a href="{{ route('pages.about') }}">{{ __('home.footer_about') }}</a></li>

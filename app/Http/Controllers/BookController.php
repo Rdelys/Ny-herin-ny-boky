@@ -14,18 +14,26 @@ class BookController extends Controller
      * Catégories disponibles pour un livre.
      */
     public const CATEGORIES = [
-        'Business & Entrepreneuriat',
+        'Business & entrepreneuriat',
         'Développement personnel',
         'Psychologie',
-        'Finance & Investissement',
-        'Marketing & Vente',
-        'Communication & Leadership',
-        'Boky Malagasy',
-        'Science & Technologie',
-        'Romans',
-        'Thriller & Suspense',
-        'Autre',
+        'Finance',
+        'Marketing',
+        'Vente',
+        'Communication',
+        'Investissement',
+        'Roman',
+        'Thriller',
+        'Science-fiction',
+        'Science & non-fiction',
+        'Livres malgaches',
+        'Éducation financière',
     ];
+
+    /**
+     * États possibles d'un livre (clé technique => libellé traduit).
+     */
+    public const CONDITIONS = ['neuf', 'tres_bon_etat', 'bon_etat'];
 
     protected function rules(): array
     {
@@ -36,10 +44,9 @@ class BookController extends Controller
             'prix_achat' => ['nullable', 'integer', 'min:0'],
             'prix_location' => ['nullable', 'integer', 'min:0'],
             'categorie' => ['required', Rule::in(self::CATEGORIES)],
-            'etat' => ['required', Rule::in(['neuf', 'occasion'])],
+            'etat' => ['required', Rule::in(self::CONDITIONS)],
             'livraison_disponible' => ['nullable', 'boolean'],
-            'frais_livraison' => ['nullable', 'integer', 'min:0'],
-            // 4096 Ko = 4 Mo
+            // Pas de frais de livraison dans l'application : aucune validation dessus.
             'image' => ['nullable', 'image', 'max:4096'],
         ];
     }
@@ -49,11 +56,9 @@ class BookController extends Controller
         abort_unless($request->user()->isSeller(), 403, "Seuls les vendeurs peuvent ajouter un livre.");
 
         $data = $request->validate($this->rules());
-        $livraison = $request->boolean('livraison_disponible');
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            // Nécessite `php artisan storage:link`
             $imagePath = $request->file('image')->store('livres', 'public');
         }
 
@@ -66,8 +71,7 @@ class BookController extends Controller
             'categorie' => $data['categorie'],
             'etat' => $data['etat'],
             'image_path' => $imagePath,
-            'livraison_disponible' => $livraison,
-            'frais_livraison' => $livraison ? ($data['frais_livraison'] ?? null) : null,
+            'livraison_disponible' => $request->boolean('livraison_disponible'),
         ]);
 
         return redirect()->route('profile')->with('success', 'Livre ajouté avec succès.');
@@ -85,7 +89,6 @@ class BookController extends Controller
         abort_unless($book->seller_id === $request->user()->id, 403);
 
         $data = $request->validate($this->rules());
-        $livraison = $request->boolean('livraison_disponible');
 
         if ($request->hasFile('image')) {
             $book->image_path = $request->file('image')->store('livres', 'public');
@@ -99,8 +102,7 @@ class BookController extends Controller
             'prix_location' => $data['prix_location'] ?? null,
             'categorie' => $data['categorie'],
             'etat' => $data['etat'],
-            'livraison_disponible' => $livraison,
-            'frais_livraison' => $livraison ? ($data['frais_livraison'] ?? null) : null,
+            'livraison_disponible' => $request->boolean('livraison_disponible'),
         ])->save();
 
         return redirect()->route('profile')->with('success', 'Livre mis à jour.');

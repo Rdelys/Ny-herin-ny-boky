@@ -1,35 +1,34 @@
 <?php
 
-use App\Http\Controllers\HomeController;
-use Illuminate\Support\Facades\Route;
+// ============================================================
+// A AJOUTER / FUSIONNER dans routes/web.php
+// ============================================================
+
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookCatalogController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SellerController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/{locale}', [HomeController::class, 'index'])
-    ->whereIn('locale', ['fr', 'mg', 'en'])   // mg ajouté
+    ->whereIn('locale', ['fr', 'mg', 'en']) // mg inclus : corrige le switch de langue
     ->name('home.locale');
 
 Route::post('/connexion', [AuthController::class, 'login'])->name('login');
 Route::post('/inscription/client', [AuthController::class, 'registerClient'])->name('register.client');
 Route::post('/inscription/vendeur', [AuthController::class, 'registerSeller'])->name('register.seller');
 Route::post('/deconnexion', [AuthController::class, 'logout'])->name('logout');
- 
+
 Route::get('/profil', [ProfileController::class, 'show'])
     ->middleware('auth')
     ->name('profile');
- 
+
 Route::post('/vendeur/livres', [BookController::class, 'store'])
     ->middleware('auth')
     ->name('books.store');
- 
-Route::delete('/vendeur/livres/{book}', [BookController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('books.destroy');
-
 
 Route::get('/vendeur/livres/{book}/modifier', [BookController::class, 'edit'])
     ->middleware('auth')
@@ -39,10 +38,18 @@ Route::put('/vendeur/livres/{book}', [BookController::class, 'update'])
     ->middleware('auth')
     ->name('books.update');
 
-// Page publique listant tous les vendeurs (lien "Vendeur" du menu)
-Route::get('/vendeur', [SellerController::class, 'index'])->name('sellers.index');
+Route::delete('/vendeur/livres/{book}', [BookController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('books.destroy');
 
-// Route::get('/vendeur', [VendeurController::class, 'index'])->name('vendeur');
+// Catalogue public + recherche (barre de recherche du header, menu "Livres")
+Route::get('/livres', [BookCatalogController::class, 'index'])->name('books.index');
+
+// Pages vendeurs : liste, puis fiche d'un vendeur (tous ses livres)
+Route::get('/vendeur', [SellerController::class, 'index'])->name('sellers.index');
+Route::get('/vendeur/{seller}', [SellerController::class, 'show'])->name('sellers.show');
+
+// Pages statiques (À propos / Confidentialité / CGV)
 Route::view('/a-propos', 'pages.about')->name('pages.about');
 Route::view('/confidentialite', 'pages.privacy')->name('pages.privacy');
 Route::view('/cgv', 'pages.terms')->name('pages.terms');

@@ -17,7 +17,6 @@ class Book extends Model
         'etat',
         'image_path',
         'livraison_disponible',
-        'frais_livraison',
     ];
 
     protected function casts(): array

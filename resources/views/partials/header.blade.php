@@ -1,10 +1,20 @@
 {{-- ============ HEADER / MENU ============ --}}
 <header class="site-header">
     <div class="wrap">
-        <a href="{{ url('/') }}" class="brand">
+        {{-- Le logo porte déjà le nom du site : plus de texte à côté --}}
+        <a href="{{ url('/') }}" class="brand" aria-label="Ny Herin'ny Boky">
             <img src="{{ asset('logo.png') }}" alt="Ny Herin'ny Boky">
-            <span>Ny Herin'ny Boky</span>
         </a>
+
+        {{-- Barre de recherche : recherche par titre, auteur ou catégorie,
+             résultats affichés sur la page catalogue /livres --}}
+        <form action="{{ route('books.index') }}" method="GET" class="header-search" role="search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/>
+                <path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <input type="search" name="q" value="{{ request('q') }}" placeholder="{{ __('home.search_placeholder') }}" aria-label="{{ __('home.search_placeholder') }}">
+        </form>
 
         {{-- Sur desktop : liens, dropdown de langue et boutons auth en ligne.
              Sur mobile : tout se replie dans un même panneau dropdown
@@ -12,14 +22,23 @@
         <nav class="main-nav" id="mainNav">
             <ul>
                 <li><a href="{{ url('/') }}">{{ __('home.nav_home') }}</a></li>
+                <li><a href="{{ route('books.index') }}">{{ __('home.nav_books') }}</a></li>
                 <li><a href="{{ url('/vendeur') }}">{{ __('home.nav_seller') }}</a></li>
             </ul>
 
+            {{-- Recherche repliée dans le panneau mobile --}}
+            <form action="{{ route('books.index') }}" method="GET" class="header-search header-search-mobile" role="search">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <input type="search" name="q" value="{{ request('q') }}" placeholder="{{ __('home.search_placeholder') }}" aria-label="{{ __('home.search_placeholder') }}">
+            </form>
+
             {{-- Dropdown de langue stylé, avec drapeaux SVG (flag-icons).
-                 Malagasy est la langue par défaut du site (route racine "/"),
-                 français et anglais utilisent le préfixe explicite /fr, /en. --}}
+                 Malagasy est la langue par défaut du site, français et
+                 anglais utilisent le préfixe explicite /fr, /en. --}}
             @php
-                // Madagascar = mg, mais l'anglais utilise le drapeau britannique (gb)
                 $flagCodes = ['fr' => 'fr', 'mg' => 'mg', 'en' => 'gb'];
             @endphp
             <div class="lang-dropdown" id="langDropdown">

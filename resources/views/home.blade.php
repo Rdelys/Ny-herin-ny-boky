@@ -28,7 +28,7 @@
                     <h2>{{ __('home.books_heading') }}</h2>
                     <p>{{ __('home.books_subheading') }}</p>
                 </div>
-                <a href="#" class="see-all">{{ __('home.books_see_all') }}</a>
+                <a href="{{ route('books.index') }}" class="see-all">{{ __('home.books_see_all') }}</a>
             </div>
 
             @if($books->isEmpty())
@@ -41,8 +41,8 @@
                                 <img src="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}" alt="{{ $book->titre }}" loading="lazy">
                                 <div class="book-cover-gradient"></div>
 
-                                <span class="book-tag {{ $book->etat === 'occasion' ? 'occasion' : '' }}">
-                                    {{ $book->etat === 'occasion' ? __('home.books_tag_used') : __('home.books_tag_new') }}
+                                <span class="book-tag {{ $book->etat !== 'neuf' ? 'occasion' : '' }}">
+                                    {{ __('home.book_condition_' . $book->etat) }}
                                 </span>
 
                                 <button type="button" class="book-wishlist" aria-label="{{ __('home.books_wishlist') }}">
@@ -62,7 +62,16 @@
                                     <span class="book-genre">{{ $book->categorie }}</span>
                                 @endif
                                 <h3 class="book-title">{{ $book->titre }}</h3>
-                                <p class="book-author">{{ $book->auteur ?: ($book->seller->sellerProfile->nom_entreprise ?? $book->seller->name) }}</p>
+                                @if($book->auteur)
+                                    <p class="book-author">{{ $book->auteur }}</p>
+                                @endif
+                                <a href="{{ route('sellers.show', $book->seller) }}" class="book-seller">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path d="M3 7l9-4 9 4-9 4-9-4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                                        <path d="M3 7v7c0 2 4 4 9 4s9-2 9-4V7" stroke="currentColor" stroke-width="1.6"/>
+                                    </svg>
+                                    {{ $book->seller->sellerProfile->nom_entreprise ?? $book->seller->name }}
+                                </a>
                                 <div class="book-foot">
                                     <span class="book-loc">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -97,11 +106,11 @@
             </div>
 
             @if($sellers->isEmpty())
-                <p style="color:rgba(246,239,221,.65);">{{ __('home.books_none_yet') }}</p>
+                <p style="color:rgba(246,239,221,.65);">{{ __('home.sellers_none_yet') }}</p>
             @else
                 <div class="seller-grid">
                     @foreach($sellers as $seller)
-                        <article class="seller-card">
+                        <a href="{{ route('sellers.show', $seller) }}" class="seller-card">
                             <div class="seller-avatar">{{ strtoupper(substr($seller->sellerProfile->nom_entreprise ?? $seller->name, 0, 1)) }}</div>
                             <div>
                                 <h3 class="seller-name">{{ $seller->sellerProfile->nom_entreprise ?? $seller->name }}</h3>
@@ -110,7 +119,7 @@
                                     <span>{{ $seller->books_count }} {{ __('home.sellers_books_count') }}</span>
                                 </div>
                             </div>
-                        </article>
+                        </a>
                     @endforeach
                 </div>
             @endif

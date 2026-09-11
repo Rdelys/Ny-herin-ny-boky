@@ -17,7 +17,7 @@
             @else
                 <div class="seller-grid seller-grid-light">
                     @foreach($sellers as $seller)
-                        <article class="seller-card">
+                        <a href="{{ route('sellers.show', $seller) }}" class="seller-card">
                             <div class="seller-avatar">{{ strtoupper(substr($seller->sellerProfile->nom_entreprise ?? $seller->name, 0, 1)) }}</div>
                             <div>
                                 <h3 class="seller-name">{{ $seller->sellerProfile->nom_entreprise ?? $seller->name }}</h3>
@@ -26,7 +26,7 @@
                                     <span>{{ $seller->books_count }} {{ __('home.sellers_books_count') }}</span>
                                 </div>
                             </div>
-                        </article>
+                        </a>
                     @endforeach
                 </div>
 

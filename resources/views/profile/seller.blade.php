@@ -95,8 +95,9 @@
                         </label>
                         <label>{{ __('home.book_condition') }}
                             <select name="etat" required>
-                                <option value="neuf" @selected(old('etat') === 'neuf')>{{ __('home.book_condition_new') }}</option>
-                                <option value="occasion" @selected(old('etat', 'occasion') === 'occasion')>{{ __('home.book_condition_used') }}</option>
+                                <option value="neuf" @selected(old('etat') === 'neuf')>{{ __('home.book_condition_neuf') }}</option>
+                                <option value="tres_bon_etat" @selected(old('etat', 'bon_etat') === 'tres_bon_etat')>{{ __('home.book_condition_tres_bon_etat') }}</option>
+                                <option value="bon_etat" @selected(old('etat', 'bon_etat') === 'bon_etat')>{{ __('home.book_condition_bon_etat') }}</option>
                             </select>
                         </label>
                     </div>
@@ -104,16 +105,12 @@
 
                     <fieldset class="modal-fieldset">
                         <legend>{{ __('home.book_shipping_legend') }}</legend>
-                        <label class="modal-radio-card" id="shippingToggleCard">
-                            <input type="checkbox" name="livraison_disponible" value="1" id="shippingToggle" {{ old('livraison_disponible') ? 'checked' : '' }}>
+                        <label class="modal-radio-card">
+                            <input type="checkbox" name="livraison_disponible" value="1" {{ old('livraison_disponible') ? 'checked' : '' }}>
                             <span>
                                 <strong>{{ __('home.book_shipping_available') }}</strong>
                                 <small>{{ __('home.book_shipping_desc') }}</small>
                             </span>
-                        </label>
-                        <label id="shippingFeeField" style="{{ old('livraison_disponible') ? '' : 'display:none;' }}">
-                            {{ __('home.book_shipping_fee') }}
-                            <input type="number" name="frais_livraison" min="0" placeholder="{{ __('home.book_shipping_fee_placeholder') }}" value="{{ old('frais_livraison') }}">
                         </label>
                     </fieldset>
 
@@ -167,7 +164,7 @@
                                     <td>{{ $book->prix_achat ? number_format($book->prix_achat, 0, ',', ' ').' Ar' : '—' }}</td>
                                     <td>
                                         @if($book->livraison_disponible)
-                                            <span class="book-tag" style="position:static;">{{ __('home.book_shipping_yes') }}{{ $book->frais_livraison ? ' · '.number_format($book->frais_livraison, 0, ',', ' ').' Ar' : ' · '.__('home.book_shipping_free') }}</span>
+                                            <span class="book-tag" style="position:static;">{{ __('home.book_shipping_yes') }}</span>
                                         @else
                                             <span style="color:#96897d;">{{ __('home.book_shipping_no') }}</span>
                                         @endif

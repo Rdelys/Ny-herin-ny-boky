@@ -21,4 +21,16 @@ class SellerController extends Controller
 
         return view('sellers.index', ['sellers' => $sellers]);
     }
+
+    /**
+     * Page publique d'un vendeur : ses infos + tous ses livres, paginés.
+     */
+    public function show(User $seller): View
+    {
+        abort_unless($seller->role === 'vendeur', 404);
+
+        $books = $seller->books()->latest()->paginate(12);
+
+        return view('sellers.show', ['seller' => $seller, 'books' => $books]);
+    }
 }

@@ -12,8 +12,8 @@
 
     {{-- ============ SEO : canonical + hreflang ============ --}}
     <link rel="canonical" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="fr" href="{{ url('/') }}">
-    <link rel="alternate" hreflang="mg" href="{{ url('/mg') }}">
+    <link rel="alternate" hreflang="mg" href="{{ url('/') }}">
+    <link rel="alternate" hreflang="fr" href="{{ url('/fr') }}">
     <link rel="alternate" hreflang="en" href="{{ url('/en') }}">
     <link rel="alternate" hreflang="x-default" href="{{ url('/') }}">
 
@@ -122,19 +122,72 @@
         .brand{
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-right: auto;
-            min-width: 0;
+            flex-shrink: 0;
         }
-        .brand img{ height: 40px; width: auto; flex-shrink: 0; }
-        .brand span{
-            font-family: var(--serif);
-            font-size: 1.28rem;
+        .brand img{ height: 42px; width: auto; }
+
+        /* ---- barre de recherche (header) ---- */
+        .header-search{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(246,239,221,.08);
+            border: 1px solid rgba(246,239,221,.16);
+            border-radius: 999px;
+            padding: 8px 14px;
+            color: rgba(246,239,221,.6);
+            flex: 1 1 260px;
+            max-width: 320px;
+            margin: 0 8px;
+            transition: border-color .15s ease, background .15s ease;
+        }
+        .header-search:focus-within{
+            border-color: rgba(246,239,221,.4);
+            background: rgba(246,239,221,.12);
+        }
+        .header-search svg{ flex-shrink: 0; }
+        .header-search input{
+            border: 0;
+            background: transparent;
+            outline: none;
             color: var(--cream);
-            letter-spacing: .01em;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-family: inherit;
+            font-size: .88rem;
+            width: 100%;
+        }
+        .header-search input::placeholder{ color: rgba(246,239,221,.5); }
+        .header-search-mobile{ display: none; }
+
+        /* ---------- filtres du catalogue (/livres) ---------- */
+        .catalog-filters{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        .catalog-filters input[type="search"]{
+            flex: 1 1 220px;
+            padding: 11px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(85,16,29,.16);
+            background: #fffdf9;
+            font-family: inherit;
+            font-size: .9rem;
+        }
+        .catalog-filters select{
+            padding: 11px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(85,16,29,.16);
+            background: #fffdf9;
+            font-family: inherit;
+            font-size: .9rem;
+            max-width: 220px;
+        }
+        .catalog-filters input:focus, .catalog-filters select:focus{
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(233,178,63,.2);
         }
 
         /* nav now hosts links, the language dropdown AND the auth buttons,
@@ -144,7 +197,7 @@
             align-items: center;
             gap: 22px;
         }
-        .main-nav ul{ display: flex; gap: 30px; }
+        .main-nav > ul{ display: flex; gap: 30px; }
         .main-nav > ul a{
             color: var(--cream-dim);
             font-size: .97rem;
@@ -876,8 +929,17 @@
         .book-author{
             font-size: .86rem;
             color: #7a6a5d;
+            margin: 0 0 4px;
+        }
+        .book-seller{
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: .76rem;
+            color: #b09c8c;
             margin: 0 0 14px;
         }
+        .book-seller svg{ flex-shrink: 0; color: var(--gold-dim); }
         .book-foot{
             display: flex;
             align-items: center;
@@ -1008,17 +1070,164 @@
         .pager-info{ font-size: .82rem; color: #8a7a6d; }
 
         /* ---------- variante claire des cartes vendeur (page /vendeur) ---------- */
+        .seller-grid-light{
+            grid-template-columns: repeat(auto-fill, 260px);
+            justify-content: start;
+        }
         .seller-grid-light .seller-card{
             background: #fffdf7;
             border: 1px solid rgba(85,16,29,.09);
+            transition: background .15s ease, border-color .15s ease, transform .15s ease;
         }
         .seller-grid-light .seller-card:hover{
             background: #fffdf7;
-            border-color: rgba(85,16,29,.2);
+            border-color: var(--gold);
+            transform: translateY(-3px);
         }
         .seller-grid-light .seller-name{ color: var(--ink); }
         .seller-grid-light .seller-meta{ color: #7a6a5d; }
         .seller-grid-light .seller-stats{ color: var(--maroon-800); }
+
+        /* ---------- pages statiques (À propos / Confidentialité / CGV) ---------- */
+        .page-banner{
+            background: linear-gradient(135deg, var(--maroon-800), var(--maroon-950));
+            color: var(--cream);
+            padding: 64px 0 52px;
+        }
+        .page-banner-eyebrow{
+            font-family: var(--serif);
+            font-style: italic;
+            color: var(--green-300);
+            font-size: 1rem;
+            margin: 0 0 14px;
+        }
+        .page-banner h1{
+            font-family: var(--serif);
+            font-weight: 600;
+            font-size: clamp(1.9rem, 4vw, 2.7rem);
+            margin: 0 0 14px;
+            max-width: 20ch;
+        }
+        .page-banner p{
+            color: var(--cream-dim);
+            font-size: 1.02rem;
+            max-width: 60ch;
+            margin: 0 0 10px;
+            line-height: 1.6;
+        }
+        .page-banner-meta{
+            display: inline-block;
+            font-size: .8rem;
+            color: rgba(246,239,221,.6);
+            margin-top: 8px;
+        }
+        .page-banner-actions{ display: flex; flex-wrap: wrap; gap: 14px; margin-top: 26px; }
+
+        .content-card{
+            background: #fffdf7;
+            border: 1px solid rgba(85,16,29,.09);
+            border-radius: 20px;
+            padding: 28px 30px;
+            margin-bottom: 22px;
+        }
+        .content-card h3{
+            font-family: var(--serif);
+            font-size: 1.2rem;
+            color: var(--maroon-900);
+            margin: 0 0 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .content-card p{ color: #4a3a30; line-height: 1.7; margin: 0 0 12px; }
+        .content-card p:last-child{ margin-bottom: 0; }
+        .content-list{ margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+        .content-list li{
+            list-style: none;
+            padding-left: 22px;
+            position: relative;
+            color: #4a3a30;
+            line-height: 1.6;
+        }
+        .content-list li::before{
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 9px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+
+        .numbered-card{ display: flex; gap: 22px; }
+        .numbered-card .step-number{
+            font-family: var(--serif);
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: var(--gold-dim);
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        .numbered-card .content-card{ flex: 1; margin-bottom: 0; }
+
+        .chip-list{ display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+        .chip{
+            display: inline-block;
+            background: rgba(92,138,55,.1);
+            color: var(--green-700);
+            font-size: .82rem;
+            font-weight: 600;
+            padding: 7px 15px;
+            border-radius: 999px;
+        }
+
+        .feature-grid, .steps-grid{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 22px;
+        }
+        .feature-card, .step-card{
+            background: #fffdf7;
+            border: 1px solid rgba(85,16,29,.09);
+            border-radius: 18px;
+            padding: 26px;
+        }
+        .step-card .step-number{
+            font-family: var(--serif);
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: rgba(85,16,29,.18);
+            margin-bottom: 8px;
+        }
+        .feature-card h4, .step-card h4{
+            font-family: var(--serif);
+            font-size: 1.05rem;
+            color: var(--maroon-900);
+            margin: 0 0 8px;
+        }
+        .feature-card p, .step-card p{ color: #6b5a4d; font-size: .92rem; line-height: 1.6; margin: 0; }
+
+        .stat-grid{ display: flex; flex-wrap: wrap; gap: 40px; margin-top: 22px; }
+        .stat-item .stat-num{
+            font-family: var(--serif);
+            font-weight: 700;
+            font-size: 2.1rem;
+            color: var(--maroon-800);
+            line-height: 1;
+        }
+        .stat-item .stat-label{ font-size: .85rem; color: #8a7a6d; margin-top: 6px; }
+
+        .contact-grid{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-top: 8px;
+        }
+        .contact-item{ display: flex; align-items: flex-start; gap: 12px; }
+        .contact-item svg{ color: var(--maroon-800); flex-shrink: 0; margin-top: 3px; }
+        .contact-item a, .contact-item span{ color: #4a3a30; font-size: .92rem; line-height: 1.5; }
+        .contact-item a:hover{ color: var(--maroon-800); text-decoration: underline; }
 
         /* ---------- sellers ---------- */
         .sellers{ background: var(--maroon-950); color: var(--cream); }
@@ -1185,7 +1394,7 @@
                 pointer-events: auto;
                 transform: translateY(0);
             }
-            .main-nav ul{ flex-direction: column; gap: 2px; }
+            .main-nav > ul{ flex-direction: column; gap: 2px; }
             .main-nav > ul a{
                 display: block;
                 padding: 13px 10px;
@@ -1247,12 +1456,14 @@
             .cta-band{ padding: 30px 22px; }
             section{ padding: 52px 0; }
             .hero{ padding-top: 58px; }
+            .header-search{ display: none; }
+            .header-search-mobile{ display: flex; width: 100%; margin: 0 0 12px; max-width: none; }
         }
 
         /* Petits téléphones */
         @media (max-width: 480px){
             .wrap{ padding: 0 16px; }
-            .brand span{ max-width: 42vw; }
+            .seller-grid-light{ grid-template-columns: 1fr; }
             .hero h1{ max-width: 100%; }
             .hero p{ max-width: 100%; }
             .hero-actions .btn{ flex: 1 1 auto; justify-content: center; }
