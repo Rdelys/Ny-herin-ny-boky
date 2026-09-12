@@ -38,7 +38,7 @@
                                     <p class="book-author">{{ $book->auteur }}</p>
                                 @endif
                                 <div class="book-foot">
-                                    <span class="book-loc">{{ $book->prix_achat ? number_format($book->prix_achat, 0, ',', ' ').' Ar' : '—' }}</span>
+                                    <span class="book-loc">{{ $book->prix_achat_client ? number_format($book->prix_achat_client, 0, ',', ' ').' Ar' : '—' }}</span>
                                 </div>
                             </div>
                         </article>

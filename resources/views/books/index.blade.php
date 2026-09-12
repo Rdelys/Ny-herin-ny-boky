@@ -46,8 +46,8 @@
                                 <img src="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}" alt="{{ $book->titre }}" loading="lazy">
                                 <div class="book-cover-gradient"></div>
                                 <span class="book-tag {{ $book->etat !== 'neuf' ? 'occasion' : '' }}">{{ __('home.book_condition_' . $book->etat) }}</span>
-                                @if($book->prix_achat)
-                                    <span class="book-price-float">{{ number_format($book->prix_achat, 0, ',', ' ') }} Ar</span>
+                                @if($book->prix_achat_client)
+                                    <span class="book-price-float">{{ number_format($book->prix_achat_client, 0, ',', ' ') }} Ar</span>
                                 @endif
                             </div>
                             <div class="book-body">

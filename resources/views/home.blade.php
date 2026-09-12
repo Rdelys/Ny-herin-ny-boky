@@ -51,8 +51,8 @@
                                     </svg>
                                 </button>
 
-                                @if($book->prix_achat)
-                                    <span class="book-price-float">{{ number_format($book->prix_achat, 0, ',', ' ') }} Ar</span>
+                                @if($book->prix_achat_client)
+                                    <span class="book-price-float">{{ number_format($book->prix_achat_client, 0, ',', ' ') }} Ar</span>
                                 @endif
 
                                 <button type="button" class="book-quickview">{{ __('home.books_quick_view') }}</button>
