@@ -9,11 +9,13 @@ return [
     /* ============ Nav / Header ============ */
     'nav_home' => 'Accueil',
     'nav_seller' => 'Vendeur',
+    'nav_books' => 'Livres',
     'nav_login' => 'Se connecter',
     'nav_register' => "S'inscrire",
     'nav_my_profile' => 'Mon profil',
     'nav_my_seller_space' => 'Mon espace vendeur',
     'nav_logout' => 'Se déconnecter',
+    'search_placeholder' => 'Rechercher un livre, un auteur, une catégorie...',
 
     /* ============ Hero (accueil) ============ */
     'hero_eyebrow' => "Ny Herin'ny Boky",
@@ -155,6 +157,9 @@ return [
     'book_col_actions' => 'Actions',
     'book_shipping_free' => 'gratuite',
     'book_shipping_yes' => 'Oui',
+    'book_condition_neuf' => 'Neuf',
+    'book_condition_tres_bon_etat' => 'Très bon état',
+    'book_condition_bon_etat' => 'Bon état',
     'book_shipping_no' => 'Non',
     'book_edit_link' => 'Modifier',
     'book_back_to_profile' => 'Retour à mon espace',
@@ -168,6 +173,12 @@ return [
     'sellers_page_title' => 'Nos vendeurs',
     'sellers_page_subtitle' => "Tous les vendeurs inscrits sur Ny Herin'ny Boky.",
     'sellers_page_none' => 'Aucun vendeur pour l\'instant. Soyez le premier !',
+    'catalog_results_for' => 'Résultats pour',
+    'catalog_all_books' => 'Tous les livres',
+    'catalog_all_categories' => 'Toutes les catégories',
+    'catalog_search_button' => 'Rechercher',
+    'catalog_reset' => 'Réinitialiser',
+    'catalog_no_results' => 'Aucun livre trouvé.',
 
     /* ============ Page À propos ============ */
     'about_meta_title' => "À propos — Ny Herin'ny Boky",

@@ -9,11 +9,13 @@ return [
     /* ============ Nav / Header ============ */
     'nav_home' => 'Fandraisana',
     'nav_seller' => 'Mpivarotra',
+    'nav_books' => 'Boky',
     'nav_login' => 'Hiditra',
     'nav_register' => 'Misoratra anarana',
     'nav_my_profile' => 'Ny kaontiko',
     'nav_my_seller_space' => 'Ny toerako mpivarotra',
     'nav_logout' => 'Hivoaka',
+    'search_placeholder' => 'Tadiavo boky, mpanoratra, sokajy...',
 
     /* ============ Hero (accueil) ============ */
     'hero_eyebrow' => "Ny Herin'ny Boky",
@@ -155,6 +157,9 @@ return [
     'book_col_actions' => 'Hetsika',
     'book_shipping_free' => 'maimaimpoana',
     'book_shipping_yes' => 'Eny',
+    'book_condition_neuf' => 'Vaovao',
+    'book_condition_tres_bon_etat' => 'Toe-javatra tena tsara',
+    'book_condition_bon_etat' => 'Toe-javatra tsara',
     'book_shipping_no' => 'Tsia',
     'book_edit_link' => 'Ovay',
     'book_back_to_profile' => 'Miverina any amin\'ny toerako',
@@ -168,6 +173,12 @@ return [
     'sellers_page_title' => 'Ireo mpivarotra',
     'sellers_page_subtitle' => "Ireo mpivarotra rehetra voasoratra anarana ao amin'ny Ny Herin'ny Boky.",
     'sellers_page_none' => "Mbola tsy misy mpivarotra. Ianao ve no voalohany?",
+    'catalog_results_for' => 'Valiny ho an\'',
+    'catalog_all_books' => 'Boky rehetra',
+    'catalog_all_categories' => 'Sokajy rehetra',
+    'catalog_search_button' => 'Hikaroka',
+    'catalog_reset' => 'Hanadio',
+    'catalog_no_results' => 'Tsy nisy boky hita.',
 
     /* ============ Page À propos ============ */
     'about_meta_title' => "Momba anay — Ny Herin'ny Boky",

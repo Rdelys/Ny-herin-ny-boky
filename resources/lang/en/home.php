@@ -9,11 +9,13 @@ return [
     /* ============ Nav / Header ============ */
     'nav_home' => 'Home',
     'nav_seller' => 'Seller',
+    'nav_books' => 'Books',
     'nav_login' => 'Log in',
     'nav_register' => 'Sign up',
     'nav_my_profile' => 'My profile',
     'nav_my_seller_space' => 'My seller space',
     'nav_logout' => 'Log out',
+    'search_placeholder' => 'Search for a book, author, category...',
 
     /* ============ Hero (home) ============ */
     'hero_eyebrow' => "Ny Herin'ny Boky",
@@ -155,6 +157,9 @@ return [
     'book_col_actions' => 'Actions',
     'book_shipping_free' => 'free',
     'book_shipping_yes' => 'Yes',
+    'book_condition_neuf' => 'New',
+    'book_condition_tres_bon_etat' => 'Very good condition',
+    'book_condition_bon_etat' => 'Good condition',
     'book_shipping_no' => 'No',
     'book_edit_link' => 'Edit',
     'book_back_to_profile' => 'Back to my space',
@@ -168,6 +173,12 @@ return [
     'sellers_page_title' => 'Our sellers',
     'sellers_page_subtitle' => "All sellers registered on Ny Herin'ny Boky.",
     'sellers_page_none' => 'No sellers yet. Be the first!',
+    'catalog_results_for' => 'Results for',
+    'catalog_all_books' => 'All books',
+    'catalog_all_categories' => 'All categories',
+    'catalog_search_button' => 'Search',
+    'catalog_reset' => 'Reset',
+    'catalog_no_results' => 'No books found.',
 
     /* ============ About page ============ */
     'about_meta_title' => "About us — Ny Herin'ny Boky",
