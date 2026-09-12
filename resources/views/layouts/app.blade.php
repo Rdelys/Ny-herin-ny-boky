@@ -123,6 +123,7 @@
             display: flex;
             align-items: center;
             flex-shrink: 0;
+            margin-right: auto;
         }
         .brand img{ height: 42px; width: auto; }
 
@@ -1371,7 +1372,7 @@
 
         /* Le menu devient un panneau déroulant (dropdown) qui contient
            aussi le sélecteur de langue */
-        @media (max-width: 760px){
+        @media (max-width: 900px){
             .main-nav{
                 position: fixed;
                 inset: 68px 12px auto 12px;
@@ -1402,39 +1403,32 @@
                 border-bottom: 1px solid rgba(246,239,221,.1);
             }
             /* le dropdown de langue devient un bloc plein-largeur, dépliable sur place */
+            /* Le bouton reste pleine largeur pour une cible tactile confortable,
+               mais le menu déroulant lui-même garde son style flottant habituel
+               (carte arrondie, ombre) et reste ancré à droite du panneau —
+               il ne s'aplatit plus en pleine largeur. */
             .main-nav .lang-dropdown{ width: 100%; margin-top: 10px; }
             .main-nav .lang-toggle{ width: 100%; justify-content: space-between; }
-            .main-nav .lang-menu{
-                position: static;
-                opacity: 1;
-                transform: none;
-                pointer-events: auto;
-                box-shadow: none;
-                border: none;
-                background: rgba(246,239,221,.06);
-                margin-top: 8px;
-                display: none;
-                min-width: 0;
-            }
-            .main-nav .lang-menu.open{ display: block; }
+            .main-nav .lang-menu{ right: 0; left: auto; }
 
-            /* menu utilisateur (connecté) : même traitement pleine-largeur */
+            /* menu utilisateur (connecté) : même traitement */
             .main-nav .user-dropdown{ width: 100%; margin-top: 10px; }
             .main-nav .user-toggle{ width: 100%; justify-content: space-between; }
-            .main-nav .user-name{ max-width: none; flex: 1; text-align: left; margin-left: 2px; }
-            .main-nav .user-menu{
-                position: static;
-                opacity: 1;
-                transform: none;
-                pointer-events: auto;
-                box-shadow: none;
-                border: none;
-                background: rgba(246,239,221,.06);
-                margin-top: 8px;
-                display: none;
+            .main-nav .user-name{
+                max-width: none;
+                flex: 1;
+                text-align: left;
+                margin-left: 2px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
                 min-width: 0;
             }
-            .main-nav .user-menu.open{ display: block; }
+            .main-nav .user-menu{ right: 0; left: auto; }
+            .main-nav .lang-menu a, .main-nav .user-menu-link, .main-nav .user-menu-logout{
+                padding: 13px 14px;
+                font-size: .92rem;
+            }
 
             /* boutons connexion / inscription empilés en bas du panneau */
             .main-nav .auth-actions{
@@ -1457,7 +1451,7 @@
             section{ padding: 52px 0; }
             .hero{ padding-top: 58px; }
             .header-search{ display: none; }
-            .header-search-mobile{ display: flex; width: 100%; margin: 0 0 12px; max-width: none; }
+            .header-search-mobile{ display: flex; flex: none; width: 100%; margin: 0 0 12px; max-width: none; }
         }
 
         /* Petits téléphones */
@@ -1476,10 +1470,32 @@
 
             .modal-overlay{ padding: 12px; align-items: flex-end; }
             .modal-panel{ padding: 26px 20px 22px; border-radius: 20px 20px 0 0; max-height: 92vh; }
-            .modal-form-row{ grid-template-columns: 1fr; gap: 16px; }
             .modal-tabs{ gap: 4px; }
             .modal-tab{ padding: 9px 8px; font-size: .8rem; }
         }
+
+        /* Palier intermédiaire : phablettes / petits écrans (formulaires,
+           pages statiques, catalogue) — évite le texte/champs trop serrés
+           entre 480 et 600px, avant même le point de rupture "petit téléphone" */
+        @media (max-width: 600px){
+            .modal-form-row{ grid-template-columns: 1fr; gap: 16px; }
+
+            .numbered-card{ flex-direction: column; gap: 10px; }
+            .numbered-card .step-number{ font-size: 1.15rem; }
+
+            .catalog-filters{ flex-direction: column; align-items: stretch; }
+            .catalog-filters select{ max-width: none; }
+
+            .stat-grid{ gap: 24px; }
+
+            .content-card, .feature-card, .step-card{ padding: 20px; }
+            .page-banner{ padding: 48px 0 40px; }
+
+            /* moins de colonnes visibles dans le tableau "Mes livres" pour
+               limiter le scroll horizontal sur petit écran */
+            .seller-table th:nth-child(3), .seller-table td:nth-child(3){ display: none; }
+        }
+
 
         /* Très petits téléphones */
         @media (max-width: 360px){
