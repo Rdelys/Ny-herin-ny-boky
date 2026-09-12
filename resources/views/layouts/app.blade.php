@@ -637,6 +637,114 @@
             margin: -8px 0 0;
         }
 
+        /* ---- modal de commande ---- */
+        .order-book{
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .order-book-cover{
+            width: 56px;
+            height: 74px;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--cream-dim);
+        }
+        .order-book-cover img{ width: 100%; height: 100%; object-fit: cover; }
+        .order-book-seller{ font-size: .82rem; color: #8a7a6d; margin: 0; }
+
+        .order-summary{
+            background: rgba(85,16,29,.04);
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .order-summary-row{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: .9rem;
+            color: var(--ink);
+        }
+        .order-summary-total{
+            padding-top: 10px;
+            border-top: 1px dashed rgba(85,16,29,.16);
+            font-size: 1rem;
+        }
+        .order-summary-total strong{ color: var(--maroon-800); font-family: var(--serif); font-size: 1.15rem; }
+
+        .order-qty-stepper{
+            display: flex;
+            align-items: center;
+            gap: 0;
+            border: 1px solid rgba(85,16,29,.18);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .order-qty-stepper button{
+            width: 32px;
+            height: 32px;
+            border: 0;
+            background: rgba(85,16,29,.06);
+            color: var(--maroon-800);
+            font-size: 1.1rem;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .15s ease;
+        }
+        .order-qty-stepper button:hover{ background: rgba(85,16,29,.12); }
+        .order-qty-stepper input{
+            width: 44px;
+            border: 0;
+            text-align: center;
+            font-family: inherit;
+            font-size: .92rem;
+            font-weight: 600;
+            color: var(--ink);
+            -moz-appearance: textfield;
+        }
+        .order-qty-stepper input::-webkit-outer-spin-button,
+        .order-qty-stepper input::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
+
+        .order-payment-group .modal-radio-card{ justify-content: center; text-align: center; }
+        .order-payment-group .modal-radio-card span{ width: 100%; }
+
+        .order-payment-number{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(233,178,63,.14);
+            border: 1px dashed var(--gold);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 16px 0;
+            font-size: .9rem;
+        }
+        .order-payment-number strong{
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            color: var(--maroon-900);
+            letter-spacing: .02em;
+        }
+
+        .order-static-note{
+            text-align: center;
+            font-size: .78rem;
+            color: #9c8b7d;
+            margin: 12px 0 0;
+        }
+
+        @media (max-width: 480px){
+            .order-summary-row{ font-size: .86rem; }
+        }
+
         /* si la fenêtre est basse (zoom, petit laptop), on retombe sur le
            scroll interne plutôt que de déborder de l'écran */
         @media (max-height: 700px){
@@ -1522,6 +1630,8 @@
 
     @include('partials.footer')
 
+    @include('partials.order-modal')
+
     <script>
         (function(){
             var toggle = document.getElementById('menuToggle');
@@ -1637,6 +1747,132 @@
             document.addEventListener('keydown', function(e){
                 if (e.key === 'Escape' && authOverlay && authOverlay.classList.contains('open')) {
                     closeAuthModal();
+                }
+            });
+
+            // ---- modal de commande (statique pour l'instant) ----
+            var orderOverlay = document.getElementById('orderModalOverlay');
+            var orderClose = document.getElementById('orderModalClose');
+            var orderTitle = document.getElementById('orderModalTitle');
+            var orderImage = document.getElementById('orderBookImage');
+            var orderSeller = document.getElementById('orderBookSeller');
+            var orderUnitPrice = document.getElementById('orderUnitPrice');
+            var orderTotalPrice = document.getElementById('orderTotalPrice');
+            var orderQtyInput = document.getElementById('orderQtyInput');
+            var orderQtyMinus = document.getElementById('orderQtyMinus');
+            var orderQtyPlus = document.getElementById('orderQtyPlus');
+            var orderPaymentNumber = document.getElementById('orderPaymentNumber');
+            var orderConfirmButton = document.getElementById('orderConfirmButton');
+            var orderStaticNote = document.querySelector('.order-static-note');
+
+            // Numéros statiques par mode de paiement (à remplacer par le
+            // vrai numéro du vendeur / de la plateforme plus tard).
+            var ORDER_PAYMENT_NUMBERS = {
+                mvola: '034 41 266 44',
+                orange: '032 41 266 44',
+                airtel: '033 41 266 44'
+            };
+
+            var currentUnitPrice = 0;
+
+            function formatAr(n){
+                return Math.round(n).toLocaleString('fr-FR') + ' Ar';
+            }
+
+            function updateOrderTotal(){
+                var qty = parseInt(orderQtyInput.value, 10) || 1;
+                orderTotalPrice.textContent = formatAr(currentUnitPrice * qty);
+            }
+
+            function updateOrderPaymentNumber(){
+                var checked = document.querySelector('input[name="order_payment"]:checked');
+                var key = checked ? checked.value : 'mvola';
+                orderPaymentNumber.textContent = ORDER_PAYMENT_NUMBERS[key] || ORDER_PAYMENT_NUMBERS.mvola;
+            }
+
+            window.openOrderModal = function(trigger){
+                if (!orderOverlay || !trigger) return;
+
+                currentUnitPrice = parseFloat(trigger.getAttribute('data-book-price')) || 0;
+                var maxQty = parseInt(trigger.getAttribute('data-book-max'), 10) || 99;
+
+                orderTitle.textContent = trigger.getAttribute('data-book-title') || '';
+                orderSeller.textContent = trigger.getAttribute('data-book-seller') || '';
+                orderImage.src = trigger.getAttribute('data-book-image') || '';
+                orderImage.alt = trigger.getAttribute('data-book-title') || '';
+                orderUnitPrice.textContent = formatAr(currentUnitPrice);
+
+                orderQtyInput.value = 1;
+                orderQtyInput.max = maxQty;
+                updateOrderTotal();
+
+                var firstPayment = document.querySelector('input[name="order_payment"][value="mvola"]');
+                if (firstPayment) firstPayment.checked = true;
+                updateOrderPaymentNumber();
+
+                if (orderStaticNote) orderStaticNote.style.display = '';
+
+                orderOverlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            };
+
+            function closeOrderModal(){
+                if (!orderOverlay) return;
+                orderOverlay.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            document.querySelectorAll('[data-book-order]').forEach(function(btn){
+                btn.addEventListener('click', function(){
+                    window.openOrderModal(btn);
+                });
+            });
+
+            if (orderQtyInput) {
+                orderQtyInput.addEventListener('input', function(){
+                    var max = parseInt(orderQtyInput.max, 10) || 99;
+                    var val = parseInt(orderQtyInput.value, 10) || 1;
+                    if (val < 1) val = 1;
+                    if (val > max) val = max;
+                    orderQtyInput.value = val;
+                    updateOrderTotal();
+                });
+            }
+            if (orderQtyMinus) {
+                orderQtyMinus.addEventListener('click', function(){
+                    orderQtyInput.value = Math.max(1, (parseInt(orderQtyInput.value, 10) || 1) - 1);
+                    updateOrderTotal();
+                });
+            }
+            if (orderQtyPlus) {
+                orderQtyPlus.addEventListener('click', function(){
+                    var max = parseInt(orderQtyInput.max, 10) || 99;
+                    orderQtyInput.value = Math.min(max, (parseInt(orderQtyInput.value, 10) || 1) + 1);
+                    updateOrderTotal();
+                });
+            }
+            document.querySelectorAll('input[name="order_payment"]').forEach(function(radio){
+                radio.addEventListener('change', updateOrderPaymentNumber);
+            });
+
+            if (orderConfirmButton) {
+                orderConfirmButton.addEventListener('click', function(){
+                    // Statique pour l'instant : pas d'appel serveur, juste un
+                    // retour visuel. Le vrai enregistrement de commande
+                    // viendra avec le dashboard vendeur / système de commandes.
+                    orderConfirmButton.textContent = orderConfirmButton.getAttribute('data-confirmed-label') || orderConfirmButton.textContent;
+                });
+            }
+
+            if (orderClose) orderClose.addEventListener('click', closeOrderModal);
+            if (orderOverlay) {
+                orderOverlay.addEventListener('click', function(e){
+                    if (e.target === orderOverlay) closeOrderModal();
+                });
+            }
+            document.addEventListener('keydown', function(e){
+                if (e.key === 'Escape' && orderOverlay && orderOverlay.classList.contains('open')) {
+                    closeOrderModal();
                 }
             });
         })();

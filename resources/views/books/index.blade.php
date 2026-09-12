@@ -67,6 +67,17 @@
                                 </a>
                                 <div class="book-foot">
                                     <span class="book-loc">{{ $book->seller->sellerProfile->localisation ?? '—' }}</span>
+                                    <button type="button" class="book-add" aria-label="{{ __('home.books_add') }}"
+                                        data-book-order
+                                        data-book-title="{{ $book->titre }}"
+                                        data-book-image="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}"
+                                        data-book-seller="{{ $book->seller->sellerProfile->nom_entreprise ?? $book->seller->name }}"
+                                        data-book-price="{{ $book->prix_achat_client }}"
+                                        data-book-max="{{ $book->quantite }}">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path d="M5 12H19M12 5V19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
                         </article>
