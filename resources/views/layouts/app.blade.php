@@ -654,6 +654,41 @@
         }
         .order-book-cover img{ width: 100%; height: 100%; object-fit: cover; }
         .order-book-seller{ font-size: .82rem; color: #8a7a6d; margin: 0; }
+        .order-book-author{ font-size: .82rem; color: #7a6a5d; margin: 2px 0 8px; }
+        .order-book-badges{ display: flex; gap: 6px; flex-wrap: wrap; }
+        .order-book-description{
+            font-size: .9rem;
+            line-height: 1.6;
+            color: #4a3a30;
+            background: rgba(85,16,29,.03);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin: 0 0 18px;
+        }
+
+        .order-login-prompt{ text-align: center; padding: 8px 0 4px; }
+        .order-login-prompt p{ color: #6b5a4d; font-size: .92rem; margin: 0 0 16px; }
+        .order-login-actions{ display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .order-login-btn{
+            padding: 11px 22px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: .9rem;
+            transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+        }
+        .order-login-btn:hover{ transform: translateY(-1px); }
+        .order-login-btn-ghost{
+            background: transparent;
+            color: var(--maroon-800);
+            border: 1px solid rgba(85,16,29,.25);
+        }
+        .order-login-btn-ghost:hover{ background: rgba(85,16,29,.05); }
+        .order-login-btn-primary{
+            background: var(--gold);
+            color: var(--maroon-950);
+            border: 1px solid var(--gold);
+        }
+        .order-login-btn-primary:hover{ box-shadow: 0 8px 18px -8px rgba(233,178,63,.6); }
 
         .order-summary{
             background: rgba(85,16,29,.04);
@@ -733,6 +768,33 @@
             color: var(--maroon-900);
             letter-spacing: .02em;
         }
+
+        .order-reference-field{
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: .84rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+        .order-reference-field input{
+            font-family: inherit;
+            font-size: .92rem;
+            font-weight: 400;
+            padding: 11px 13px;
+            border-radius: 12px;
+            border: 1px solid rgba(85,16,29,.16);
+            background: #fffdf9;
+            color: var(--ink);
+            transition: border-color .15s ease, box-shadow .15s ease;
+        }
+        .order-reference-field input:focus{
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(233,178,63,.22);
+        }
+        .order-reference-field input.has-error{ border-color: #b3261e; }
 
         .order-static-note{
             text-align: center;
@@ -1702,6 +1764,10 @@
 
             function openAuthModal(view){
                 if (!authOverlay) return;
+                var orderOverlayEl = document.getElementById('orderModalOverlay');
+                if (orderOverlayEl) {
+                    orderOverlayEl.classList.remove('open');
+                }
                 Object.keys(authViews).forEach(function(key){
                     if (!authViews[key]) return;
                     authViews[key].hidden = (key !== view);
@@ -1764,6 +1830,11 @@
             var orderPaymentNumber = document.getElementById('orderPaymentNumber');
             var orderConfirmButton = document.getElementById('orderConfirmButton');
             var orderStaticNote = document.querySelector('.order-static-note');
+            var orderAuthor = document.getElementById('orderBookAuthor');
+            var orderCategory = document.getElementById('orderBookCategory');
+            var orderCondition = document.getElementById('orderBookCondition');
+            var orderDescription = document.getElementById('orderBookDescription');
+            var orderAvailableQty = document.getElementById('orderAvailableQty');
 
             // Numéros statiques par mode de paiement (à remplacer par le
             // vrai numéro du vendeur / de la plateforme plus tard).
@@ -1780,21 +1851,34 @@
             }
 
             function updateOrderTotal(){
+                if (!orderQtyInput || !orderTotalPrice) return;
                 var qty = parseInt(orderQtyInput.value, 10) || 1;
                 orderTotalPrice.textContent = formatAr(currentUnitPrice * qty);
             }
 
             function updateOrderPaymentNumber(){
+                if (!orderPaymentNumber) return;
                 var checked = document.querySelector('input[name="order_payment"]:checked');
                 var key = checked ? checked.value : 'mvola';
                 orderPaymentNumber.textContent = ORDER_PAYMENT_NUMBERS[key] || ORDER_PAYMENT_NUMBERS.mvola;
+            }
+
+            function setOptionalText(el, value){
+                if (!el) return;
+                if (value) {
+                    el.textContent = value;
+                    el.style.display = '';
+                } else {
+                    el.textContent = '';
+                    el.style.display = 'none';
+                }
             }
 
             window.openOrderModal = function(trigger){
                 if (!orderOverlay || !trigger) return;
 
                 currentUnitPrice = parseFloat(trigger.getAttribute('data-book-price')) || 0;
-                var maxQty = parseInt(trigger.getAttribute('data-book-max'), 10) || 99;
+                var maxQty = parseInt(trigger.getAttribute('data-book-max'), 10) || 0;
 
                 orderTitle.textContent = trigger.getAttribute('data-book-title') || '';
                 orderSeller.textContent = trigger.getAttribute('data-book-seller') || '';
@@ -1802,15 +1886,37 @@
                 orderImage.alt = trigger.getAttribute('data-book-title') || '';
                 orderUnitPrice.textContent = formatAr(currentUnitPrice);
 
-                orderQtyInput.value = 1;
-                orderQtyInput.max = maxQty;
-                updateOrderTotal();
+                setOptionalText(orderAuthor, trigger.getAttribute('data-book-author'));
+                setOptionalText(orderCategory, trigger.getAttribute('data-book-category'));
+                setOptionalText(orderCondition, trigger.getAttribute('data-book-condition'));
+                setOptionalText(orderDescription, trigger.getAttribute('data-book-description'));
+
+                if (orderAvailableQty) {
+                    orderAvailableQty.textContent = maxQty;
+                }
+
+                if (orderQtyInput) {
+                    orderQtyInput.value = 1;
+                    orderQtyInput.max = maxQty || 99;
+                    updateOrderTotal();
+                }
 
                 var firstPayment = document.querySelector('input[name="order_payment"][value="mvola"]');
                 if (firstPayment) firstPayment.checked = true;
                 updateOrderPaymentNumber();
 
+                if (orderConfirmButton) {
+                    orderConfirmButton.textContent = orderConfirmButton.getAttribute('data-original-label') || orderConfirmButton.textContent;
+                }
                 if (orderStaticNote) orderStaticNote.style.display = '';
+
+                var referenceInput = document.getElementById('orderPaymentReference');
+                var referenceError = document.getElementById('orderPaymentReferenceError');
+                if (referenceInput) {
+                    referenceInput.value = '';
+                    referenceInput.classList.remove('has-error');
+                }
+                if (referenceError) referenceError.style.display = 'none';
 
                 orderOverlay.classList.add('open');
                 document.body.style.overflow = 'hidden';
@@ -1855,12 +1961,30 @@
                 radio.addEventListener('change', updateOrderPaymentNumber);
             });
 
+            var orderPaymentReference = document.getElementById('orderPaymentReference');
+            var orderPaymentReferenceError = document.getElementById('orderPaymentReferenceError');
+
             if (orderConfirmButton) {
                 orderConfirmButton.addEventListener('click', function(){
-                    // Statique pour l'instant : pas d'appel serveur, juste un
-                    // retour visuel. Le vrai enregistrement de commande
-                    // viendra avec le dashboard vendeur / système de commandes.
+                    // Référence de paiement obligatoire avant de pouvoir "confirmer"
+                    // (statique pour l'instant : pas d'appel serveur, juste un
+                    // retour visuel. Le vrai enregistrement de commande viendra
+                    // avec le dashboard vendeur / système de commandes).
+                    if (orderPaymentReference && orderPaymentReference.value.trim() === '') {
+                        orderPaymentReference.classList.add('has-error');
+                        if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = '';
+                        orderPaymentReference.focus();
+                        return;
+                    }
+                    if (orderPaymentReference) orderPaymentReference.classList.remove('has-error');
+                    if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = 'none';
                     orderConfirmButton.textContent = orderConfirmButton.getAttribute('data-confirmed-label') || orderConfirmButton.textContent;
+                });
+            }
+            if (orderPaymentReference) {
+                orderPaymentReference.addEventListener('input', function(){
+                    orderPaymentReference.classList.remove('has-error');
+                    if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = 'none';
                 });
             }
 

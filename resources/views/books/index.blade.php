@@ -69,6 +69,10 @@
                                     <span class="book-loc">{{ $book->seller->sellerProfile->localisation ?? '—' }}</span>
                                     <button type="button" class="book-add" aria-label="{{ __('home.books_add') }}"
                                         data-book-order
+                                    data-book-author="{{ $book->auteur }}"
+                                    data-book-category="{{ $book->categorie }}"
+                                    data-book-condition="{{ __('home.book_condition_' . $book->etat) }}"
+                                    data-book-description="{{ $book->description }}"
                                         data-book-title="{{ $book->titre }}"
                                         data-book-image="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}"
                                         data-book-seller="{{ $book->seller->sellerProfile->nom_entreprise ?? $book->seller->name }}"
