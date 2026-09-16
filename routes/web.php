@@ -10,6 +10,9 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SellerController;
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminUserController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -53,3 +56,19 @@ Route::get('/vendeur/{seller}', [SellerController::class, 'show'])->name('seller
 Route::view('/a-propos', 'pages.about')->name('pages.about');
 Route::view('/confidentialite', 'pages.privacy')->name('pages.privacy');
 Route::view('/cgv', 'pages.terms')->name('pages.terms');
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/connexion', [AdminAuthController::class, 'showLogin'])->name('login');
+    Route::post('/connexion', [AdminAuthController::class, 'login'])->name('login.submit');
+    Route::post('/deconnexion', [AdminAuthController::class, 'logout'])->name('logout');
+ 
+    Route::middleware('admin')->group(function () {
+        Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/utilisateurs', [AdminUserController::class, 'index'])->name('users.index');
+ 
+        // Pages pas encore construites (contenu à venir, voir demande du client)
+        Route::view('/commandes', 'admin.commandes')->name('commandes');
+        Route::view('/paiements', 'admin.paiements')->name('paiements');
+        Route::view('/parametres', 'admin.parametres')->name('parametres');
+    });
+});
