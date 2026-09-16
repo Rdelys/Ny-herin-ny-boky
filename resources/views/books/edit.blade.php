@@ -39,12 +39,19 @@
 
                     <div class="modal-form-row">
                         <label>{{ __('home.book_purchase_price') }}
-                            <input type="number" name="prix_achat" min="0" value="{{ old('prix_achat', $book->prix_achat) }}">
+                            <input type="number" name="prix_achat" min="0" value="{{ old('prix_achat', $book->prix_achat) }}" id="prixAchatInput">
                         </label>
-                        <label>{{ __('home.book_rental_price') }}
-                            <input type="number" name="prix_location" min="0" value="{{ old('prix_location', $book->prix_location) }}">
+                        <label>{{ __('home.book_quantity') }}
+                            <input type="number" name="quantite" min="1" value="{{ old('quantite', $book->quantite) }}" required>
                         </label>
                     </div>
+                    @error('quantite')<p class="modal-field-error">{{ $message }}</p>@enderror
+                    <p class="field-hint" id="prixAchatClientHint"></p>
+
+                    <label>{{ __('home.book_rental_price') }}
+                        <input type="number" name="prix_location" min="0" value="{{ old('prix_location', $book->prix_location) }}" id="prixLocationInput">
+                    </label>
+                    <p class="field-hint" id="prixLocationClientHint"></p>
 
                     <div class="modal-form-row">
                         <label>{{ __('home.book_category') }}
@@ -56,8 +63,9 @@
                         </label>
                         <label>{{ __('home.book_condition') }}
                             <select name="etat" required>
-                                <option value="neuf" @selected(old('etat', $book->etat) === 'neuf')>{{ __('home.book_condition_new') }}</option>
-                                <option value="occasion" @selected(old('etat', $book->etat) === 'occasion')>{{ __('home.book_condition_used') }}</option>
+                                <option value="neuf" @selected(old('etat', $book->etat) === 'neuf')>{{ __('home.book_condition_neuf') }}</option>
+                                <option value="tres_bon_etat" @selected(old('etat', $book->etat) === 'tres_bon_etat')>{{ __('home.book_condition_tres_bon_etat') }}</option>
+                                <option value="bon_etat" @selected(old('etat', $book->etat) === 'bon_etat')>{{ __('home.book_condition_bon_etat') }}</option>
                             </select>
                         </label>
                     </div>
@@ -65,15 +73,11 @@
                     <fieldset class="modal-fieldset">
                         <legend>{{ __('home.book_shipping_legend') }}</legend>
                         <label class="modal-radio-card">
-                            <input type="checkbox" name="livraison_disponible" value="1" id="shippingToggle" {{ old('livraison_disponible', $book->livraison_disponible) ? 'checked' : '' }}>
+                            <input type="checkbox" name="livraison_disponible" value="1" {{ old('livraison_disponible', $book->livraison_disponible) ? 'checked' : '' }}>
                             <span>
                                 <strong>{{ __('home.book_shipping_available') }}</strong>
                                 <small>{{ __('home.book_shipping_desc') }}</small>
                             </span>
-                        </label>
-                        <label id="shippingFeeField" style="{{ old('livraison_disponible', $book->livraison_disponible) ? '' : 'display:none;' }}">
-                            {{ __('home.book_shipping_fee') }}
-                            <input type="number" name="frais_livraison" min="0" placeholder="{{ __('home.book_shipping_fee_placeholder') }}" value="{{ old('frais_livraison', $book->frais_livraison) }}">
                         </label>
                     </fieldset>
 
@@ -100,13 +104,32 @@
 
     <script>
         (function(){
-            var toggle = document.getElementById('shippingToggle');
-            var feeField = document.getElementById('shippingFeeField');
-            if (toggle && feeField) {
-                toggle.addEventListener('change', function(){
-                    feeField.style.display = toggle.checked ? '' : 'none';
-                });
+            var COMMISSION_RATE = 0.10;
+
+            function formatAr(n){
+                return Math.round(n).toLocaleString('fr-FR') + ' Ar';
             }
+
+            function bindPriceHint(inputId, hintId, label){
+                var input = document.getElementById(inputId);
+                var hint = document.getElementById(hintId);
+                if (!input || !hint) return;
+
+                function update(){
+                    var value = parseFloat(input.value);
+                    if (!value || value <= 0) {
+                        hint.textContent = '';
+                        return;
+                    }
+                    hint.textContent = label + ' ' + formatAr(value * (1 + COMMISSION_RATE));
+                }
+
+                input.addEventListener('input', update);
+                update();
+            }
+
+            bindPriceHint('prixAchatInput', 'prixAchatClientHint', '{{ __('home.book_client_price_hint') }}');
+            bindPriceHint('prixLocationInput', 'prixLocationClientHint', '{{ __('home.book_client_price_hint') }}');
         })();
     </script>
 @endsection

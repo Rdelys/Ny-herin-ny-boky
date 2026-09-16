@@ -123,6 +123,7 @@
             display: flex;
             align-items: center;
             flex-shrink: 0;
+            margin-right: auto;
         }
         .brand img{ height: 42px; width: auto; }
 
@@ -634,6 +635,176 @@
             color: #b3261e;
             font-size: .8rem;
             margin: -8px 0 0;
+        }
+
+        /* ---- modal de commande ---- */
+        .order-book{
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .order-book-cover{
+            width: 56px;
+            height: 74px;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--cream-dim);
+        }
+        .order-book-cover img{ width: 100%; height: 100%; object-fit: cover; }
+        .order-book-seller{ font-size: .82rem; color: #8a7a6d; margin: 0; }
+        .order-book-author{ font-size: .82rem; color: #7a6a5d; margin: 2px 0 8px; }
+        .order-book-badges{ display: flex; gap: 6px; flex-wrap: wrap; }
+        .order-book-description{
+            font-size: .9rem;
+            line-height: 1.6;
+            color: #4a3a30;
+            background: rgba(85,16,29,.03);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin: 0 0 18px;
+        }
+
+        .order-login-prompt{ text-align: center; padding: 8px 0 4px; }
+        .order-login-prompt p{ color: #6b5a4d; font-size: .92rem; margin: 0 0 16px; }
+        .order-login-actions{ display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .order-login-btn{
+            padding: 11px 22px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: .9rem;
+            transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+        }
+        .order-login-btn:hover{ transform: translateY(-1px); }
+        .order-login-btn-ghost{
+            background: transparent;
+            color: var(--maroon-800);
+            border: 1px solid rgba(85,16,29,.25);
+        }
+        .order-login-btn-ghost:hover{ background: rgba(85,16,29,.05); }
+        .order-login-btn-primary{
+            background: var(--gold);
+            color: var(--maroon-950);
+            border: 1px solid var(--gold);
+        }
+        .order-login-btn-primary:hover{ box-shadow: 0 8px 18px -8px rgba(233,178,63,.6); }
+
+        .order-summary{
+            background: rgba(85,16,29,.04);
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .order-summary-row{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: .9rem;
+            color: var(--ink);
+        }
+        .order-summary-total{
+            padding-top: 10px;
+            border-top: 1px dashed rgba(85,16,29,.16);
+            font-size: 1rem;
+        }
+        .order-summary-total strong{ color: var(--maroon-800); font-family: var(--serif); font-size: 1.15rem; }
+
+        .order-qty-stepper{
+            display: flex;
+            align-items: center;
+            gap: 0;
+            border: 1px solid rgba(85,16,29,.18);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .order-qty-stepper button{
+            width: 32px;
+            height: 32px;
+            border: 0;
+            background: rgba(85,16,29,.06);
+            color: var(--maroon-800);
+            font-size: 1.1rem;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .15s ease;
+        }
+        .order-qty-stepper button:hover{ background: rgba(85,16,29,.12); }
+        .order-qty-stepper input{
+            width: 44px;
+            border: 0;
+            text-align: center;
+            font-family: inherit;
+            font-size: .92rem;
+            font-weight: 600;
+            color: var(--ink);
+            -moz-appearance: textfield;
+        }
+        .order-qty-stepper input::-webkit-outer-spin-button,
+        .order-qty-stepper input::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
+
+        .order-payment-group .modal-radio-card{ justify-content: center; text-align: center; }
+        .order-payment-group .modal-radio-card span{ width: 100%; }
+
+        .order-payment-number{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(233,178,63,.14);
+            border: 1px dashed var(--gold);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 16px 0;
+            font-size: .9rem;
+        }
+        .order-payment-number strong{
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            color: var(--maroon-900);
+            letter-spacing: .02em;
+        }
+
+        .order-reference-field{
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: .84rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+        .order-reference-field input{
+            font-family: inherit;
+            font-size: .92rem;
+            font-weight: 400;
+            padding: 11px 13px;
+            border-radius: 12px;
+            border: 1px solid rgba(85,16,29,.16);
+            background: #fffdf9;
+            color: var(--ink);
+            transition: border-color .15s ease, box-shadow .15s ease;
+        }
+        .order-reference-field input:focus{
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(233,178,63,.22);
+        }
+        .order-reference-field input.has-error{ border-color: #b3261e; }
+
+        .order-static-note{
+            text-align: center;
+            font-size: .78rem;
+            color: #9c8b7d;
+            margin: 12px 0 0;
+        }
+
+        @media (max-width: 480px){
+            .order-summary-row{ font-size: .86rem; }
         }
 
         /* si la fenêtre est basse (zoom, petit laptop), on retombe sur le
@@ -1371,7 +1542,7 @@
 
         /* Le menu devient un panneau déroulant (dropdown) qui contient
            aussi le sélecteur de langue */
-        @media (max-width: 760px){
+        @media (max-width: 900px){
             .main-nav{
                 position: fixed;
                 inset: 68px 12px auto 12px;
@@ -1402,39 +1573,32 @@
                 border-bottom: 1px solid rgba(246,239,221,.1);
             }
             /* le dropdown de langue devient un bloc plein-largeur, dépliable sur place */
+            /* Le bouton reste pleine largeur pour une cible tactile confortable,
+               mais le menu déroulant lui-même garde son style flottant habituel
+               (carte arrondie, ombre) et reste ancré à droite du panneau —
+               il ne s'aplatit plus en pleine largeur. */
             .main-nav .lang-dropdown{ width: 100%; margin-top: 10px; }
             .main-nav .lang-toggle{ width: 100%; justify-content: space-between; }
-            .main-nav .lang-menu{
-                position: static;
-                opacity: 1;
-                transform: none;
-                pointer-events: auto;
-                box-shadow: none;
-                border: none;
-                background: rgba(246,239,221,.06);
-                margin-top: 8px;
-                display: none;
-                min-width: 0;
-            }
-            .main-nav .lang-menu.open{ display: block; }
+            .main-nav .lang-menu{ right: 0; left: auto; }
 
-            /* menu utilisateur (connecté) : même traitement pleine-largeur */
+            /* menu utilisateur (connecté) : même traitement */
             .main-nav .user-dropdown{ width: 100%; margin-top: 10px; }
             .main-nav .user-toggle{ width: 100%; justify-content: space-between; }
-            .main-nav .user-name{ max-width: none; flex: 1; text-align: left; margin-left: 2px; }
-            .main-nav .user-menu{
-                position: static;
-                opacity: 1;
-                transform: none;
-                pointer-events: auto;
-                box-shadow: none;
-                border: none;
-                background: rgba(246,239,221,.06);
-                margin-top: 8px;
-                display: none;
+            .main-nav .user-name{
+                max-width: none;
+                flex: 1;
+                text-align: left;
+                margin-left: 2px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
                 min-width: 0;
             }
-            .main-nav .user-menu.open{ display: block; }
+            .main-nav .user-menu{ right: 0; left: auto; }
+            .main-nav .lang-menu a, .main-nav .user-menu-link, .main-nav .user-menu-logout{
+                padding: 13px 14px;
+                font-size: .92rem;
+            }
 
             /* boutons connexion / inscription empilés en bas du panneau */
             .main-nav .auth-actions{
@@ -1457,7 +1621,7 @@
             section{ padding: 52px 0; }
             .hero{ padding-top: 58px; }
             .header-search{ display: none; }
-            .header-search-mobile{ display: flex; width: 100%; margin: 0 0 12px; max-width: none; }
+            .header-search-mobile{ display: flex; flex: none; width: 100%; margin: 0 0 12px; max-width: none; }
         }
 
         /* Petits téléphones */
@@ -1476,10 +1640,32 @@
 
             .modal-overlay{ padding: 12px; align-items: flex-end; }
             .modal-panel{ padding: 26px 20px 22px; border-radius: 20px 20px 0 0; max-height: 92vh; }
-            .modal-form-row{ grid-template-columns: 1fr; gap: 16px; }
             .modal-tabs{ gap: 4px; }
             .modal-tab{ padding: 9px 8px; font-size: .8rem; }
         }
+
+        /* Palier intermédiaire : phablettes / petits écrans (formulaires,
+           pages statiques, catalogue) — évite le texte/champs trop serrés
+           entre 480 et 600px, avant même le point de rupture "petit téléphone" */
+        @media (max-width: 600px){
+            .modal-form-row{ grid-template-columns: 1fr; gap: 16px; }
+
+            .numbered-card{ flex-direction: column; gap: 10px; }
+            .numbered-card .step-number{ font-size: 1.15rem; }
+
+            .catalog-filters{ flex-direction: column; align-items: stretch; }
+            .catalog-filters select{ max-width: none; }
+
+            .stat-grid{ gap: 24px; }
+
+            .content-card, .feature-card, .step-card{ padding: 20px; }
+            .page-banner{ padding: 48px 0 40px; }
+
+            /* moins de colonnes visibles dans le tableau "Mes livres" pour
+               limiter le scroll horizontal sur petit écran */
+            .seller-table th:nth-child(3), .seller-table td:nth-child(3){ display: none; }
+        }
+
 
         /* Très petits téléphones */
         @media (max-width: 360px){
@@ -1505,6 +1691,8 @@
     @yield('content')
 
     @include('partials.footer')
+
+    @include('partials.order-modal')
 
     <script>
         (function(){
@@ -1576,6 +1764,10 @@
 
             function openAuthModal(view){
                 if (!authOverlay) return;
+                var orderOverlayEl = document.getElementById('orderModalOverlay');
+                if (orderOverlayEl) {
+                    orderOverlayEl.classList.remove('open');
+                }
                 Object.keys(authViews).forEach(function(key){
                     if (!authViews[key]) return;
                     authViews[key].hidden = (key !== view);
@@ -1621,6 +1813,190 @@
             document.addEventListener('keydown', function(e){
                 if (e.key === 'Escape' && authOverlay && authOverlay.classList.contains('open')) {
                     closeAuthModal();
+                }
+            });
+
+            // ---- modal de commande (statique pour l'instant) ----
+            var orderOverlay = document.getElementById('orderModalOverlay');
+            var orderClose = document.getElementById('orderModalClose');
+            var orderTitle = document.getElementById('orderModalTitle');
+            var orderImage = document.getElementById('orderBookImage');
+            var orderSeller = document.getElementById('orderBookSeller');
+            var orderUnitPrice = document.getElementById('orderUnitPrice');
+            var orderTotalPrice = document.getElementById('orderTotalPrice');
+            var orderQtyInput = document.getElementById('orderQtyInput');
+            var orderQtyMinus = document.getElementById('orderQtyMinus');
+            var orderQtyPlus = document.getElementById('orderQtyPlus');
+            var orderPaymentNumber = document.getElementById('orderPaymentNumber');
+            var orderConfirmButton = document.getElementById('orderConfirmButton');
+            var orderStaticNote = document.querySelector('.order-static-note');
+            var orderAuthor = document.getElementById('orderBookAuthor');
+            var orderCategory = document.getElementById('orderBookCategory');
+            var orderCondition = document.getElementById('orderBookCondition');
+            var orderDescription = document.getElementById('orderBookDescription');
+            var orderAvailableQty = document.getElementById('orderAvailableQty');
+
+            // Numéros statiques par mode de paiement (à remplacer par le
+            // vrai numéro du vendeur / de la plateforme plus tard).
+            var ORDER_PAYMENT_NUMBERS = {
+                mvola: '034 41 266 44',
+                orange: '032 41 266 44',
+                airtel: '033 41 266 44'
+            };
+
+            var currentUnitPrice = 0;
+
+            function formatAr(n){
+                return Math.round(n).toLocaleString('fr-FR') + ' Ar';
+            }
+
+            function updateOrderTotal(){
+                if (!orderQtyInput || !orderTotalPrice) return;
+                var qty = parseInt(orderQtyInput.value, 10) || 1;
+                orderTotalPrice.textContent = formatAr(currentUnitPrice * qty);
+            }
+
+            function updateOrderPaymentNumber(){
+                if (!orderPaymentNumber) return;
+                var checked = document.querySelector('input[name="order_payment"]:checked');
+                var key = checked ? checked.value : 'mvola';
+                orderPaymentNumber.textContent = ORDER_PAYMENT_NUMBERS[key] || ORDER_PAYMENT_NUMBERS.mvola;
+            }
+
+            function setOptionalText(el, value){
+                if (!el) return;
+                if (value) {
+                    el.textContent = value;
+                    el.style.display = '';
+                } else {
+                    el.textContent = '';
+                    el.style.display = 'none';
+                }
+            }
+
+            window.openOrderModal = function(trigger){
+                if (!orderOverlay || !trigger) return;
+
+                currentUnitPrice = parseFloat(trigger.getAttribute('data-book-price')) || 0;
+                var maxQty = parseInt(trigger.getAttribute('data-book-max'), 10) || 0;
+
+                orderTitle.textContent = trigger.getAttribute('data-book-title') || '';
+                orderSeller.textContent = trigger.getAttribute('data-book-seller') || '';
+                orderImage.src = trigger.getAttribute('data-book-image') || '';
+                orderImage.alt = trigger.getAttribute('data-book-title') || '';
+                orderUnitPrice.textContent = formatAr(currentUnitPrice);
+
+                setOptionalText(orderAuthor, trigger.getAttribute('data-book-author'));
+                setOptionalText(orderCategory, trigger.getAttribute('data-book-category'));
+                setOptionalText(orderCondition, trigger.getAttribute('data-book-condition'));
+                setOptionalText(orderDescription, trigger.getAttribute('data-book-description'));
+
+                if (orderAvailableQty) {
+                    orderAvailableQty.textContent = maxQty;
+                }
+
+                if (orderQtyInput) {
+                    orderQtyInput.value = 1;
+                    orderQtyInput.max = maxQty || 99;
+                    updateOrderTotal();
+                }
+
+                var firstPayment = document.querySelector('input[name="order_payment"][value="mvola"]');
+                if (firstPayment) firstPayment.checked = true;
+                updateOrderPaymentNumber();
+
+                if (orderConfirmButton) {
+                    orderConfirmButton.textContent = orderConfirmButton.getAttribute('data-original-label') || orderConfirmButton.textContent;
+                }
+                if (orderStaticNote) orderStaticNote.style.display = '';
+
+                var referenceInput = document.getElementById('orderPaymentReference');
+                var referenceError = document.getElementById('orderPaymentReferenceError');
+                if (referenceInput) {
+                    referenceInput.value = '';
+                    referenceInput.classList.remove('has-error');
+                }
+                if (referenceError) referenceError.style.display = 'none';
+
+                orderOverlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            };
+
+            function closeOrderModal(){
+                if (!orderOverlay) return;
+                orderOverlay.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            document.querySelectorAll('[data-book-order]').forEach(function(btn){
+                btn.addEventListener('click', function(){
+                    window.openOrderModal(btn);
+                });
+            });
+
+            if (orderQtyInput) {
+                orderQtyInput.addEventListener('input', function(){
+                    var max = parseInt(orderQtyInput.max, 10) || 99;
+                    var val = parseInt(orderQtyInput.value, 10) || 1;
+                    if (val < 1) val = 1;
+                    if (val > max) val = max;
+                    orderQtyInput.value = val;
+                    updateOrderTotal();
+                });
+            }
+            if (orderQtyMinus) {
+                orderQtyMinus.addEventListener('click', function(){
+                    orderQtyInput.value = Math.max(1, (parseInt(orderQtyInput.value, 10) || 1) - 1);
+                    updateOrderTotal();
+                });
+            }
+            if (orderQtyPlus) {
+                orderQtyPlus.addEventListener('click', function(){
+                    var max = parseInt(orderQtyInput.max, 10) || 99;
+                    orderQtyInput.value = Math.min(max, (parseInt(orderQtyInput.value, 10) || 1) + 1);
+                    updateOrderTotal();
+                });
+            }
+            document.querySelectorAll('input[name="order_payment"]').forEach(function(radio){
+                radio.addEventListener('change', updateOrderPaymentNumber);
+            });
+
+            var orderPaymentReference = document.getElementById('orderPaymentReference');
+            var orderPaymentReferenceError = document.getElementById('orderPaymentReferenceError');
+
+            if (orderConfirmButton) {
+                orderConfirmButton.addEventListener('click', function(){
+                    // Référence de paiement obligatoire avant de pouvoir "confirmer"
+                    // (statique pour l'instant : pas d'appel serveur, juste un
+                    // retour visuel. Le vrai enregistrement de commande viendra
+                    // avec le dashboard vendeur / système de commandes).
+                    if (orderPaymentReference && orderPaymentReference.value.trim() === '') {
+                        orderPaymentReference.classList.add('has-error');
+                        if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = '';
+                        orderPaymentReference.focus();
+                        return;
+                    }
+                    if (orderPaymentReference) orderPaymentReference.classList.remove('has-error');
+                    if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = 'none';
+                    orderConfirmButton.textContent = orderConfirmButton.getAttribute('data-confirmed-label') || orderConfirmButton.textContent;
+                });
+            }
+            if (orderPaymentReference) {
+                orderPaymentReference.addEventListener('input', function(){
+                    orderPaymentReference.classList.remove('has-error');
+                    if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = 'none';
+                });
+            }
+
+            if (orderClose) orderClose.addEventListener('click', closeOrderModal);
+            if (orderOverlay) {
+                orderOverlay.addEventListener('click', function(e){
+                    if (e.target === orderOverlay) closeOrderModal();
+                });
+            }
+            document.addEventListener('keydown', function(e){
+                if (e.key === 'Escape' && orderOverlay && orderOverlay.classList.contains('open')) {
+                    closeOrderModal();
                 }
             });
         })();

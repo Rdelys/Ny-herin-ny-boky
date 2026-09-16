@@ -77,12 +77,19 @@
 
                     <div class="modal-form-row">
                         <label>{{ __('home.book_purchase_price') }}
-                            <input type="number" name="prix_achat" min="0" value="{{ old('prix_achat') }}">
+                            <input type="number" name="prix_achat" min="0" value="{{ old('prix_achat') }}" id="prixAchatInput">
                         </label>
-                        <label>{{ __('home.book_rental_price') }}
-                            <input type="number" name="prix_location" min="0" value="{{ old('prix_location') }}">
+                        <label>{{ __('home.book_quantity') }}
+                            <input type="number" name="quantite" min="1" value="{{ old('quantite', 1) }}" required>
                         </label>
                     </div>
+                    @error('quantite')<p class="modal-field-error">{{ $message }}</p>@enderror
+                    <p class="field-hint" id="prixAchatClientHint"></p>
+
+                    <label>{{ __('home.book_rental_price') }}
+                        <input type="number" name="prix_location" min="0" value="{{ old('prix_location') }}" id="prixLocationInput">
+                    </label>
+                    <p class="field-hint" id="prixLocationClientHint"></p>
 
                     <div class="modal-form-row">
                         <label>{{ __('home.book_category') }}
@@ -142,6 +149,7 @@
                                 <th>{{ __('home.book_col_title') }}</th>
                                 <th>{{ __('home.book_col_category') }}</th>
                                 <th>{{ __('home.book_col_price') }}</th>
+                                <th>{{ __('home.book_col_quantity') }}</th>
                                 <th>{{ __('home.book_col_shipping') }}</th>
                                 <th></th>
                             </tr>
@@ -162,6 +170,7 @@
                                     </td>
                                     <td><span class="book-genre" style="margin:0;">{{ $book->categorie }}</span></td>
                                     <td>{{ $book->prix_achat ? number_format($book->prix_achat, 0, ',', ' ').' Ar' : '—' }}</td>
+                                    <td>{{ $book->quantite }}</td>
                                     <td>
                                         @if($book->livraison_disponible)
                                             <span class="book-tag" style="position:static;">{{ __('home.book_shipping_yes') }}</span>
@@ -204,13 +213,32 @@
 
     <script>
         (function(){
-            var toggle = document.getElementById('shippingToggle');
-            var feeField = document.getElementById('shippingFeeField');
-            if (toggle && feeField) {
-                toggle.addEventListener('change', function(){
-                    feeField.style.display = toggle.checked ? '' : 'none';
-                });
+            var COMMISSION_RATE = 0.10;
+
+            function formatAr(n){
+                return Math.round(n).toLocaleString('fr-FR') + ' Ar';
             }
+
+            function bindPriceHint(inputId, hintId, label){
+                var input = document.getElementById(inputId);
+                var hint = document.getElementById(hintId);
+                if (!input || !hint) return;
+
+                function update(){
+                    var value = parseFloat(input.value);
+                    if (!value || value <= 0) {
+                        hint.textContent = '';
+                        return;
+                    }
+                    hint.textContent = label + ' ' + formatAr(value * (1 + COMMISSION_RATE));
+                }
+
+                input.addEventListener('input', update);
+                update();
+            }
+
+            bindPriceHint('prixAchatInput', 'prixAchatClientHint', '{{ __('home.book_client_price_hint') }}');
+            bindPriceHint('prixLocationInput', 'prixLocationClientHint', '{{ __('home.book_client_price_hint') }}');
         })();
     </script>
 @endsection
