@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('meta_title', __('home.book_edit_title') . ' « ' . $book->titre . ' » — ' . config('app.name'))
+@section('meta_robots', 'noindex, nofollow')
 
 @section('content')
     <section>

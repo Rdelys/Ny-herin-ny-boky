@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('meta_title', __('home.privacy_meta_title'))
+@section('meta_description', __('home.meta_privacy_description'))
 
 @section('content')
 

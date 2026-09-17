@@ -7,7 +7,8 @@
     {{-- ============ SEO : titre, description, robots ============ --}}
     <title>@yield('meta_title', __('home.meta_title'))</title>
     <meta name="description" content="@yield('meta_description', __('home.meta_description'))">
-    <meta name="robots" content="index, follow">
+    {{-- Les pages privées (profil) passent en noindex via @@section('meta_robots'). --}}
+    <meta name="robots" content="@yield('meta_robots', 'index, follow')">
     <meta name="theme-color" content="#55101d">
 
     {{-- ============ SEO : canonical + hreflang ============ --}}
@@ -755,6 +756,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
             background: rgba(233,178,63,.14);
             border: 1px dashed var(--gold);
             border-radius: 12px;
@@ -762,6 +765,9 @@
             margin: 16px 0;
             font-size: .9rem;
         }
+        .order-payment-number > div{ display: flex; flex-direction: column; gap: 3px; }
+        .order-payment-owner{ text-align: right; }
+        .order-payment-number span{ font-size: .78rem; color: #8a7a6d; }
         .order-payment-number strong{
             font-family: var(--serif);
             font-size: 1.1rem;
@@ -1052,6 +1058,25 @@
             box-shadow: 0 6px 14px -6px rgba(0,0,0,.5);
         }
 
+        .book-out-of-stock{
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .02em;
+            padding: 5px 11px;
+            border-radius: 999px;
+            background: rgba(179,38,30,.92);
+            color: #fff;
+            box-shadow: 0 4px 10px -4px rgba(0,0,0,.4);
+        }
+        .book-card.is-out-of-stock .book-cover img{ filter: grayscale(.5); opacity: .7; }
+
         .book-quickview{
             position: absolute;
             right: 12px;
@@ -1154,6 +1179,31 @@
             border-radius: 12px;
             margin: 0 0 24px;
         }
+        .flash-error{
+            background: rgba(179,38,30,.09);
+            border: 1px solid rgba(179,38,30,.3);
+            color: #b3261e;
+            font-size: .88rem;
+            font-weight: 600;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin: 0 0 24px;
+        }
+
+        /* ---------- mes commandes (client & vendeur) ---------- */
+        .order-status-badge{
+            display: inline-block;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .02em;
+            padding: 4px 11px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+        .order-status-en_attente_livraison{ background: rgba(233,178,63,.2); color: #8a5f14; }
+        .order-status-en_livraison{ background: rgba(60,110,200,.14); color: #2c4f8a; }
+        .order-status-livree{ background: rgba(92,138,55,.14); color: var(--green-700); }
+        .order-status-annulee{ background: rgba(179,38,30,.1); color: #b3261e; }
         .add-book-card{
             background: #fffdf7;
             border: 1px solid rgba(85,16,29,.09);
@@ -1175,6 +1225,130 @@
         }
         .book-delete-form{ position: absolute; top: 10px; right: 10px; z-index: 2; }
         .book-delete-form .book-wishlist{ position: static; }
+
+        /* ---------- espace vendeur : identité, tableau de bord, onglets ---------- */
+        .profile-identity{
+            background: #fffdf7;
+            border: 1px solid rgba(85,16,29,.09);
+            border-radius: 20px;
+            padding: 26px;
+            margin-bottom: 34px;
+        }
+        .profile-identity-head{ display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .profile-identity-avatar{ width: 56px; height: 56px; font-size: 1.3rem; flex-shrink: 0; }
+        .profile-info-grid{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px;
+            margin-top: 24px;
+            padding-top: 22px;
+            border-top: 1px solid rgba(85,16,29,.08);
+        }
+        .profile-info-grid p{ margin: 0; }
+
+        .profile-section-title{
+            font-family: var(--serif);
+            font-size: 1.15rem;
+            color: var(--maroon-900);
+            margin: 0 0 16px;
+        }
+        .profile-stat-grid{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 14px;
+            margin-bottom: 36px;
+        }
+        .profile-stat-card{
+            background: #fffdf7;
+            border: 1px solid rgba(85,16,29,.09);
+            border-radius: 16px;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .profile-stat-label{
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+            color: #9c8b7d;
+        }
+        .profile-stat-value{
+            font-family: var(--serif);
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.2;
+            word-break: break-word;
+        }
+        .profile-stat-sub{ font-size: .76rem; color: #96897d; }
+        .profile-stat-card-pending{
+            background: linear-gradient(135deg, rgba(233,178,63,.16), rgba(233,178,63,.04));
+            border-color: rgba(233,178,63,.42);
+        }
+        .profile-stat-card-pending .profile-stat-value{ color: var(--maroon-800); }
+        .profile-stat-card-paid{
+            background: linear-gradient(135deg, rgba(92,138,55,.14), rgba(92,138,55,.03));
+            border-color: rgba(92,138,55,.34);
+        }
+        .profile-stat-card-paid .profile-stat-value{ color: var(--green-700); }
+
+        .profile-tabs{
+            display: flex;
+            gap: 8px;
+            margin-bottom: 26px;
+            border-bottom: 1px solid rgba(85,16,29,.12);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .profile-tabs::-webkit-scrollbar{ display: none; }
+        .profile-tab{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            border: 0;
+            background: none;
+            font-family: inherit;
+            font-size: .92rem;
+            font-weight: 600;
+            color: #8a7a6d;
+            padding: 12px 16px;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -1px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: color .15s ease, border-color .15s ease;
+        }
+        .profile-tab:hover{ color: var(--maroon-800); }
+        .profile-tab.active{ color: var(--maroon-900); border-bottom-color: var(--gold); }
+        .profile-tab-count{
+            font-size: .72rem;
+            font-weight: 700;
+            background: rgba(85,16,29,.08);
+            color: var(--maroon-800);
+            padding: 2px 8px;
+            border-radius: 999px;
+        }
+        .profile-tab.active .profile-tab-count{ background: rgba(233,178,63,.28); }
+
+        .profile-panel{ display: none; }
+        .profile-panel.active{ display: block; animation: profileFade .18s ease; }
+        @keyframes profileFade{ from{ opacity: 0; transform: translateY(4px); } to{ opacity: 1; transform: none; } }
+        .profile-panel .add-book-card{ max-width: 620px; }
+
+        @media (max-width: 600px){
+            .profile-identity{ padding: 20px; }
+            .profile-stat-grid{ grid-template-columns: 1fr 1fr; gap: 10px; }
+            .profile-stat-card{ padding: 14px; }
+            .profile-stat-value{ font-size: 1.2rem; }
+            .profile-tab{ padding: 11px 12px; font-size: .86rem; }
+        }
+        @media (max-width: 380px){
+            .profile-stat-grid{ grid-template-columns: 1fr; }
+        }
 
         /* ---------- tableau "Mes livres" (espace vendeur) ---------- */
         .table-scroll{ overflow-x: auto; border-radius: 16px; border: 1px solid rgba(85,16,29,.09); }
@@ -1725,6 +1899,7 @@
 }
     </style>
     @stack('styles')
+    @stack('head')
 </head>
 <body>
 
@@ -1870,6 +2045,7 @@
             var orderQtyMinus = document.getElementById('orderQtyMinus');
             var orderQtyPlus = document.getElementById('orderQtyPlus');
             var orderPaymentNumber = document.getElementById('orderPaymentNumber');
+            var orderPaymentName = document.getElementById('orderPaymentName');
             var orderConfirmButton = document.getElementById('orderConfirmButton');
             var orderStaticNote = document.querySelector('.order-static-note');
             var orderAuthor = document.getElementById('orderBookAuthor');
@@ -1877,14 +2053,7 @@
             var orderCondition = document.getElementById('orderBookCondition');
             var orderDescription = document.getElementById('orderBookDescription');
             var orderAvailableQty = document.getElementById('orderAvailableQty');
-
-            // Numéros statiques par mode de paiement (à remplacer par le
-            // vrai numéro du vendeur / de la plateforme plus tard).
-            var ORDER_PAYMENT_NUMBERS = {
-                mvola: '034 41 266 44',
-                orange: '032 41 266 44',
-                airtel: '033 41 266 44'
-            };
+            var orderBookId = document.getElementById('orderBookId');
 
             var currentUnitPrice = 0;
 
@@ -1898,11 +2067,22 @@
                 orderTotalPrice.textContent = formatAr(currentUnitPrice * qty);
             }
 
+            // Attention : la modal d'inscription vendeur utilise elle aussi un
+            // groupe de radios name="mode_paiement" (commission / abonnement),
+            // placé plus haut dans le DOM. Toutes les recherches ci-dessous
+            // sont donc limitées à la modal de commande.
+            function orderPaymentRadios(){
+                return orderOverlay ? orderOverlay.querySelectorAll('input[name="mode_paiement"]') : [];
+            }
+
             function updateOrderPaymentNumber(){
-                if (!orderPaymentNumber) return;
-                var checked = document.querySelector('input[name="order_payment"]:checked');
-                var key = checked ? checked.value : 'mvola';
-                orderPaymentNumber.textContent = ORDER_PAYMENT_NUMBERS[key] || ORDER_PAYMENT_NUMBERS.mvola;
+                var checked = orderOverlay ? orderOverlay.querySelector('input[name="mode_paiement"]:checked') : null;
+                if (orderPaymentNumber) {
+                    orderPaymentNumber.textContent = checked ? (checked.getAttribute('data-payment-number') || '—') : '—';
+                }
+                if (orderPaymentName) {
+                    orderPaymentName.textContent = checked ? (checked.getAttribute('data-payment-name') || '—') : '—';
+                }
             }
 
             function setOptionalText(el, value){
@@ -1921,6 +2101,10 @@
 
                 currentUnitPrice = parseFloat(trigger.getAttribute('data-book-price')) || 0;
                 var maxQty = parseInt(trigger.getAttribute('data-book-max'), 10) || 0;
+
+                if (orderBookId) {
+                    orderBookId.value = trigger.getAttribute('data-book-id') || '';
+                }
 
                 orderTitle.textContent = trigger.getAttribute('data-book-title') || '';
                 orderSeller.textContent = trigger.getAttribute('data-book-seller') || '';
@@ -1943,14 +2127,9 @@
                     updateOrderTotal();
                 }
 
-                var firstPayment = document.querySelector('input[name="order_payment"][value="mvola"]');
+                var firstPayment = orderPaymentRadios()[0];
                 if (firstPayment) firstPayment.checked = true;
                 updateOrderPaymentNumber();
-
-                if (orderConfirmButton) {
-                    orderConfirmButton.textContent = orderConfirmButton.getAttribute('data-original-label') || orderConfirmButton.textContent;
-                }
-                if (orderStaticNote) orderStaticNote.style.display = '';
 
                 var referenceInput = document.getElementById('orderPaymentReference');
                 var referenceError = document.getElementById('orderPaymentReferenceError');
@@ -1999,20 +2178,21 @@
                     updateOrderTotal();
                 });
             }
-            document.querySelectorAll('input[name="order_payment"]').forEach(function(radio){
+            orderPaymentRadios().forEach(function(radio){
                 radio.addEventListener('change', updateOrderPaymentNumber);
             });
 
+            var orderForm = document.getElementById('orderForm');
             var orderPaymentReference = document.getElementById('orderPaymentReference');
             var orderPaymentReferenceError = document.getElementById('orderPaymentReferenceError');
 
-            if (orderConfirmButton) {
-                orderConfirmButton.addEventListener('click', function(){
-                    // Référence de paiement obligatoire avant de pouvoir "confirmer"
-                    // (statique pour l'instant : pas d'appel serveur, juste un
-                    // retour visuel. Le vrai enregistrement de commande viendra
-                    // avec le dashboard vendeur / système de commandes).
+            if (orderForm) {
+                orderForm.addEventListener('submit', function(e){
+                    // Référence de paiement obligatoire avant l'envoi (le
+                    // client doit avoir reçu le SMS de confirmation de son
+                    // opérateur avant de valider la commande).
                     if (orderPaymentReference && orderPaymentReference.value.trim() === '') {
+                        e.preventDefault();
                         orderPaymentReference.classList.add('has-error');
                         if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = '';
                         orderPaymentReference.focus();
@@ -2020,7 +2200,7 @@
                     }
                     if (orderPaymentReference) orderPaymentReference.classList.remove('has-error');
                     if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = 'none';
-                    orderConfirmButton.textContent = orderConfirmButton.getAttribute('data-confirmed-label') || orderConfirmButton.textContent;
+                    if (orderConfirmButton) orderConfirmButton.disabled = true;
                 });
             }
             if (orderPaymentReference) {

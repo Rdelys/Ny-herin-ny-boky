@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('meta_title', __('home.nav_books') . ' — ' . config('app.name'))
+@section('meta_description', __('home.meta_books_description'))
 
 @section('content')
     <section>
@@ -41,11 +42,14 @@
             @else
                 <div class="book-grid">
                     @foreach($books as $book)
-                        <article class="book-card">
+                        <article class="book-card {{ $book->quantite <= 0 ? 'is-out-of-stock' : '' }}">
                             <div class="book-cover">
                                 <img src="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}" alt="{{ $book->titre }}" loading="lazy">
                                 <div class="book-cover-gradient"></div>
                                 <span class="book-tag {{ $book->etat !== 'neuf' ? 'occasion' : '' }}">{{ __('home.book_condition_' . $book->etat) }}</span>
+                                @if($book->quantite <= 0)
+                                    <span class="book-out-of-stock">{{ __('home.books_out_of_stock') }}</span>
+                                @endif
                                 @if($book->prix_achat_client)
                                     <span class="book-price-float">{{ number_format($book->prix_achat_client, 0, ',', ' ') }} Ar</span>
                                 @endif
@@ -67,8 +71,10 @@
                                 </a>
                                 <div class="book-foot">
                                     <span class="book-loc">{{ $book->seller->sellerProfile->localisation ?? '—' }}</span>
+                                    @if($book->quantite > 0)
                                     <button type="button" class="book-add" aria-label="{{ __('home.books_add') }}"
                                         data-book-order
+                                    data-book-id="{{ $book->id }}"
                                     data-book-author="{{ $book->auteur }}"
                                     data-book-category="{{ $book->categorie }}"
                                     data-book-condition="{{ __('home.book_condition_' . $book->etat) }}"
@@ -82,6 +88,7 @@
                                             <path d="M5 12H19M12 5V19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
                                         </svg>
                                     </button>
+                                    @endif
                                 </div>
                             </div>
                         </article>

@@ -8,10 +8,15 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookCatalogController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SellerController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminDelivererController;
+use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminSettingsController;
 
@@ -26,9 +31,24 @@ Route::post('/inscription/client', [AuthController::class, 'registerClient'])->n
 Route::post('/inscription/vendeur', [AuthController::class, 'registerSeller'])->name('register.seller');
 Route::post('/deconnexion', [AuthController::class, 'logout'])->name('logout');
 
+// SEO : sitemap et robots.txt générés depuis la base (fiches vendeurs
+// incluses automatiquement).
+Route::get('/sitemap.xml', [SitemapController::class, 'sitemap'])->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+
 Route::get('/profil', [ProfileController::class, 'show'])
     ->middleware('auth')
     ->name('profile');
+
+// Onglet « Modifier mon profil » de l'espace vendeur
+Route::put('/profil/vendeur', [ProfileController::class, 'updateSeller'])
+    ->middleware('auth')
+    ->name('profile.seller.update');
+
+// Passage de commande depuis la modal (client connecté uniquement)
+Route::post('/commandes', [OrderController::class, 'store'])
+    ->middleware('auth')
+    ->name('orders.store');
 
 Route::post('/vendeur/livres', [BookController::class, 'store'])
     ->middleware('auth')
@@ -66,12 +86,30 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('admin')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('/utilisateurs', [AdminUserController::class, 'index'])->name('users.index');
- 
-        // Pages pas encore construites (contenu à venir, voir demande du client)
-        Route::view('/commandes', 'admin.commandes')->name('commandes');
-        Route::view('/paiements', 'admin.paiements')->name('paiements');
+        Route::get('/utilisateurs/{user}', [AdminUserController::class, 'show'])->name('users.show');
+
+        // Commandes = suivi des commandes payées (référence à vérifier) et
+        // pilotage du statut de livraison.
+        Route::get('/commandes', [AdminOrderController::class, 'index'])->name('commandes');
+        Route::post('/commandes/{order}/statut', [AdminOrderController::class, 'updateStatus'])
+            ->name('commandes.statut');
+
+        // Paiements = reversement de l'argent aux vendeurs (dû / envoyé).
+        Route::get('/paiements', [AdminPaymentController::class, 'index'])->name('paiements');
+        Route::post('/paiements/{order}/reversement', [AdminPaymentController::class, 'updatePayout'])
+            ->name('paiements.reversement');
+
+        // Liste des livreurs, dans laquelle l'admin pioche pour assigner
+        // une commande passée « En livraison ».
+        Route::get('/livreurs', [AdminDelivererController::class, 'index'])->name('livreurs.index');
+        Route::post('/livreurs', [AdminDelivererController::class, 'store'])->name('livreurs.store');
+        Route::put('/livreurs/{livreur}', [AdminDelivererController::class, 'update'])->name('livreurs.update');
+        Route::delete('/livreurs/{livreur}', [AdminDelivererController::class, 'destroy'])->name('livreurs.destroy');
+
         Route::get('/parametres', [AdminSettingsController::class, 'edit'])->name('parametres');
         Route::post('/parametres', [AdminSettingsController::class, 'update'])->name('parametres.update');
- 
+        Route::post('/parametres/paiement', [AdminSettingsController::class, 'updatePaymentAccounts'])
+            ->name('parametres.paiement');
+
     });
 });

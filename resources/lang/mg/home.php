@@ -34,6 +34,7 @@ return [
     'books_wishlist' => "Ampio amin'ny tiana",
     'books_add' => 'Ampio ao anaty sobiky',
     'books_none_yet' => 'Tsy misy boky azo jerena amin\'izao fotoana izao.',
+    'books_out_of_stock' => 'Lany ny tahiry',
 
     /* ============ Vendeurs (accueil) ============ */
     'sellers_heading' => 'Mpivarotra misy',
@@ -137,6 +138,7 @@ return [
     'order_total_label' => 'Vola totaly',
     'order_payment_legend' => 'Fomba fandoavana',
     'order_payment_number_label' => 'Laharana handefasana',
+    'order_payment_name_label' => "Anaran'ny tompon'ny laharana",
     'order_payment_reference_error' => 'Ampidino ny kaody baiko nalefa taminao aloha.',
     'order_payment_reference_placeholder' => 'Ohatra: MVL240912.1234',
     'order_payment_reference_label' => 'Kaody baiko nalefa (SMS)',
@@ -144,7 +146,21 @@ return [
     'order_guest_prompt' => 'Midira na misoratra anarana ho mpividy mba hanaovana baiko.',
     'order_seller_cant_order' => 'Ny kaonty mpivarotra dia tsy afaka manao baiko. Midira amin\'ny maha-mpividy.',
     'order_confirmed_label' => 'Nofonosina ny baikonao ✓',
-    'order_static_note' => 'Fikirakirana tsy mbola tanteraka: ho avy tsy ho ela ny fanamafisana marina.',
+    'order_pending_note' => 'Ho jerena aloha ny baikonao vao halefa ho any amin\'ny mpandefa.',
+    'order_no_payment_account' => 'Mbola tsy voakirakira ny fandoavam-bola. Averina any aoriana.',
+    'order_error_not_for_sale' => 'Tsy azo vidiana ity boky ity.',
+    'order_error_stock' => 'Tsy ampy ny isany: :quantite sisa.',
+    'order_success' => 'Voarakitra ny baiko :reference! Miandry handefasana izao.',
+    'order_status_en_attente_livraison' => 'Miandry fandefasana',
+    'order_status_en_livraison' => 'Andefasana',
+    'order_status_livree' => 'Voadefa',
+    'order_status_annulee' => 'Nofoanana',
+    'order_deliverer_label' => 'Mpandefa',
+    'order_reference_label' => 'Kaody',
+    'order_history_title' => 'Ny baikoko',
+    'order_sales_title' => 'Baiko azo',
+    'order_none_yet' => 'Mbola tsy misy baiko.',
+    'order_buyer_label' => 'Mpividy',
     'book_condition' => 'Toetra',
     'book_condition_new' => 'Vaovao',
     'book_condition_used' => 'Efa nampiasaina',
@@ -308,5 +324,33 @@ return [
     'terms_cta_text' => "Mifandraisa aminay raha manana fanontaniana momba ny baiko, ny fandoavana na ireo fepetra ireo ianao.",
     'terms_cta_button' => 'Hifandray aminay',
     'terms_contact_email' => 'madabookstore2002@gmail.com',
+
+
+    /* ============ Sehatry ny mpivarotra: dashboard & onglets ============ */
+    'profile_dashboard_title' => 'Tabilao fanaraha-maso',
+    'profile_money_pending' => 'Vola miandry',
+    'profile_money_pending_hint' => "Halefan'ny ekipa tsy ho ela",
+    'profile_money_paid' => 'Vola voaloa',
+    'profile_money_paid_hint' => "Efa voaray tao amin'ny laharanao",
+    'profile_orders_count' => 'Baiko voaray',
+    'profile_stock_count' => 'Boky mbola misy',
+    'profile_tab_orders' => 'Baiko voaray',
+    'profile_tab_books' => 'Ny bokiko',
+    'profile_tab_edit' => 'Hanova ny mombamomba ahy',
+    'profile_edit_title' => 'Hanova ny mombamomba ahy',
+    'profile_edit_intro' => "Ireo fampahalalana ireo dia miseho ao amin'ny pejinao ampahibemaso ary ampiasaina handoavana ny volanao.",
+    'profile_name_label' => "Anaran'ny kaonty",
+    'profile_email_label' => 'Adiresy mailaka',
+    'profile_company_label' => "Anaran'ny orinasa",
+    'profile_payment_number_hint' => "Amin'io laharana io no andefasan'ny ekipa ny volanao.",
+    'profile_save' => 'Tehirizo ny fanovana',
+    'profile_updated' => 'Voaova soa aman-tsara ny mombamomba anao.',
+
+
+    /* ============ SEO: famaritana isaky ny pejy ============ */
+    'meta_books_description' => "Jereo ny boky rehetra misy ao amin'ny Ny Herin'ny Boky: tantara, boky an-tsekoly, boky ho an'ny ankizy sy ny hafa, vaovao na efa nampiasaina, aterina manerana an'i Madagasikara.",
+    'meta_sellers_description' => "Fantaro ireo mpivarotra mpiara-miasa amin'ny Ny Herin'ny Boky ary zahao ny bokiny, manerana an'i Madagasikara.",
+    'meta_seller_description' => "Ny boky rehetra avy amin'i :name:location ao amin'ny Ny Herin'ny Boky. Boky :count azo vidina, aterina manerana an'i Madagasikara.",
+    'meta_privacy_description' => "Ny fomba anangonan'ny Ny Herin'ny Boky, ampiasany sy iarovany ny angon-drakitra manokana momba anao.",
 
 ];

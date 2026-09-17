@@ -1,10 +1,11 @@
 @extends('layouts.app')
 
 @section('meta_title', __('home.profile_client_title') . ' — ' . config('app.name'))
+@section('meta_robots', 'noindex, nofollow')
 
 @section('content')
     <section>
-        <div class="wrap" style="max-width: 720px;">
+        <div class="wrap" style="max-width: 860px;">
             <div class="section-head">
                 <div>
                     <h2>{{ __('home.profile_client_title') }}</h2>
@@ -12,7 +13,14 @@
                 </div>
             </div>
 
-            <div class="seller-card" style="background:#fffdf7; border:1px solid rgba(85,16,29,.09); color: var(--ink); flex-direction: column; align-items: flex-start; gap: 18px; padding: 30px;">
+            @if(session('success'))
+                <p class="flash-success">{{ session('success') }}</p>
+            @endif
+            @if(session('error'))
+                <p class="flash-error">{{ session('error') }}</p>
+            @endif
+
+            <div class="seller-card" style="background:#fffdf7; border:1px solid rgba(85,16,29,.09); color: var(--ink); flex-direction: column; align-items: flex-start; gap: 18px; padding: 30px; margin-bottom: 40px;">
                 <div style="display:flex; align-items:center; gap:16px;">
                     <div class="user-avatar" style="width:56px; height:56px; font-size:1.3rem;">
                         {{ strtoupper(substr($user->name, 0, 1)) }}
@@ -40,6 +48,13 @@
                     </div>
                 @endif
             </div>
+
+            <div class="section-head">
+                <div>
+                    <h2>{{ __('home.order_history_title') }}</h2>
+                </div>
+            </div>
+            @include('partials.orders-table', ['orders' => $orders, 'role' => 'client'])
         </div>
     </section>
 @endsection

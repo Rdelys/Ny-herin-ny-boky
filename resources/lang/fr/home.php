@@ -34,6 +34,7 @@ return [
     'books_wishlist' => 'Ajouter aux favoris',
     'books_add' => 'Ajouter au panier',
     'books_none_yet' => 'Aucun livre disponible pour l\'instant.',
+    'books_out_of_stock' => 'Rupture de stock',
 
     /* ============ Vendeurs (accueil) ============ */
     'sellers_heading' => 'Vendeurs disponibles',
@@ -137,6 +138,7 @@ return [
     'order_total_label' => 'Total',
     'order_payment_legend' => 'Mode de paiement',
     'order_payment_number_label' => 'Numéro à contacter',
+    'order_payment_name_label' => 'Nom du titulaire',
     'order_payment_reference_error' => 'Merci de saisir la référence reçue par SMS avant de confirmer.',
     'order_payment_reference_placeholder' => 'Ex: MVL240912.1234',
     'order_payment_reference_label' => 'Référence de la transaction (SMS reçu)',
@@ -144,7 +146,21 @@ return [
     'order_guest_prompt' => 'Connectez-vous ou créez un compte client pour passer commande.',
     'order_seller_cant_order' => 'Un compte vendeur ne peut pas passer commande. Connectez-vous avec un compte client.',
     'order_confirmed_label' => 'Commande enregistrée ✓',
-    'order_static_note' => 'Fonctionnalité en cours de finalisation : la confirmation réelle arrive bientôt.',
+    'order_pending_note' => "Votre commande sera vérifiée par l'équipe puis mise en livraison.",
+    'order_no_payment_account' => "Le paiement n'est pas encore configuré. Merci de revenir plus tard.",
+    'order_error_not_for_sale' => "Ce livre n'est pas disponible à l'achat.",
+    'order_error_stock' => 'Quantité indisponible : il ne reste que :quantite exemplaire(s).',
+    'order_success' => 'Commande :reference enregistrée ! Elle est en attente de livraison.',
+    'order_status_en_attente_livraison' => 'En attente de livraison',
+    'order_status_en_livraison' => 'En livraison',
+    'order_status_livree' => 'Livrée',
+    'order_status_annulee' => 'Annulée',
+    'order_deliverer_label' => 'Livreur',
+    'order_reference_label' => 'Référence',
+    'order_history_title' => 'Mes commandes',
+    'order_sales_title' => 'Commandes reçues',
+    'order_none_yet' => "Aucune commande pour l'instant.",
+    'order_buyer_label' => 'Acheteur',
     'book_condition' => 'État',
     'book_condition_new' => 'Neuf',
     'book_condition_used' => 'Occasion',
@@ -308,5 +324,33 @@ return [
     'terms_cta_text' => 'Contactez-nous pour toute question sur une commande, un paiement ou ces conditions.',
     'terms_cta_button' => 'Nous contacter',
     'terms_contact_email' => 'madabookstore2002@gmail.com',
+
+
+    /* ============ Espace vendeur : tableau de bord & onglets ============ */
+    'profile_dashboard_title' => 'Tableau de bord',
+    'profile_money_pending' => 'Argent en attente',
+    'profile_money_pending_hint' => "Sera viré par l'équipe",
+    'profile_money_paid' => 'Argent payé',
+    'profile_money_paid_hint' => 'Déjà reçu sur votre numéro',
+    'profile_orders_count' => 'Commandes reçues',
+    'profile_stock_count' => 'Exemplaires en stock',
+    'profile_tab_orders' => 'Commandes reçues',
+    'profile_tab_books' => 'Mes livres',
+    'profile_tab_edit' => 'Modifier mon profil',
+    'profile_edit_title' => 'Modifier mon profil',
+    'profile_edit_intro' => 'Ces informations apparaissent sur votre fiche publique et servent à vous verser votre argent.',
+    'profile_name_label' => 'Nom du compte',
+    'profile_email_label' => 'Adresse email',
+    'profile_company_label' => "Nom de l'entreprise",
+    'profile_payment_number_hint' => "C'est sur ce numéro que l'équipe vous envoie votre argent.",
+    'profile_save' => 'Enregistrer les modifications',
+    'profile_updated' => 'Votre profil a bien été mis à jour.',
+
+
+    /* ============ SEO : descriptions par page ============ */
+    'meta_books_description' => "Parcourez tous les livres disponibles sur Ny Herin'ny Boky : romans, scolaires, jeunesse et plus, neufs ou d'occasion, livrés partout à Madagascar.",
+    'meta_sellers_description' => "Découvrez les vendeurs partenaires de Ny Herin'ny Boky et explorez leur catalogue de livres, partout à Madagascar.",
+    'meta_seller_description' => "Tous les livres de :name:location sur Ny Herin'ny Boky. :count livre(s) disponibles à l'achat, livrés partout à Madagascar.",
+    'meta_privacy_description' => "Comment Ny Herin'ny Boky collecte, utilise et protège vos données personnelles.",
 
 ];

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('admin_title', 'Admin') — Ny Herin'ny Boky</title>
+    <title>Dashboard — Ny Herin'ny Boky</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -448,47 +448,45 @@
     .admin-table tbody td:empty{ display: none; }
 }
     </style>
-    @stack('admin_styles')
-</head>
+    </head>
 <body>
 
     <aside class="admin-sidebar">
         <div class="admin-brand">
-            <img src="{{ asset('logo.png') }}" alt="Ny Herin'ny Boky">
+            <img src="http://localhost:8000/logo.png" alt="Ny Herin'ny Boky">
             <span>Admin</span>
         </div>
 
         <nav class="admin-nav">
-            <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+            <a href="http://localhost:8000/admin" class="active">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="3" width="8" height="5" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="12" width="8" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="15" width="8" height="6" rx="2" stroke="currentColor" stroke-width="1.8"/></svg>
                 <span>Dashboard</span>
             </a>
-            <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+            <a href="http://localhost:8000/admin/utilisateurs" class="">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="7" r="2.6" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 13.2c2.6.5 4.5 2.7 4.5 5.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
                 <span>Utilisateurs</span>
             </a>
-            <a href="{{ route('admin.commandes') }}" class="{{ request()->routeIs('admin.commandes') ? 'active' : '' }}">
+            <a href="http://localhost:8000/admin/commandes" class="">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 2h9l4 4v16H6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 10h6M9 14h6M9 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
                 <span>Commandes</span>
             </a>
-            <a href="{{ route('admin.paiements') }}" class="{{ request()->routeIs('admin.paiements') ? 'active' : '' }}">
+            <a href="http://localhost:8000/admin/paiements" class="">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M2 10h20" stroke="currentColor" stroke-width="1.8"/></svg>
                 <span>Paiements</span>
             </a>
-            <a href="{{ route('admin.livreurs.index') }}" class="{{ request()->routeIs('admin.livreurs.*') ? 'active' : '' }}">
+            <a href="http://localhost:8000/admin/livreurs" class="">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="9" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.8"/><path d="M15 12h3.5L21 15v3h-6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="6" cy="19.5" r="1.8" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="19.5" r="1.8" stroke="currentColor" stroke-width="1.6"/></svg>
                 <span>Livreurs</span>
             </a>
-            <a href="{{ route('admin.parametres') }}" class="{{ request()->routeIs('admin.parametres') ? 'active' : '' }}">
+            <a href="http://localhost:8000/admin/parametres" class="">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2.05 2.05 0 1 1-2.9 2.9l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2.05 2.05 0 1 1-4.1 0v-.09A1.7 1.7 0 0 0 8.8 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2.05 2.05 0 1 1-2.9-2.9l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H2.7a2.05 2.05 0 1 1 0-4.1h.09A1.7 1.7 0 0 0 4.3 8.8a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2.05 2.05 0 1 1 2.9-2.9l.06.06a1.7 1.7 0 0 0 1.87.34H8.8A1.7 1.7 0 0 0 9.83 2.7V2.6a2.05 2.05 0 1 1 4.1 0v.09a1.7 1.7 0 0 0 1.03 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2.05 2.05 0 1 1 2.9 2.9l-.06.06a1.7 1.7 0 0 0-.34 1.87V8.8a1.7 1.7 0 0 0 1.55 1h.09a2.05 2.05 0 1 1 0 4.1h-.09a1.7 1.7 0 0 0-1.55 1.03z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
                 <span>Paramètres</span>
             </a>
         </nav>
 
         <div class="admin-sidebar-foot">
-            <form method="POST" action="{{ route('admin.logout') }}">
-                @csrf
-                <button type="submit" class="admin-logout-btn">
+            <form method="POST" action="http://localhost:8000/admin/deconnexion">
+                <input type="hidden" name="_token" value="CPfgEvTFtGXU3YtVUC1Mj1csYmcPkvZSjbHrR4kb" autocomplete="off">                <button type="submit" class="admin-logout-btn">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 17l5-5-5-5M20 12H9M13 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span>Se déconnecter</span>
                 </button>
@@ -498,13 +496,187 @@
 
     <div class="admin-main">
         <div class="admin-topbar">
-            <h1>@yield('admin_title', 'Dashboard')</h1>
+            <h1>Dashboard</h1>
         </div>
         <div class="admin-content">
-            @yield('admin_content')
+            
+    
+    <div class="admin-stat-grid">
+        <div class="admin-stat-card admin-stat-card-highlight">
+            <span class="admin-stat-label">Encaissé</span>
+            <strong class="admin-stat-value">161 700 Ar</strong>
+            <span class="admin-stat-sub">2 commande(s) au total</span>
+        </div>
+        <div class="admin-stat-card">
+            <span class="admin-stat-label">Bénéfice (commission 5%)</span>
+            <strong class="admin-stat-value">7 700 Ar</strong>
+            <span class="admin-stat-sub">Part gardée par la plateforme</span>
+        </div>
+        <div class="admin-stat-card">
+            <span class="admin-stat-label">Argent dû aux vendeurs</span>
+            <strong class="admin-stat-value" style="color:inherit;">
+                0 Ar
+            </strong>
+            <span class="admin-stat-sub">
+                0 commande(s) —
+                <a href="http://localhost:8000/admin/paiements?statut=du" style="color:var(--maroon-800); font-weight:600;">reverser</a>
+            </span>
+        </div>
+        <div class="admin-stat-card">
+            <span class="admin-stat-label">Argent envoyé</span>
+            <strong class="admin-stat-value">154 000 Ar</strong>
+            <span class="admin-stat-sub">2 commande(s) réglée(s)</span>
         </div>
     </div>
 
-    @stack('admin_scripts')
-</body>
+    
+    <div class="admin-stat-grid">
+                    <div class="admin-stat-card">
+                <span class="admin-stat-label">En attente de livraison</span>
+                <strong class="admin-stat-value">0</strong>
+                <span class="admin-stat-sub">
+                    <a href="http://localhost:8000/admin/commandes?statut=en_attente_livraison" style="color:var(--maroon-800); font-weight:600;">Voir les commandes</a>
+                </span>
+            </div>
+                    <div class="admin-stat-card">
+                <span class="admin-stat-label">En livraison</span>
+                <strong class="admin-stat-value">0</strong>
+                <span class="admin-stat-sub">
+                    <a href="http://localhost:8000/admin/commandes?statut=en_livraison" style="color:var(--maroon-800); font-weight:600;">Voir les commandes</a>
+                </span>
+            </div>
+                    <div class="admin-stat-card">
+                <span class="admin-stat-label">Livrée</span>
+                <strong class="admin-stat-value">2</strong>
+                <span class="admin-stat-sub">
+                    <a href="http://localhost:8000/admin/commandes?statut=livree" style="color:var(--maroon-800); font-weight:600;">Voir les commandes</a>
+                </span>
+            </div>
+                    <div class="admin-stat-card">
+                <span class="admin-stat-label">Annulée</span>
+                <strong class="admin-stat-value">0</strong>
+                <span class="admin-stat-sub">
+                    <a href="http://localhost:8000/admin/commandes?statut=annulee" style="color:var(--maroon-800); font-weight:600;">Voir les commandes</a>
+                </span>
+            </div>
+            </div>
+
+    
+    <div class="admin-stat-grid">
+        <div class="admin-stat-card">
+            <span class="admin-stat-label">Utilisateurs</span>
+            <strong class="admin-stat-value">2</strong>
+            <span class="admin-stat-sub">1 clients · 1 vendeurs</span>
+        </div>
+        <div class="admin-stat-card">
+            <span class="admin-stat-label">Livres publiés</span>
+            <strong class="admin-stat-value">2</strong>
+            <span class="admin-stat-sub">13 exemplaires en stock</span>
+        </div>
+        <div class="admin-stat-card">
+            <span class="admin-stat-label">Valeur potentielle du catalogue</span>
+            <strong class="admin-stat-value">154 000 Ar</strong>
+            <span class="admin-stat-sub">Prix vendeur, hors commission</span>
+        </div>
+    </div>
+
+    
+    <div class="admin-charts-grid">
+        <div class="admin-card">
+            <h3 class="admin-card-title">Commandes — 7 derniers jours</h3>
+            <canvas id="ordersChart" height="180"></canvas>
+        </div>
+        <div class="admin-card">
+            <h3 class="admin-card-title">Reversements vendeurs</h3>
+            <canvas id="payoutsChart" height="180"></canvas>
+        </div>
+        <div class="admin-card" style="grid-column: 1 / -1;">
+            <h3 class="admin-card-title">Top vendeurs — chiffre d'affaires</h3>
+                            <canvas id="sellersChart" height="140"></canvas>
+                    </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+    <script>
+        (function(){
+            if (typeof Chart === 'undefined') return;
+
+            var gold = '#e9b23f';
+            var maroon = '#6c1524';
+            var green = '#5c8a37';
+            var red = '#b3261e';
+
+            Chart.defaults.font.family = "'Inter', sans-serif";
+
+            new Chart(document.getElementById('ordersChart'), {
+                type: 'line',
+                data: {
+                    labels: ["Fri 11\/09","Sat 12\/09","Sun 13\/09","Mon 14\/09","Tue 15\/09","Wed 16\/09","Thu 17\/09"],
+                    datasets: [
+                        {
+                            label: 'Commandes',
+                            data: [0,0,0,0,0,0,2],
+                            borderColor: maroon,
+                            backgroundColor: 'rgba(108,21,36,.08)',
+                            tension: .35,
+                            fill: true,
+                            pointRadius: 3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Encaissé (Ar)',
+                            data: [0,0,0,0,0,0,161700],
+                            borderColor: gold,
+                            backgroundColor: 'rgba(233,178,63,.12)',
+                            tension: .35,
+                            fill: true,
+                            pointRadius: 3,
+                            yAxisID: 'yAr'
+                        }
+                    ]
+                },
+                options: {
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: 'Commandes' } },
+                        yAr: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Ar' } }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('payoutsChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Envoyé', 'Dû'],
+                    datasets: [{
+                        data: [154000, 0],
+                        backgroundColor: [green, red]
+                    }]
+                },
+                options: { plugins: { legend: { position: 'bottom' } } }
+            });
+
+            var sellersCanvas = document.getElementById('sellersChart');
+            if (sellersCanvas) {
+                new Chart(sellersCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: ["Dauphin-Elys Razafindrakoto"],
+                        datasets: [{
+                            label: "Chiffre d'affaires (Ar)",
+                            data: [161700],
+                            backgroundColor: gold,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+                });
+            }
+        })();
+    </script>
+
+        </div>
+    </div>
+
+    </body>
 </html>

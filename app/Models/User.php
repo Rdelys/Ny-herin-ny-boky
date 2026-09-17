@@ -45,6 +45,18 @@ class User extends Authenticatable
         return $this->hasMany(Book::class, 'seller_id');
     }
 
+    /** Commandes passées par cet utilisateur (côté client). */
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'buyer_id');
+    }
+
+    /** Commandes reçues sur les livres de cet utilisateur (côté vendeur). */
+    public function sales()
+    {
+        return $this->hasMany(Order::class, 'seller_id');
+    }
+
     public function isSeller(): bool
     {
         return $this->role === 'vendeur';

@@ -34,6 +34,7 @@ return [
     'books_wishlist' => 'Add to wishlist',
     'books_add' => 'Add to cart',
     'books_none_yet' => 'No books available yet.',
+    'books_out_of_stock' => 'Out of stock',
 
     /* ============ Sellers (home) ============ */
     'sellers_heading' => 'Available sellers',
@@ -137,6 +138,7 @@ return [
     'order_total_label' => 'Total',
     'order_payment_legend' => 'Payment method',
     'order_payment_number_label' => 'Number to contact',
+    'order_payment_name_label' => 'Account holder name',
     'order_payment_reference_error' => 'Please enter the reference you received by SMS before confirming.',
     'order_payment_reference_placeholder' => 'e.g. MVL240912.1234',
     'order_payment_reference_label' => 'Transaction reference (from SMS)',
@@ -144,7 +146,21 @@ return [
     'order_guest_prompt' => 'Log in or create a client account to place an order.',
     'order_seller_cant_order' => 'A seller account cannot place orders. Log in with a client account.',
     'order_confirmed_label' => 'Order recorded ✓',
-    'order_static_note' => 'Feature still in progress: real order confirmation is coming soon.',
+    'order_pending_note' => 'Your order will be verified by our team, then sent out for delivery.',
+    'order_no_payment_account' => 'Payment is not configured yet. Please check back later.',
+    'order_error_not_for_sale' => 'This book is not available for purchase.',
+    'order_error_stock' => 'Not enough stock: only :quantite copy/copies left.',
+    'order_success' => 'Order :reference recorded! It is now awaiting delivery.',
+    'order_status_en_attente_livraison' => 'Awaiting delivery',
+    'order_status_en_livraison' => 'Out for delivery',
+    'order_status_livree' => 'Delivered',
+    'order_status_annulee' => 'Cancelled',
+    'order_deliverer_label' => 'Courier',
+    'order_reference_label' => 'Reference',
+    'order_history_title' => 'My orders',
+    'order_sales_title' => 'Received orders',
+    'order_none_yet' => 'No orders yet.',
+    'order_buyer_label' => 'Buyer',
     'book_condition' => 'Condition',
     'book_condition_new' => 'New',
     'book_condition_used' => 'Used',
@@ -308,5 +324,33 @@ return [
     'terms_cta_text' => 'Contact us if you have any questions about an order, a payment, or these terms.',
     'terms_cta_button' => 'Contact us',
     'terms_contact_email' => 'madabookstore2002@gmail.com',
+
+
+    /* ============ Seller area: dashboard & tabs ============ */
+    'profile_dashboard_title' => 'Dashboard',
+    'profile_money_pending' => 'Pending money',
+    'profile_money_pending_hint' => 'To be transferred by the team',
+    'profile_money_paid' => 'Money paid',
+    'profile_money_paid_hint' => 'Already sent to your number',
+    'profile_orders_count' => 'Orders received',
+    'profile_stock_count' => 'Copies in stock',
+    'profile_tab_orders' => 'Orders received',
+    'profile_tab_books' => 'My books',
+    'profile_tab_edit' => 'Edit my profile',
+    'profile_edit_title' => 'Edit my profile',
+    'profile_edit_intro' => 'This information appears on your public page and is used to pay you.',
+    'profile_name_label' => 'Account name',
+    'profile_email_label' => 'Email address',
+    'profile_company_label' => 'Company name',
+    'profile_payment_number_hint' => 'The team sends your money to this number.',
+    'profile_save' => 'Save changes',
+    'profile_updated' => 'Your profile has been updated.',
+
+
+    /* ============ SEO: per-page descriptions ============ */
+    'meta_books_description' => "Browse every book available on Ny Herin'ny Boky: novels, textbooks, children's books and more, new or second-hand, delivered across Madagascar.",
+    'meta_sellers_description' => "Discover the partner sellers of Ny Herin'ny Boky and explore their book catalogue, anywhere in Madagascar.",
+    'meta_seller_description' => "All books from :name:location on Ny Herin'ny Boky. :count book(s) available to buy, delivered across Madagascar.",
+    'meta_privacy_description' => "How Ny Herin'ny Boky collects, uses and protects your personal data.",
 
 ];

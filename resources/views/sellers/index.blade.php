@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('meta_title', __('home.sellers_page_title') . ' — ' . config('app.name'))
+@section('meta_description', __('home.meta_sellers_description'))
 
 @section('content')
     <section>
