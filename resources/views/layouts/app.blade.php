@@ -1681,6 +1681,48 @@
             outline: 2px solid var(--gold);
             outline-offset: 2px;
         }
+
+        /* ---- À ajouter dans layouts/app.blade.php, dans le <style> existant ---- */
+
+.commission-sticker{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--gold);
+    color: var(--maroon-950);
+    padding: 10px 20px 10px 16px;
+    border-radius: 10px;
+    font-size: .88rem;
+    box-shadow: 0 10px 20px -8px rgba(233,178,63,.55), 0 2px 0 rgba(0,0,0,.08);
+    transform: rotate(-1.5deg);
+    margin-bottom: 26px;
+    position: relative;
+}
+.commission-sticker-pin{
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--maroon-800);
+    box-shadow: 0 0 0 2px rgba(255,255,255,.5);
+    flex-shrink: 0;
+}
+.commission-sticker-label{
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    font-size: .74rem;
+}
+.commission-sticker-rate{
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-left: 2px;
+}
+
+@media (max-width: 480px){
+    .commission-sticker{ font-size: .8rem; padding: 9px 16px 9px 14px; }
+    .commission-sticker-rate{ font-size: 1.02rem; }
+}
     </style>
     @stack('styles')
 </head>

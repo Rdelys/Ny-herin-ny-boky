@@ -206,6 +206,97 @@
             .admin-content{ padding: 20px 16px 40px; }
             .admin-topbar{ padding: 16px; }
         }
+
+        /* ---- À ajouter dans layouts/admin.blade.php, dans le <style> existant ---- */
+
+.admin-settings-flash{
+    background: rgba(92,138,55,.12);
+    border: 1px solid rgba(92,138,55,.35);
+    color: var(--green-700);
+    font-size: .88rem;
+    font-weight: 600;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin: 0 0 20px;
+    max-width: 560px;
+}
+
+.admin-current-rate{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(233,178,63,.16), rgba(233,178,63,.05));
+    border: 1px solid rgba(233,178,63,.4);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+}
+.admin-current-rate span{ font-size: .82rem; color: #8a7a6d; font-weight: 600; }
+.admin-current-rate strong{
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    color: var(--maroon-800);
+}
+
+.admin-form-label{
+    display: block;
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    color: #9c8b7d;
+    margin-bottom: 10px;
+}
+
+.admin-rate-presets{ display: flex; flex-wrap: wrap; gap: 10px; }
+.admin-rate-preset-btn{
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(85,16,29,.18);
+    background: #fffdf9;
+    color: var(--maroon-800);
+    font-family: inherit;
+    font-weight: 600;
+    font-size: .9rem;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+.admin-rate-preset-btn:hover{ background: rgba(85,16,29,.05); transform: translateY(-1px); }
+.admin-rate-preset-btn.active{
+    background: var(--maroon-900);
+    border-color: var(--maroon-900);
+    color: var(--cream);
+}
+
+.admin-rate-custom-row{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.admin-rate-custom-row input{
+    width: 110px;
+    font-family: inherit;
+    font-size: .95rem;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(85,16,29,.18);
+    background: #fffdf9;
+}
+.admin-rate-custom-row input:focus{ outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(233,178,63,.22); }
+.admin-rate-custom-row span{ font-weight: 700; color: var(--maroon-800); }
+.admin-rate-custom-btn{
+    background: var(--gold);
+    color: var(--maroon-950);
+    border: 0;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: .88rem;
+    cursor: pointer;
+    transition: background .15s ease;
+}
+.admin-rate-custom-btn:hover{ background: #f0c168; }
     </style>
     @stack('admin_styles')
 </head>

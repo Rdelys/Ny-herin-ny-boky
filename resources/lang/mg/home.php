@@ -95,7 +95,7 @@ return [
     'auth_payment_number' => 'Laharana handraisana ny vola',
     'auth_payment_number_placeholder' => '034 xx xxx xx',
     'auth_payment_mode_legend' => 'Fomba fandoavana',
-    'auth_payment_commission_title' => 'Komisiona (-10%)',
+    'auth_payment_commission_title' => 'Komisiona (-:rate%)',
     'auth_payment_commission_desc' => 'Fisoratana anarana maimaimpoana miaraka amin\'ny komisiona',
     'auth_payment_subscription_title' => 'Abonnement',
     'auth_payment_subscription_desc' => 'Fandoavana abonnement isam-bolana',

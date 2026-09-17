@@ -13,6 +13,7 @@ use App\Http\Controllers\SellerController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminSettingsController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -69,6 +70,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Pages pas encore construites (contenu à venir, voir demande du client)
         Route::view('/commandes', 'admin.commandes')->name('commandes');
         Route::view('/paiements', 'admin.paiements')->name('paiements');
-        Route::view('/parametres', 'admin.parametres')->name('parametres');
+        Route::get('/parametres', [AdminSettingsController::class, 'edit'])->name('parametres');
+        Route::post('/parametres', [AdminSettingsController::class, 'update'])->name('parametres.update');
+ 
     });
 });

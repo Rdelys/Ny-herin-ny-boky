@@ -95,7 +95,7 @@ return [
     'auth_payment_number' => 'Number to receive payments',
     'auth_payment_number_placeholder' => '034 xx xxx xx',
     'auth_payment_mode_legend' => 'Payment method',
-    'auth_payment_commission_title' => 'Commission (-10%)',
+    'auth_payment_commission_title' => 'Commission (-:rate%)',
     'auth_payment_commission_desc' => 'Free sign-up with commission',
     'auth_payment_subscription_title' => 'Subscription',
     'auth_payment_subscription_desc' => 'Pay a monthly subscription',

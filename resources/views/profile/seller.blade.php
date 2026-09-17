@@ -12,6 +12,9 @@
                 </div>
             </div>
 
+            @include('partials.commission-sticker')
+
+
             @if(session('success'))
                 <p class="flash-success">{{ session('success') }}</p>
             @endif
@@ -44,9 +47,9 @@
                         <div>
                             <p class="book-genre" style="margin-bottom:4px;">{{ __('home.profile_payment_mode') }}</p>
                             <p>
-                                {{ $profile->mode_paiement === 'abonnement' ? __('home.profile_payment_subscription') : __('home.profile_payment_commission') }}
-                                @if($profile->mode_paiement !== 'abonnement' && $profile->commission_status)
-                                    <span class="book-tag" style="position:static; display:inline-block; margin-left:6px;">{{ $profile->commission_status }}</span>
+                                 {{ $profile->mode_paiement === 'abonnement' ? __('home.profile_payment_subscription') : __('home.profile_payment_commission') }}
+                                @if($profile->mode_paiement !== 'abonnement')
+                                    <span class="book-tag" style="position:static; display:inline-block; margin-left:6px;">{{ rtrim(rtrim(number_format(\App\Models\Setting::commissionRate(), 2, ',', ' '), '0'), ',') }}%</span>
                                 @endif
                             </p>
                         </div>

@@ -95,7 +95,7 @@ return [
     'auth_payment_number' => "Numéro pour recevoir l'argent",
     'auth_payment_number_placeholder' => '034 xx xxx xx',
     'auth_payment_mode_legend' => 'Mode de paiement',
-    'auth_payment_commission_title' => 'Commission (-10%)',
+    'auth_payment_commission_title' => 'Commission (-:rate%)',
     'auth_payment_commission_desc' => 'Inscription gratuite avec commission',
     'auth_payment_subscription_title' => 'Abonnement',
     'auth_payment_subscription_desc' => 'Payer des abonnements par mois',

@@ -171,7 +171,7 @@
                         <label class="modal-radio-card">
                             <input type="radio" name="mode_paiement" value="commission" checked>
                             <span>
-                                <strong>{{ __('home.auth_payment_commission_title') }}</strong>
+                                <strong>{{ __('home.auth_payment_commission_title', ['rate' => rtrim(rtrim(number_format(\App\Models\Setting::commissionRate(), 2, ',', ' '), '0'), ',')]) }}</strong>
                                 <small>{{ __('home.auth_payment_commission_desc') }}</small>
                             </span>
                         </label>

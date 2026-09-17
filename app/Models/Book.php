@@ -20,12 +20,6 @@ class Book extends Model
         'livraison_disponible',
     ];
 
-    /**
-     * Taux de commission appliqué au-dessus du prix fixé par le vendeur
-     * pour obtenir le prix affiché au client (10%).
-     */
-    public const COMMISSION_RATE = 0.10;
-
     protected function casts(): array
     {
         return [
@@ -34,23 +28,26 @@ class Book extends Model
     }
 
     /**
-     * Prix d'achat affiché au CLIENT (prix vendeur + 10% de commission).
+     * Prix d'achat affiché au CLIENT (prix vendeur + commission plateforme).
      * `prix_achat` reste le prix brut défini par le vendeur (ce qu'il perçoit).
+     * Le taux vient de Setting::commissionRate() — réglable par l'admin
+     * depuis /admin/parametres, donc ce prix suit automatiquement tout
+     * changement de taux, sans rien à modifier dans le code.
      */
     public function getPrixAchatClientAttribute(): ?int
     {
         return $this->prix_achat !== null
-            ? (int) round($this->prix_achat * (1 + self::COMMISSION_RATE))
+            ? (int) round($this->prix_achat * (1 + Setting::commissionRate() / 100))
             : null;
     }
 
     /**
-     * Prix de location affiché au CLIENT (prix vendeur + 10% de commission).
+     * Prix de location affiché au CLIENT (même logique).
      */
     public function getPrixLocationClientAttribute(): ?int
     {
         return $this->prix_location !== null
-            ? (int) round($this->prix_location * (1 + self::COMMISSION_RATE))
+            ? (int) round($this->prix_location * (1 + Setting::commissionRate() / 100))
             : null;
     }
 
