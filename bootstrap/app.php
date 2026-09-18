@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->alias([
            'admin' => \App\Http\Middleware\EnsureAdmin::class,
+            'client.api' => \App\Http\Middleware\EnsureClientApi::class,
        ]);
 
     })
