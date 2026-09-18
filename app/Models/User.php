@@ -30,7 +30,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function buyerProfile()
+    public function buyerprofile()
     {
         return $this->hasOne(BuyerProfile::class);
     }
