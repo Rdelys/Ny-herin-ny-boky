@@ -36,19 +36,24 @@ class Book extends Model
      */
     public function getPrixAchatClientAttribute(): ?int
     {
-        return $this->prix_achat !== null
-            ? (int) round($this->prix_achat * (1 + Setting::commissionRate() / 100))
-            : null;
+        if ($this->prix_achat === null) {
+            return null;
+        }
+ 
+        $rate = Setting::commissionRateFor($this->prix_achat);
+ 
+        return (int) round($this->prix_achat * (1 + $rate / 100));
     }
-
-    /**
-     * Prix de location affiché au CLIENT (même logique).
-     */
+ 
     public function getPrixLocationClientAttribute(): ?int
     {
-        return $this->prix_location !== null
-            ? (int) round($this->prix_location * (1 + Setting::commissionRate() / 100))
-            : null;
+        if ($this->prix_location === null) {
+            return null;
+        }
+ 
+        $rate = Setting::commissionRateFor($this->prix_location);
+ 
+        return (int) round($this->prix_location * (1 + $rate / 100));
     }
 
     public function seller()

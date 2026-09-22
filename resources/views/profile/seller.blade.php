@@ -26,6 +26,14 @@
 
             @include('partials.commission-sticker')
 
+            <div class="commission-sticker commission-sticker-tiers">
+                <span class="commission-sticker-pin"></span>
+                <span class="commission-sticker-label">Commission selon le prix</span>
+                <span class="commission-sticker-tier">&lt; 60k Ar : <strong>10%</strong></span>
+                <span class="commission-sticker-tier">60k–99k Ar : <strong>8%</strong></span>
+                <span class="commission-sticker-tier">100k Ar+ : <strong>5%</strong></span>
+            </div>
+            
             @if(session('success'))
                 <p class="flash-success">{{ session('success') }}</p>
             @endif
@@ -64,7 +72,7 @@
                             <p>
                                 {{ $profile->mode_paiement === 'abonnement' ? __('home.profile_payment_subscription') : __('home.profile_payment_commission') }}
                                 @if($profile->mode_paiement !== 'abonnement')
-                                    <span class="book-tag" style="position:static; display:inline-block; margin-left:6px;">{{ rtrim(rtrim(number_format(\App\Models\Setting::commissionRate(), 2, ',', ' '), '0'), ',') }}%</span>
+                                    <span class="field-hint" style="display:inline; margin:0 0 0 6px;">(selon le prix de chaque livre — voir nos CGV)</span>
                                 @endif
                             </p>
                         </div>

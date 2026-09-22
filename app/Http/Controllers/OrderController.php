@@ -44,7 +44,7 @@ class OrderController extends Controller
                 ->with('error', __('home.order_error_stock', ['quantite' => $book->quantite]));
         }
 
-        $rate = Setting::commissionRate();
+        $rate = Setting::commissionRateFor($book->prix_achat);
         $prixUnitaire = (int) $book->prix_achat_client;
 
         $order = Order::create([

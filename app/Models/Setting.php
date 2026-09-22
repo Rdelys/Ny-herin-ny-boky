@@ -42,6 +42,25 @@ class Setting extends Model
         });
     }
 
+
+    public const COMMISSION_TIERS = [
+        ['max' => 59999, 'rate' => 10.0],
+        ['max' => 99999, 'rate' => 8.0],
+        ['max' => null,  'rate' => 5.0],
+    ];
+ 
+    public static function commissionRateFor(?int $montant): float
+    {
+        $montant = (int) $montant;
+ 
+        foreach (self::COMMISSION_TIERS as $tier) {
+            if ($tier['max'] === null || $montant <= $tier['max']) {
+                return $tier['rate'];
+            }
+        }
+ 
+        return 5.0;
+    }
     /**
      * Comptes mobile money de la plateforme : pour chaque opérateur, le
      * numéro ET le nom du titulaire de la puce (c'est ce nom que le client

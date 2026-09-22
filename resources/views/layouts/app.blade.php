@@ -1897,6 +1897,23 @@
     .commission-sticker{ font-size: .8rem; padding: 9px 16px 9px 14px; }
     .commission-sticker-rate{ font-size: 1.02rem; }
 }
+
+.commission-sticker-tiers{
+    flex-wrap: wrap;
+    row-gap: 4px;
+}
+.commission-sticker-tier{
+    font-size: .82rem;
+    padding-left: 10px;
+    border-left: 1px solid rgba(61,11,21,.25);
+}
+.commission-sticker-tier strong{
+    font-family: var(--serif);
+}
+@media (max-width: 480px){
+    .commission-sticker-tiers{ flex-direction: column; align-items: flex-start; }
+    .commission-sticker-tier{ border-left: 0; padding-left: 0; }
+}
     </style>
     @stack('styles')
     @stack('head')

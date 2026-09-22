@@ -12,7 +12,7 @@
             <span class="admin-stat-sub">{{ $totalOrders }} commande(s) au total</span>
         </div>
         <div class="admin-stat-card">
-            <span class="admin-stat-label">Bénéfice (commission {{ rtrim(rtrim(number_format($commissionRate, 2, ',', ' '), '0'), ',') }}%)</span>
+            <span class="admin-stat-label">Bénéfice (commission selon barème)</span>
             <strong class="admin-stat-value">{{ number_format($benefice, 0, ',', ' ') }} Ar</strong>
             <span class="admin-stat-sub">Part gardée par la plateforme</span>
         </div>
