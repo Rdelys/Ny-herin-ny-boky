@@ -12,6 +12,12 @@
         : 'commandes';
 
     $books->appends(['tab' => 'livres']);
+
+    // Le formulaire d'ajout de livre vit maintenant dans un modal : s'il y a
+    // une erreur de validation sur l'un de ses champs, il faut le rouvrir
+    // automatiquement au chargement, sinon l'erreur reste invisible derrière
+    // un modal fermé.
+    $addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_achat', 'prix_location', 'quantite', 'categorie', 'etat', 'image']);
 @endphp
 
 @section('content')
@@ -26,8 +32,6 @@
 
             @include('partials.commission-sticker')
 
-            
-            
             @if(session('success'))
                 <p class="flash-success">{{ session('success') }}</p>
             @endif
@@ -127,87 +131,14 @@
 
             {{-- ---------- onglet 2 : mes livres ---------- --}}
             <div class="profile-panel {{ $tabActif === 'livres' ? 'active' : '' }}" id="tab-livres" role="tabpanel">
-                <div class="add-book-card">
-                    <h3 class="add-book-title">{{ __('home.book_add_title') }}</h3>
-
-                    <form method="POST" action="{{ route('books.store') }}" enctype="multipart/form-data" class="modal-form">
-                        @csrf
-
-                        <div class="modal-form-row">
-                            <label>{{ __('home.book_title_label') }}
-                                <input type="text" name="titre" placeholder="{{ __('home.book_title_placeholder') }}" value="{{ old('titre') }}" required>
-                            </label>
-                            <label>{{ __('home.book_author_label') }}
-                                <input type="text" name="auteur" placeholder="{{ __('home.book_author_placeholder') }}" value="{{ old('auteur') }}">
-                            </label>
-                        </div>
-                        @error('titre')<p class="modal-field-error">{{ $message }}</p>@enderror
-
-                        <label>{{ __('home.book_description_label') }}
-                            <textarea name="description" rows="3" placeholder="{{ __('home.book_description_placeholder') }}">{{ old('description') }}</textarea>
-                        </label>
-
-                        <div class="modal-form-row">
-                            <label>{{ __('home.book_purchase_price') }}
-                                <input type="number" name="prix_achat" min="0" value="{{ old('prix_achat') }}" id="prixAchatInput">
-                            </label>
-                            <label>{{ __('home.book_quantity') }}
-                                <input type="number" name="quantite" min="1" value="{{ old('quantite', 1) }}" required>
-                            </label>
-                        </div>
-                        @error('quantite')<p class="modal-field-error">{{ $message }}</p>@enderror
-                        <p class="field-hint" id="prixAchatClientHint"></p>
-
-                        <label>{{ __('home.book_rental_price') }}
-                            <input type="number" name="prix_location" min="0" value="{{ old('prix_location') }}" id="prixLocationInput">
-                        </label>
-                        <p class="field-hint" id="prixLocationClientHint"></p>
-
-                        <div class="modal-form-row">
-                            <label>{{ __('home.book_category') }}
-                                <select name="categorie" required>
-                                    <option value="">{{ __('home.auth_choose_placeholder') }}</option>
-                                    @foreach(\App\Http\Controllers\BookController::CATEGORIES as $cat)
-                                        <option value="{{ $cat }}" @selected(old('categorie') === $cat)>{{ $cat }}</option>
-                                    @endforeach
-                                </select>
-                            </label>
-                            <label>{{ __('home.book_condition') }}
-                                <select name="etat" required>
-                                    <option value="neuf" @selected(old('etat') === 'neuf')>{{ __('home.book_condition_neuf') }}</option>
-                                    <option value="tres_bon_etat" @selected(old('etat', 'bon_etat') === 'tres_bon_etat')>{{ __('home.book_condition_tres_bon_etat') }}</option>
-                                    <option value="bon_etat" @selected(old('etat', 'bon_etat') === 'bon_etat')>{{ __('home.book_condition_bon_etat') }}</option>
-                                </select>
-                            </label>
-                        </div>
-                        @error('categorie')<p class="modal-field-error">{{ $message }}</p>@enderror
-
-                        <fieldset class="modal-fieldset">
-                            <legend>{{ __('home.book_shipping_legend') }}</legend>
-                            <label class="modal-radio-card">
-                                <input type="checkbox" name="livraison_disponible" value="1" {{ old('livraison_disponible') ? 'checked' : '' }}>
-                                <span>
-                                    <strong>{{ __('home.book_shipping_available') }}</strong>
-                                    <small>{{ __('home.book_shipping_desc') }}</small>
-                                </span>
-                            </label>
-                        </fieldset>
-
-                        <label>{{ __('home.book_image_label') }}
-                            <input type="file" name="image" accept="image/*">
-                        </label>
-                        <p class="field-hint">{{ __('home.book_image_hint') }}</p>
-                        @error('image')<p class="modal-field-error">{{ $message }}</p>@enderror
-
-                        <button type="submit" class="btn-modal-primary">{{ __('home.book_submit_add') }}</button>
-                    </form>
-                </div>
-
                 <div class="section-head">
                     <div>
                         <h2>{{ __('home.book_my_books_title') }}</h2>
                         <p>{{ $books->total() }} {{ __('home.book_count_suffix') }}</p>
                     </div>
+                    <button type="button" class="btn-modal-primary" id="openAddBookModalBtn" style="white-space:nowrap;">
+                        {{ __('home.book_add_title') }}
+                    </button>
                 </div>
 
                 @if($books->isEmpty())
@@ -338,6 +269,8 @@
         </div>
     </section>
 
+    @include('partials.add-book-modal')
+
     <script>
         (function(){
             var COMMISSION_TIERS = @json(
@@ -407,6 +340,39 @@
                     window.history.replaceState({}, '', url);
                 });
             });
+
+            // ---- modal "Ajouter un livre" ----
+            var addBookOverlay = document.getElementById('addBookModalOverlay');
+            var addBookClose = document.getElementById('addBookModalClose');
+            var openAddBookBtn = document.getElementById('openAddBookModalBtn');
+
+            function openAddBookModal(){
+                if (!addBookOverlay) return;
+                addBookOverlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeAddBookModal(){
+                if (!addBookOverlay) return;
+                addBookOverlay.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            if (openAddBookBtn) openAddBookBtn.addEventListener('click', openAddBookModal);
+            if (addBookClose) addBookClose.addEventListener('click', closeAddBookModal);
+            if (addBookOverlay) {
+                addBookOverlay.addEventListener('click', function(e){
+                    if (e.target === addBookOverlay) closeAddBookModal();
+                });
+            }
+            document.addEventListener('keydown', function(e){
+                if (e.key === 'Escape' && addBookOverlay && addBookOverlay.classList.contains('open')) {
+                    closeAddBookModal();
+                }
+            });
+
+            @if($addBookHasError)
+                openAddBookModal();
+            @endif
         })();
     </script>
 @endsection
