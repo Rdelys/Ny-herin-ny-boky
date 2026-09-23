@@ -26,13 +26,7 @@
 
             @include('partials.commission-sticker')
 
-            <div class="commission-sticker commission-sticker-tiers">
-                <span class="commission-sticker-pin"></span>
-                <span class="commission-sticker-label">Commission selon le prix</span>
-                <span class="commission-sticker-tier">&lt; 60k Ar : <strong>10%</strong></span>
-                <span class="commission-sticker-tier">60k–99k Ar : <strong>8%</strong></span>
-                <span class="commission-sticker-tier">100k Ar+ : <strong>5%</strong></span>
-            </div>
+            
             
             @if(session('success'))
                 <p class="flash-success">{{ session('success') }}</p>
@@ -346,7 +340,20 @@
 
     <script>
         (function(){
-            var COMMISSION_RATE = {{ \App\Models\Setting::commissionRate() / 100 }};
+            var COMMISSION_TIERS = @json(
+                collect(\App\Models\Setting::commissionTiers())->map(function ($t) {
+                    return ['max' => $t['max'], 'rate' => $t['rate'] / 100];
+                })->values()
+            );
+
+            function commissionRateFor(montant) {
+                montant = Number(montant) || 0;
+                for (var i = 0; i < COMMISSION_TIERS.length; i++) {
+                    var t = COMMISSION_TIERS[i];
+                    if (t.max === null || montant <= t.max) return t.rate;
+                }
+                return COMMISSION_TIERS[COMMISSION_TIERS.length - 1].rate;
+            }
 
             function formatAr(n){
                 return Math.round(n).toLocaleString('fr-FR') + ' Ar';
@@ -363,7 +370,8 @@
                         hint.textContent = '';
                         return;
                     }
-                    hint.textContent = label + ' ' + formatAr(value * (1 + COMMISSION_RATE));
+                    var rate = commissionRateFor(value);
+                    hint.textContent = label + ' ' + formatAr(value * (1 + rate));
                 }
 
                 input.addEventListener('input', update);

@@ -76,7 +76,9 @@ class BookController extends Controller
             'livraison_disponible' => $request->boolean('livraison_disponible'),
         ]);
 
-        return redirect()->route('profile')->with('success', 'Livre ajouté avec succès.');
+        return redirect()
+            ->route('profile', ['tab' => 'livres'])
+            ->with('success', 'Livre ajouté avec succès.');
     }
 
     public function edit(Request $request, Book $book): View
@@ -108,7 +110,9 @@ class BookController extends Controller
             'livraison_disponible' => $request->boolean('livraison_disponible'),
         ])->save();
 
-        return redirect()->route('profile')->with('success', 'Livre mis à jour.');
+        return redirect()
+            ->route('profile', ['tab' => 'livres'])
+            ->with('success', 'Livre mis à jour.');
     }
 
     public function destroy(Request $request, Book $book): RedirectResponse
@@ -117,6 +121,8 @@ class BookController extends Controller
 
         $book->delete();
 
-        return redirect()->route('profile')->with('success', 'Livre supprimé.');
+        return redirect()
+            ->route('profile', ['tab' => 'livres'])
+            ->with('success', 'Livre supprimé.');
     }
 }
