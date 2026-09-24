@@ -373,4 +373,18 @@ return [
     'profile_delete_account_button' => 'Permanently delete my account',
     'profile_delete_account_confirm' => 'Are you sure you want to delete your account? This cannot be undone.',
     'profile_account_deleted' => 'Your account has been deleted.',
+
+    /* ============ Livraison ============ */
+    'book_delivery_legend' => 'Delivery time',
+    'book_delivery_hint' => "Enter 1 day if the book is already available locally, or a longer time if it needs to be imported.",
+    'book_delivery_min_label' => 'Minimum days',
+    'book_delivery_max_label' => 'Maximum days',
+    'book_delivery_now' => 'Available, delivered within 24h',
+    'book_delivery_days' => 'Delivered within :n day(s)',
+    'book_delivery_range' => 'Delivered within :min to :max days',
+    'order_city_label' => 'Delivery city',
+    'order_city_placeholder' => 'Choose your city',
+    'order_payment_cash' => 'Cash on delivery',
+    'order_payment_cash_hint' => 'Only available for Antananarivo.',
+    'order_delivery_estimate_label' => 'Estimated delivery time',
 ];

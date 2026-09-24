@@ -373,4 +373,18 @@ return [
     'profile_delete_account_button' => 'Hamafa tanteraka ny kaontiko',
     'profile_delete_account_confirm' => 'Tena hamafa ny kaontinao ve ianao? Tsy azo averina ity fihetsika ity.',
     'profile_account_deleted' => 'Voafafa ny kaontinao.',
+
+    /* ============ Livraison ============ */
+    'book_delivery_legend' => 'Fotoana fandefasana',
+    'book_delivery_hint' => "Soraty 1 andro raha efa misy eto an-toerana ny boky, na fotoana lavabe kokoa raha mila entina avy any ivelany.",
+    'book_delivery_min_label' => 'Fotoana fara-fahakeliny (andro)',
+    'book_delivery_max_label' => 'Fotoana fara-fahabetsany (andro)',
+    'book_delivery_now' => 'Misy, hoentina ao anatin\'ny 24 ora',
+    'book_delivery_days' => 'Hoentina ao anatin\'ny :n andro',
+    'book_delivery_range' => 'Hoentina ao anatin\'ny :min hatramin\'ny :max andro',
+    'order_city_label' => 'Tanàna handefasana',
+    'order_city_placeholder' => 'Safidio ny tananao',
+    'order_payment_cash' => 'Vola mivantana amin\'ny fandefasana',
+    'order_payment_cash_hint' => 'Ho an\'i Antananarivo ihany.',
+    'order_delivery_estimate_label' => 'Fotoana fandefasana tombanana',
 ];

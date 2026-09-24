@@ -69,6 +69,11 @@
                                     </svg>
                                     {{ $book->seller->sellerProfile->nom_entreprise ?? $book->seller->name }}
                                 </a>
+
+                                {{-- ============ AJOUT : délai de livraison ============ --}}
+                                <span class="book-delivery-badge">{{ $book->delai_livraison_label }}</span>
+
+                                <div class="book-foot">
                                 <div class="book-foot">
                                     <span class="book-loc">{{ $book->seller->sellerProfile->localisation ?? '—' }}</span>
                                     @if($book->quantite > 0)
@@ -83,7 +88,8 @@
                                         data-book-image="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}"
                                         data-book-seller="{{ $book->seller->sellerProfile->nom_entreprise ?? $book->seller->name }}"
                                         data-book-price="{{ $book->prix_achat_client }}"
-                                        data-book-max="{{ $book->quantite }}">
+                                        data-book-max="{{ $book->quantite }}"
+                                        data-book-delivery="{{ $book->delai_livraison_label }}">
                                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path d="M5 12H19M12 5V19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
                                         </svg>

@@ -28,15 +28,24 @@ class OrderController extends Controller
         $data = $request->validate([
             'book_id' => ['required', 'integer', 'exists:books,id'],
             'quantite' => ['required', 'integer', 'min:1'],
+            'ville' => ['required', Rule::in(\App\Models\Setting::VILLES)],
             'mode_paiement' => ['required', Rule::in(array_keys(Setting::PAYMENT_METHODS))],
-            'reference_paiement' => ['required', 'string', 'max:80'],
+            // La référence n'est obligatoire que si ce n'est pas un paiement en espèces.
+            'reference_paiement' => ['required_unless:mode_paiement,especes', 'nullable', 'string', 'max:80'],
         ]);
+
+        // Sécurité serveur : le paiement en espèces n'est autorisé qu'à Antananarivo,
+        // même si un client contournait le JS côté front.
+        if ($data['mode_paiement'] === 'especes' && $data['ville'] !== \App\Models\Setting::VILLE_ESPECES) {
+            return back()
+                ->withErrors(['mode_paiement' => "Le paiement en espèces n'est disponible qu'à Antananarivo."])
+                ->withInput();
+        }
 
         $book = Book::with('seller')->findOrFail($data['book_id']);
 
         if ($book->prix_achat === null) {
-            return redirect()->route('profile')
-                ->with('error', __('home.order_error_not_for_sale'));
+            return redirect()->route('profile')->with('error', __('home.order_error_not_for_sale'));
         }
 
         if ($data['quantite'] > $book->quantite) {
@@ -59,13 +68,11 @@ class OrderController extends Controller
             'commission_rate' => $rate,
             'montant_vendeur' => (int) $book->prix_achat * $data['quantite'],
             'mode_paiement' => $data['mode_paiement'],
-            'reference_paiement' => $data['reference_paiement'],
+            'reference_paiement' => $data['reference_paiement'] ?? __('home.order_payment_cash'),
+            'ville' => $data['ville'],
             'statut' => Order::STATUT_DEFAUT,
         ]);
 
-        // Décrémente le stock immédiatement à la commande : la quantité est
-        // réservée pour éviter toute sur-vente. Une fois à 0, le livre passe
-        // automatiquement en « rupture de stock » côté affichage.
         $book->decrement('quantite', $data['quantite']);
 
         return redirect()->route('profile')

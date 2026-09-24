@@ -373,4 +373,18 @@ return [
     'profile_delete_account_button' => 'Supprimer définitivement mon compte',
     'profile_delete_account_confirm' => 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.',
     'profile_account_deleted' => 'Votre compte a bien été supprimé.',
+
+    /* ============ Livraison ============ */
+    'book_delivery_legend' => 'Délai de livraison',
+    'book_delivery_hint' => "Indiquez 1 jour si le livre est déjà disponible localement, ou un délai plus long s'il doit être importé de l'étranger.",
+    'book_delivery_min_label' => 'Délai minimum (jours)',
+    'book_delivery_max_label' => 'Délai maximum (jours)',
+    'book_delivery_now' => 'Disponible, livraison sous 24h',
+    'book_delivery_days' => 'Livraison sous :n jour(s)',
+    'book_delivery_range' => 'Livraison sous :min à :max jours',
+    'order_city_label' => 'Ville de livraison',
+    'order_city_placeholder' => 'Choisissez votre ville',
+    'order_payment_cash' => 'Espèces à la livraison',
+    'order_payment_cash_hint' => 'Disponible uniquement pour Antananarivo.',
+    'order_delivery_estimate_label' => 'Délai de livraison estimé',
 ];

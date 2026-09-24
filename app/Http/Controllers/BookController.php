@@ -47,7 +47,10 @@ class BookController extends Controller
             'categorie' => ['required', Rule::in(self::CATEGORIES)],
             'etat' => ['required', Rule::in(self::CONDITIONS)],
             'livraison_disponible' => ['nullable', 'boolean'],
-            // Pas de frais de livraison dans l'application : aucune validation dessus.
+            // Délai de livraison : 1 par défaut (disponible tout de suite),
+            // à monter si le livre doit être importé de l'étranger.
+            'delai_livraison_min' => ['required', 'integer', 'min:1', 'max:60'],
+            'delai_livraison_max' => ['required', 'integer', 'min:1', 'max:60', 'gte:delai_livraison_min'],
             'image' => ['nullable', 'image', 'max:4096'],
         ];
     }
@@ -74,6 +77,8 @@ class BookController extends Controller
             'etat' => $data['etat'],
             'image_path' => $imagePath,
             'livraison_disponible' => $request->boolean('livraison_disponible'),
+            'delai_livraison_min' => $data['delai_livraison_min'],
+            'delai_livraison_max' => $data['delai_livraison_max'],
         ]);
 
         return redirect()
@@ -108,6 +113,8 @@ class BookController extends Controller
             'categorie' => $data['categorie'],
             'etat' => $data['etat'],
             'livraison_disponible' => $request->boolean('livraison_disponible'),
+            'delai_livraison_min' => $data['delai_livraison_min'],
+            'delai_livraison_max' => $data['delai_livraison_max'],
         ])->save();
 
         return redirect()

@@ -18,7 +18,26 @@ class Book extends Model
         'etat',
         'image_path',
         'livraison_disponible',
+        'delai_livraison_min',   // <-- ajouter
+        'delai_livraison_max',   // <-- ajouter
     ];
+
+    /** Libellé prêt à afficher : "Disponible, livraison sous 24h" ou "Livraison sous X à Y jours". */
+    public function getDelaiLivraisonLabelAttribute(): string
+    {
+        if ($this->delai_livraison_min <= 1 && $this->delai_livraison_max <= 1) {
+            return __('home.book_delivery_now');
+        }
+
+        if ($this->delai_livraison_min == $this->delai_livraison_max) {
+            return __('home.book_delivery_days', ['n' => $this->delai_livraison_min]);
+        }
+
+        return __('home.book_delivery_range', [
+            'min' => $this->delai_livraison_min,
+            'max' => $this->delai_livraison_max,
+        ]);
+    }
 
     protected function casts(): array
     {

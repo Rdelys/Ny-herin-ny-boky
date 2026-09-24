@@ -81,6 +81,20 @@
                             </span>
                         </label>
                     </fieldset>
+                    <fieldset class="modal-fieldset">
+                        <legend>{{ __('home.book_delivery_legend') }}</legend>
+                        <p class="field-hint" style="margin:0 0 12px;">{{ __('home.book_delivery_hint') }}</p>
+                        <div class="modal-form-row">
+                            <label>{{ __('home.book_delivery_min_label') }}
+                                <input type="number" name="delai_livraison_min" min="1" max="60" value="{{ old('delai_livraison_min', 1) }}" required>
+                            </label>
+                            <label>{{ __('home.book_delivery_max_label') }}
+                                <input type="number" name="delai_livraison_max" min="1" max="60" value="{{ old('delai_livraison_max', 1) }}" required>
+                            </label>
+                        </div>
+                        @error('delai_livraison_min')<p class="modal-field-error">{{ $message }}</p>@enderror
+                        @error('delai_livraison_max')<p class="modal-field-error">{{ $message }}</p>@enderror
+                    </fieldset>
 
                     <label>{{ __('home.book_image_replace') }}
                         <input type="file" name="image" accept="image/*">

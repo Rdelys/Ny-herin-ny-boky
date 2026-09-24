@@ -7,18 +7,15 @@
     {{-- ============ SEO : titre, description, robots ============ --}}
     <title>@yield('meta_title', __('home.meta_title'))</title>
     <meta name="description" content="@yield('meta_description', __('home.meta_description'))">
-    {{-- Les pages privées (profil) passent en noindex via @@section('meta_robots'). --}}
     <meta name="robots" content="@yield('meta_robots', 'index, follow')">
     <meta name="theme-color" content="#55101d">
 
-    {{-- ============ SEO : canonical + hreflang ============ --}}
     <link rel="canonical" href="{{ url()->current() }}">
     <link rel="alternate" hreflang="mg" href="{{ url('/') }}">
     <link rel="alternate" hreflang="fr" href="{{ url('/fr') }}">
     <link rel="alternate" hreflang="en" href="{{ url('/en') }}">
     <link rel="alternate" hreflang="x-default" href="{{ url('/') }}">
 
-    {{-- ============ SEO : Open Graph ============ --}}
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Ny Herin'ny Boky">
     <meta property="og:title" content="@yield('meta_title', __('home.meta_title'))">
@@ -30,13 +27,11 @@
     <meta property="og:locale:alternate" content="mg_MG">
     <meta property="og:locale:alternate" content="en_US">
 
-    {{-- ============ SEO : Twitter / X card ============ --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('meta_title', __('home.meta_title'))">
     <meta name="twitter:description" content="@yield('meta_description', __('home.meta_description'))">
     <meta name="twitter:image" content="{{ asset('logo.png') }}">
 
-    {{-- ============ SEO : données structurées ============ --}}
     <script type="application/ld+json">
     {
         "@@context": "https://schema.org",
@@ -59,7 +54,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    {{-- Drapeaux en SVG (les emoji 🇫🇷🇲🇬🇬🇧 ne s'affichent pas sur tous les OS, ex. Windows) --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/7.2.3/css/flag-icons.min.css">
 
     <style>
@@ -105,7 +99,6 @@
             padding: 0 24px;
         }
 
-        /* ---------- header ---------- */
         .site-header{
             position: sticky;
             top: 0;
@@ -128,7 +121,6 @@
         }
         .brand img{ height: 42px; width: auto; }
 
-        /* ---- barre de recherche (header) ---- */
         .header-search{
             display: flex;
             align-items: center;
@@ -160,7 +152,6 @@
         .header-search input::placeholder{ color: rgba(246,239,221,.5); }
         .header-search-mobile{ display: none; }
 
-        /* ---------- filtres du catalogue (/livres) ---------- */
         .catalog-filters{
             display: flex;
             flex-wrap: wrap;
@@ -192,8 +183,6 @@
             box-shadow: 0 0 0 3px rgba(233,178,63,.2);
         }
 
-        /* nav now hosts links, the language dropdown AND the auth buttons,
-           so everything collapses into a single dropdown panel on mobile */
         .main-nav{
             display: flex;
             align-items: center;
@@ -213,7 +202,6 @@
             border-color: var(--gold);
         }
 
-        /* ---- language dropdown (styled, not a plain pill row) ---- */
         .lang-dropdown{ position: relative; flex-shrink: 0; }
         .lang-toggle{
             display: flex;
@@ -277,7 +265,6 @@
         .lang-menu a.active::after{ content: '✓'; font-size: .78rem; }
         .lang-option{ display: flex; align-items: center; gap: 9px; }
 
-        /* ---- auth buttons ---- */
         .auth-actions{
             display: flex;
             align-items: center;
@@ -311,7 +298,6 @@
         }
         .btn-register:hover{ background: #f0c168; box-shadow: 0 8px 18px -8px rgba(233,178,63,.6); }
 
-        /* ---- user dropdown (connecté) ---- */
         .user-dropdown{ position: relative; flex-shrink: 0; }
         .user-toggle{
             display: flex;
@@ -402,8 +388,6 @@
         .user-menu-logout svg{ flex-shrink: 0; color: var(--gold); }
         .user-menu-logout:hover{ background: rgba(246,239,221,.09); color: var(--cream); }
 
-
-        /* ---- modals connexion / inscription ---- */
         .modal-overlay{
             position: fixed;
             inset: 0;
@@ -468,7 +452,6 @@
             margin: 0 0 18px;
         }
 
-        /* ---- tabs "Devenir client" / "Devenir vendeur" ---- */
         .modal-tabs{
             display: flex;
             gap: 6px;
@@ -498,7 +481,6 @@
 
         .modal-form{ display: flex; flex-direction: column; gap: 13px; }
 
-        /* les colonnes doivent pouvoir se compresser (labels longs, mobile étroit) */
         .modal-form-row{
             display: grid;
             grid-template-columns: minmax(0,1fr) minmax(0,1fr);
@@ -570,13 +552,15 @@
         }
         .modal-fieldset > .modal-form-row{ margin: 0; }
 
-        /* ---- modal d'inscription : nettement plus large que la connexion.
-           Classe ajoutée/retirée en JS selon la vue active (voir openAuthModal). ---- */
         .modal-panel.modal-panel--wide{ max-width: 760px; padding: 38px 44px 34px; }
-        .modal-panel--wide .modal-radio-group{ flex-direction: row; }
-        .modal-panel--wide .modal-radio-group .modal-radio-card{ flex: 1; }
+        .modal-panel--wide .modal-radio-group{ flex-direction: row; flex-wrap: wrap; }
+        .modal-panel--wide .modal-radio-group .modal-radio-card{ flex: 1; min-width: 140px; }
 
-        /* mode de paiement : empilé par défaut (mobile / connexion étroite) */
+        .modal-panel--wide .modal-radio-group .modal-radio-card[data-cash="1"]{
+            flex: 1 1 100%;
+            margin-top: 4px;
+        }
+
         .modal-radio-group{ display: flex; flex-direction: column; gap: 10px; }
         .modal-radio-card{
             display: flex;
@@ -638,7 +622,6 @@
             margin: -8px 0 0;
         }
 
-        /* ---- modal de commande ---- */
         .order-book{
             display: flex;
             align-items: center;
@@ -784,7 +767,8 @@
             color: var(--ink);
             margin-bottom: 4px;
         }
-        .order-reference-field input{
+        .order-reference-field input,
+        .order-reference-field select{
             font-family: inherit;
             font-size: .92rem;
             font-weight: 400;
@@ -795,7 +779,18 @@
             color: var(--ink);
             transition: border-color .15s ease, box-shadow .15s ease;
         }
-        .order-reference-field input:focus{
+        .order-reference-field select{
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding-right: 34px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236c1524' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 13px center;
+            cursor: pointer;
+        }
+        .order-reference-field input:focus,
+        .order-reference-field select:focus{
             outline: none;
             border-color: var(--gold);
             box-shadow: 0 0 0 3px rgba(233,178,63,.22);
@@ -813,8 +808,6 @@
             .order-summary-row{ font-size: .86rem; }
         }
 
-        /* si la fenêtre est basse (zoom, petit laptop), on retombe sur le
-           scroll interne plutôt que de déborder de l'écran */
         @media (max-height: 700px){
             .modal-overlay{ align-items: flex-start; padding-top: 24px; padding-bottom: 24px; }
             .modal-panel{ max-height: calc(100vh - 48px); }
@@ -846,7 +839,6 @@
         .menu-toggle[aria-expanded="true"] span::before{ transform: translateY(8px) rotate(45deg); }
         .menu-toggle[aria-expanded="true"] span::after{ transform: translateY(-8px) rotate(-45deg); }
 
-        /* ---------- hero (image de fond, sans illustration de livre) ---------- */
         .hero{
             position: relative;
             background-image:
@@ -925,7 +917,6 @@
             height: auto;
         }
 
-        /* ---------- section shell ---------- */
         section{ padding: 76px 0; }
         .section-head{
             display: flex;
@@ -957,8 +948,6 @@
             white-space: nowrap;
         }
 
-        /* ---------- book grid — style innovant : prix flottant,
-           favoris, aperçu rapide au survol, bouton ajouter animé ---------- */
         .book-grid{
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
@@ -1133,9 +1122,21 @@
             gap: 5px;
             font-size: .76rem;
             color: #b09c8c;
-            margin: 0 0 14px;
+            margin: 0 0 8px;
         }
         .book-seller svg{ flex-shrink: 0; color: var(--gold-dim); }
+
+        .book-delivery-badge{
+            display: inline-block;
+            font-size: .72rem;
+            font-weight: 600;
+            color: var(--green-700);
+            background: rgba(92,138,55,.1);
+            padding: 3px 10px;
+            border-radius: 999px;
+            margin: 0 0 14px;
+        }
+
         .book-foot{
             display: flex;
             align-items: center;
@@ -1168,7 +1169,6 @@
         }
         .book-add:hover{ background: var(--green-700); transform: rotate(90deg); }
 
-        /* ---------- ajouter un livre (espace vendeur) ---------- */
         .flash-success{
             background: rgba(92,138,55,.12);
             border: 1px solid rgba(92,138,55,.35);
@@ -1190,7 +1190,6 @@
             margin: 0 0 24px;
         }
 
-        /* ---------- mes commandes (client & vendeur) ---------- */
         .order-status-badge{
             display: inline-block;
             font-size: .72rem;
@@ -1226,7 +1225,6 @@
         .book-delete-form{ position: absolute; top: 10px; right: 10px; z-index: 2; }
         .book-delete-form .book-wishlist{ position: static; }
 
-        /* ---------- espace vendeur : identité, tableau de bord, onglets ---------- */
         .profile-identity{
             background: #fffdf7;
             border: 1px solid rgba(85,16,29,.09);
@@ -1350,7 +1348,6 @@
             .profile-stat-grid{ grid-template-columns: 1fr; }
         }
 
-        /* ---------- tableau "Mes livres" (espace vendeur) ---------- */
         .table-scroll{ overflow-x: auto; border-radius: 16px; border: 1px solid rgba(85,16,29,.09); }
         .seller-table{
             width: 100%;
@@ -1393,7 +1390,6 @@
         .table-action-link:hover{ text-decoration: underline; }
         .table-action-danger{ color: #b3261e; }
 
-        /* ---------- pagination ---------- */
         .pager{
             display: flex;
             align-items: center;
@@ -1414,7 +1410,6 @@
         .pager-btn.disabled{ color: #b8a99b; border-color: rgba(85,16,29,.08); pointer-events: none; }
         .pager-info{ font-size: .82rem; color: #8a7a6d; }
 
-        /* ---------- variante claire des cartes vendeur (page /vendeur) ---------- */
         .seller-grid-light{
             grid-template-columns: repeat(auto-fill, 260px);
             justify-content: start;
@@ -1433,7 +1428,6 @@
         .seller-grid-light .seller-meta{ color: #7a6a5d; }
         .seller-grid-light .seller-stats{ color: var(--maroon-800); }
 
-        /* ---------- pages statiques (À propos / Confidentialité / CGV) ---------- */
         .page-banner{
             background: linear-gradient(135deg, var(--maroon-800), var(--maroon-950));
             color: var(--cream);
@@ -1574,7 +1568,6 @@
         .contact-item a, .contact-item span{ color: #4a3a30; font-size: .92rem; line-height: 1.5; }
         .contact-item a:hover{ color: var(--maroon-800); text-decoration: underline; }
 
-        /* ---------- sellers ---------- */
         .sellers{ background: var(--maroon-950); color: var(--cream); }
         .sellers .section-head h2{ color: var(--cream); }
         .sellers .section-head p{ color: rgba(246,239,221,.65); }
@@ -1629,7 +1622,6 @@
             color: var(--gold);
         }
 
-        /* ---------- CTA band ---------- */
         .cta-band{
             background: linear-gradient(120deg, var(--green-700), var(--green-500));
             color: var(--cream);
@@ -1659,7 +1651,6 @@
             color: var(--green-700);
         }
 
-        /* ---------- footer ---------- */
         footer{
             background: var(--maroon-950);
             color: rgba(246,239,221,.7);
@@ -1704,18 +1695,11 @@
             max-width: 68ch;
         }
 
-        /* =========================================================
-           RESPONSIVE — du très petit mobile aux grands écrans
-           ========================================================= */
-
-        /* Tablettes / petits laptops */
         @media (max-width: 980px){
             .seller-grid{ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
             .hero{ padding-top: 72px; }
         }
 
-        /* Le menu devient un panneau déroulant (dropdown) qui contient
-           aussi le sélecteur de langue */
         @media (max-width: 900px){
             .main-nav{
                 position: fixed;
@@ -1746,16 +1730,10 @@
                 font-size: 1.02rem;
                 border-bottom: 1px solid rgba(246,239,221,.1);
             }
-            /* le dropdown de langue devient un bloc plein-largeur, dépliable sur place */
-            /* Le bouton reste pleine largeur pour une cible tactile confortable,
-               mais le menu déroulant lui-même garde son style flottant habituel
-               (carte arrondie, ombre) et reste ancré à droite du panneau —
-               il ne s'aplatit plus en pleine largeur. */
             .main-nav .lang-dropdown{ width: 100%; margin-top: 10px; }
             .main-nav .lang-toggle{ width: 100%; justify-content: space-between; }
             .main-nav .lang-menu{ right: 0; left: auto; }
 
-            /* menu utilisateur (connecté) : même traitement */
             .main-nav .user-dropdown{ width: 100%; margin-top: 10px; }
             .main-nav .user-toggle{ width: 100%; justify-content: space-between; }
             .main-nav .user-name{
@@ -1774,7 +1752,6 @@
                 font-size: .92rem;
             }
 
-            /* boutons connexion / inscription empilés en bas du panneau */
             .main-nav .auth-actions{
                 flex-direction: column;
                 width: 100%;
@@ -1788,7 +1765,6 @@
             .menu-toggle{ display: block; }
 
             .book-grid{ grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
-            /* le survol n'existe pas au tactile : on garde ces éléments visibles */
             .book-quickview, .book-price-float{ opacity: 1; transform: none; }
             .seller-grid{ grid-template-columns: 1fr; }
             .cta-band{ padding: 30px 22px; }
@@ -1798,7 +1774,6 @@
             .header-search-mobile{ display: flex; flex: none; width: 100%; margin: 0 0 12px; max-width: none; }
         }
 
-        /* Petits téléphones */
         @media (max-width: 480px){
             .wrap{ padding: 0 16px; }
             .seller-grid-light{ grid-template-columns: 1fr; }
@@ -1818,9 +1793,6 @@
             .modal-tab{ padding: 9px 8px; font-size: .8rem; }
         }
 
-        /* Palier intermédiaire : phablettes / petits écrans (formulaires,
-           pages statiques, catalogue) — évite le texte/champs trop serrés
-           entre 480 et 600px, avant même le point de rupture "petit téléphone" */
         @media (max-width: 600px){
             .modal-form-row{ grid-template-columns: 1fr; gap: 16px; }
 
@@ -1835,13 +1807,9 @@
             .content-card, .feature-card, .step-card{ padding: 20px; }
             .page-banner{ padding: 48px 0 40px; }
 
-            /* moins de colonnes visibles dans le tableau "Mes livres" pour
-               limiter le scroll horizontal sur petit écran */
             .seller-table th:nth-child(3), .seller-table td:nth-child(3){ display: none; }
         }
 
-
-        /* Très petits téléphones */
         @media (max-width: 360px){
             .book-grid{ grid-template-columns: 1fr 1fr; gap: 10px; }
             .book-quickview{ display: none; }
@@ -1855,8 +1823,6 @@
             outline: 2px solid var(--gold);
             outline-offset: 2px;
         }
-
-        /* ---- À ajouter dans layouts/app.blade.php, dans le <style> existant ---- */
 
 .commission-sticker{
     display: inline-flex;
@@ -2038,7 +2004,6 @@
                 });
             }
 
-            // ---- menu utilisateur (même comportement que le dropdown de langue) ----
             var userToggle = document.getElementById('userToggle');
             var userMenu = document.getElementById('userMenu');
             if (userToggle && userMenu) {
@@ -2118,7 +2083,9 @@
                 }
             });
 
-            // ---- modal de commande (statique pour l'instant) ----
+            // ==========================================================
+            // ---- modal de commande ----
+            // ==========================================================
             var orderOverlay = document.getElementById('orderModalOverlay');
             var orderClose = document.getElementById('orderModalClose');
             var orderTitle = document.getElementById('orderModalTitle');
@@ -2139,6 +2106,13 @@
             var orderDescription = document.getElementById('orderBookDescription');
             var orderAvailableQty = document.getElementById('orderAvailableQty');
             var orderBookId = document.getElementById('orderBookId');
+            var orderDeliveryEstimate = document.getElementById('orderDeliveryEstimate');
+            var orderBookDelivery = document.getElementById('orderBookDelivery');
+            var orderVilleSelect = document.getElementById('orderVilleSelect');
+            var orderReferenceWrap = document.getElementById('orderReferenceWrap');
+            var orderPaymentReference = document.getElementById('orderPaymentReference');
+            var orderPaymentReferenceError = document.getElementById('orderPaymentReferenceError');
+            var orderForm = document.getElementById('orderForm');
 
             var currentUnitPrice = 0;
 
@@ -2152,10 +2126,9 @@
                 orderTotalPrice.textContent = formatAr(currentUnitPrice * qty);
             }
 
-            // Attention : la modal d'inscription vendeur utilise elle aussi un
-            // groupe de radios name="mode_paiement" (commission / abonnement),
-            // placé plus haut dans le DOM. Toutes les recherches ci-dessous
-            // sont donc limitées à la modal de commande.
+            // La modal d'inscription vendeur utilise elle aussi un groupe de
+            // radios name="mode_paiement" (commission / abonnement) : toutes
+            // les recherches ci-dessous sont limitées à la modal de commande.
             function orderPaymentRadios(){
                 return orderOverlay ? orderOverlay.querySelectorAll('input[name="mode_paiement"]') : [];
             }
@@ -2168,6 +2141,40 @@
                 if (orderPaymentName) {
                     orderPaymentName.textContent = checked ? (checked.getAttribute('data-payment-name') || '—') : '—';
                 }
+            }
+
+            // Version unique : masque à la fois le bloc "Number to contact /
+            // Account holder name" ET le champ de référence de paiement
+            // quand "Espèces" est sélectionné.
+            function toggleReferenceRequirement(){
+                var checked = orderOverlay ? orderOverlay.querySelector('input[name="mode_paiement"]:checked') : null;
+                var isCash = checked && checked.value === 'especes';
+
+                var orderPaymentNumberRow = document.getElementById('orderPaymentNumberRow');
+                if (orderPaymentNumberRow) orderPaymentNumberRow.style.display = isCash ? 'none' : '';
+
+                if (orderReferenceWrap) orderReferenceWrap.style.display = isCash ? 'none' : '';
+                if (orderPaymentReference) orderPaymentReference.required = !isCash;
+            }
+
+            // Ville => filtre la disponibilité de l'option "Espèces".
+            function updateCashAvailability(){
+                if (!orderVilleSelect) return;
+                var option = orderVilleSelect.options[orderVilleSelect.selectedIndex];
+                var cashAllowed = option && option.getAttribute('data-cash-allowed') === '1';
+
+                document.querySelectorAll('[data-payment-option][data-cash="1"]').forEach(function(label){
+                    label.style.display = cashAllowed ? '' : 'none';
+                    var radio = label.querySelector('input[type="radio"]');
+                    if (!cashAllowed && radio.checked) {
+                        // Si "espèces" était choisi et n'est plus valide (ville changée),
+                        // on retombe sur le premier moyen mobile disponible.
+                        var fallback = document.querySelector('[data-payment-option][data-cash="0"] input[type="radio"]');
+                        if (fallback) fallback.checked = true;
+                        updateOrderPaymentNumber();
+                        toggleReferenceRequirement();
+                    }
+                });
             }
 
             function setOptionalText(el, value){
@@ -2202,6 +2209,10 @@
                 setOptionalText(orderCondition, trigger.getAttribute('data-book-condition'));
                 setOptionalText(orderDescription, trigger.getAttribute('data-book-description'));
 
+                var deliveryLabel = trigger.getAttribute('data-book-delivery') || '—';
+                if (orderDeliveryEstimate) orderDeliveryEstimate.textContent = deliveryLabel;
+                setOptionalText(orderBookDelivery, deliveryLabel);
+
                 if (orderAvailableQty) {
                     orderAvailableQty.textContent = maxQty;
                 }
@@ -2212,17 +2223,21 @@
                     updateOrderTotal();
                 }
 
+                if (orderVilleSelect) {
+                    orderVilleSelect.value = '';
+                }
+                updateCashAvailability();
+
                 var firstPayment = orderPaymentRadios()[0];
                 if (firstPayment) firstPayment.checked = true;
                 updateOrderPaymentNumber();
+                toggleReferenceRequirement();
 
-                var referenceInput = document.getElementById('orderPaymentReference');
-                var referenceError = document.getElementById('orderPaymentReferenceError');
-                if (referenceInput) {
-                    referenceInput.value = '';
-                    referenceInput.classList.remove('has-error');
+                if (orderPaymentReference) {
+                    orderPaymentReference.value = '';
+                    orderPaymentReference.classList.remove('has-error');
                 }
-                if (referenceError) referenceError.style.display = 'none';
+                if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = 'none';
 
                 orderOverlay.classList.add('open');
                 document.body.style.overflow = 'hidden';
@@ -2265,18 +2280,21 @@
             }
             orderPaymentRadios().forEach(function(radio){
                 radio.addEventListener('change', updateOrderPaymentNumber);
+                radio.addEventListener('change', toggleReferenceRequirement);
             });
 
-            var orderForm = document.getElementById('orderForm');
-            var orderPaymentReference = document.getElementById('orderPaymentReference');
-            var orderPaymentReferenceError = document.getElementById('orderPaymentReferenceError');
+            if (orderVilleSelect) {
+                orderVilleSelect.addEventListener('change', function(){
+                    updateCashAvailability();
+                });
+            }
 
             if (orderForm) {
                 orderForm.addEventListener('submit', function(e){
-                    // Référence de paiement obligatoire avant l'envoi (le
-                    // client doit avoir reçu le SMS de confirmation de son
-                    // opérateur avant de valider la commande).
-                    if (orderPaymentReference && orderPaymentReference.value.trim() === '') {
+                    var checked = orderOverlay.querySelector('input[name="mode_paiement"]:checked');
+                    var isCash = checked && checked.value === 'especes';
+
+                    if (!isCash && orderPaymentReference && orderPaymentReference.value.trim() === '') {
                         e.preventDefault();
                         orderPaymentReference.classList.add('has-error');
                         if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = '';

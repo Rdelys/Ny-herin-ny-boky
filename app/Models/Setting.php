@@ -10,9 +10,10 @@ class Setting extends Model
     protected $fillable = ['key', 'value'];
 
     public const PAYMENT_METHODS = [
-        'mvola'  => 'MVola',
-        'orange' => 'Orange Money',
-        'airtel' => 'Airtel Money',
+        'mvola'   => 'MVola',
+        'orange'  => 'Orange Money',
+        'airtel'  => 'Airtel Money',
+        'especes' => 'Espèces à la livraison',
     ];
 
     public static function get(string $key, $default = null)
@@ -87,4 +88,16 @@ class Setting extends Model
             return $accounts;
         });
     }
+
+    /** Villes desservies ; seule Antananarivo autorise le paiement espèces. */
+    public const VILLES = [
+        'Antananarivo',
+        'Antsiranana',
+        'Mahajanga',
+        'Toamasina',
+        'Toliara',
+        'Fianarantsoa',
+    ];
+
+    public const VILLE_ESPECES = 'Antananarivo';
 }

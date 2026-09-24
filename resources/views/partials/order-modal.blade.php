@@ -1,28 +1,9 @@
-{{-- ============ MODAL DE COMMANDE ============ --}}
-{{-- Ouverte depuis les boutons "aperçu rapide" / "ajouter" des cartes livres,
-     partout où elles apparaissent (accueil, catalogue, fiche vendeur).
-     Les données du livre sont lues depuis les attributs data-* du bouton
-     cliqué (voir openOrderModal() dans layouts/app.blade.php).
-
-     Le formulaire est un vrai POST vers orders.store : la commande est
-     enregistrée en base avec le statut « en attente de livraison », et le
-     client la retrouve sur son profil.
-
-     Les numéros mobile money ET le nom du titulaire de la puce viennent des
-     paramètres admin (Setting::paymentAccounts()) : l'admin les modifie
-     depuis /admin/parametres, sans toucher au code.
-
-     Le numéro et le nom du titulaire sont toujours affichés dès qu'un
-     opérateur est configuré côté admin, quel que soit le statut du
-     visiteur. Le formulaire de commande (bouton "Confirmer", champ
-     référence...) reste lui réservé aux personnes connectées avec un
-     compte CLIENT (pas vendeur, pas invité) : sinon on affiche une
-     invitation à se connecter / s'inscrire à la place. --}}
 @php
     $canOrder = auth()->check() && auth()->user()->isClient();
     $paymentAccounts = \App\Models\Setting::paymentAccounts();
-    // On ne propose que les opérateurs dont le numéro est renseigné en admin.
     $paymentAccounts = array_filter($paymentAccounts, fn ($a) => $a['numero'] !== '');
+    $villes = \App\Models\Setting::VILLES;
+    $villeEspeces = \App\Models\Setting::VILLE_ESPECES;
 @endphp
 
 <div class="modal-overlay" id="orderModalOverlay">
@@ -40,6 +21,7 @@
                 <div class="order-book-badges">
                     <span class="book-genre" id="orderBookCategory" style="margin:0;"></span>
                     <span class="book-genre" id="orderBookCondition" style="margin:0; background: rgba(233,178,63,.18); color:#8a5f14;"></span>
+                    <span class="book-genre" id="orderBookDelivery" style="margin:0; background: rgba(92,138,55,.14); color:#395e26;"></span>
                 </div>
             </div>
         </div>
@@ -63,6 +45,11 @@
                 <strong id="orderAvailableQty">—</strong>
             </div>
 
+            <div class="order-summary-row">
+                <span>{{ __('home.order_delivery_estimate_label') }}</span>
+                <strong id="orderDeliveryEstimate">—</strong>
+            </div>
+
             @if($canOrder && count($paymentAccounts))
                 <div class="order-summary-row">
                     <span>{{ __('home.order_quantity_label') }}</span>
@@ -81,15 +68,11 @@
         </div>
 
         @if(count($paymentAccounts))
-            {{-- Numéro ET nom du titulaire de la puce : toujours visibles dès
-                 qu'un opérateur est configuré côté admin, même pour un
-                 visiteur non connecté (pas de formulaire de commande dans ce
-                 cas, mais on renseigne déjà où envoyer l'argent). --}}
             <fieldset class="modal-fieldset">
                 <legend>{{ __('home.order_payment_legend') }}</legend>
-                <div class="modal-radio-group order-payment-group">
+                <div class="modal-radio-group order-payment-group" id="orderPaymentGroup">
                     @foreach($paymentAccounts as $key => $account)
-                        <label class="modal-radio-card">
+                        <label class="modal-radio-card" data-payment-option data-cash="0">
                             <input type="radio" name="mode_paiement" value="{{ $key }}"
                                 data-payment-number="{{ $account['numero'] }}"
                                 data-payment-name="{{ $account['nom'] }}"
@@ -97,10 +80,21 @@
                             <span><strong>{{ $account['label'] }}</strong></span>
                         </label>
                     @endforeach
+
+                    {{-- Espèces : masqué par défaut, montré uniquement si la
+                         ville sélectionnée est Antananarivo (voir le JS). --}}
+                    <label class="modal-radio-card" data-payment-option data-cash="1" style="display:none;">
+                        <input type="radio" name="mode_paiement" value="especes"
+                            data-payment-number="" data-payment-name="">
+                        <span><strong>{{ __('home.order_payment_cash') }}</strong>
+                            <small>{{ __('home.order_payment_cash_hint') }}</small>
+                        </span>
+                    </label>
                 </div>
             </fieldset>
 
-            <div class="order-payment-number">
+            {{-- Masqué automatiquement si "Espèces" est choisi (voir JS). --}}
+            <div class="order-payment-number" id="orderPaymentNumberRow">
                 <div>
                     <span>{{ __('home.order_payment_number_label') }}</span>
                     <strong id="orderPaymentNumber">—</strong>
@@ -113,23 +107,37 @@
         @endif
 
         @if($canOrder && count($paymentAccounts))
-            {{-- ---- client connecté : formulaire de commande complet ---- --}}
+            {{-- ---- ville de livraison : maintenant APRÈS le mode de paiement ---- --}}
             <label class="order-reference-field">
-                {{ __('home.order_payment_reference_label') }}
-                <input type="text" name="reference_paiement" id="orderPaymentReference" maxlength="80" placeholder="{{ __('home.order_payment_reference_placeholder') }}">
+                {{ __('home.order_city_label') }}
+                <select name="ville" id="orderVilleSelect" required>
+                    <option value="">{{ __('home.order_city_placeholder') }}</option>
+                    @foreach($villes as $ville)
+                        <option value="{{ $ville }}" data-cash-allowed="{{ $ville === $villeEspeces ? '1' : '0' }}">{{ $ville }}</option>
+                    @endforeach
+                </select>
             </label>
-            <p class="modal-field-error" id="orderPaymentReferenceError" style="display:none;">{{ __('home.order_payment_reference_error') }}</p>
+            @error('ville')<p class="modal-field-error">{{ $message }}</p>@enderror
+        @endif
+
+        @if($canOrder && count($paymentAccounts))
+            {{-- Référence de paiement : masquée/non requise si "espèces". --}}
+            <div id="orderReferenceWrap">
+                <label class="order-reference-field">
+                    {{ __('home.order_payment_reference_label') }}
+                    <input type="text" name="reference_paiement" id="orderPaymentReference" maxlength="80" placeholder="{{ __('home.order_payment_reference_placeholder') }}">
+                </label>
+                <p class="modal-field-error" id="orderPaymentReferenceError" style="display:none;">{{ __('home.order_payment_reference_error') }}</p>
+            </div>
 
             <button type="submit" class="btn-modal-primary" id="orderConfirmButton">{{ __('home.order_confirm_button') }}</button>
             <p class="order-static-note">{{ __('home.order_pending_note') }}</p>
             </form>
         @elseif($canOrder)
-            {{-- client connecté mais aucun numéro de paiement configuré côté admin --}}
             <div class="order-login-prompt">
                 <p>{{ __('home.order_no_payment_account') }}</p>
             </div>
         @else
-            {{-- ---- invité, ou connecté en tant que vendeur : invitation à se connecter ---- --}}
             <div class="order-login-prompt">
                 <p>
                     @auth
