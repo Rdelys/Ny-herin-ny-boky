@@ -31,6 +31,12 @@ Route::get('/books', [BookController::class, 'index']);
 Route::get('/books/{book}', [BookController::class, 'show']);
 Route::get('/categories', [BookController::class, 'categories']);
 Route::get('/payment-accounts', [BookController::class, 'paymentAccounts']);
+Route::get('/villes', [BookController::class, 'villes']); // NOUVEAU : liste des villes pour la commande
+
+// NOUVEAU : commande — publique, comme sur le site. Le contrôleur détecte
+// lui-même si un jeton Sanctum valide est fourni (achat connecté) ou non
+// (achat invité), sans passer par le middleware auth:sanctum.
+Route::post('/orders', [OrderController::class, 'store']);
 
 /*
 |--------------------------------------------------------------------------
@@ -45,5 +51,5 @@ Route::middleware(['auth:sanctum', 'client.api'])->group(function () {
 
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{order}', [OrderController::class, 'show']);
-    Route::post('/orders', [OrderController::class, 'store']);
+    // POST /orders retiré d'ici : il est maintenant public, voir plus haut.
 });

@@ -86,6 +86,19 @@ class BookController extends Controller
         return response()->json(['data' => $accounts]);
     }
 
+    /**
+     * GET /api/villes
+     * Liste des villes de livraison + celle où le paiement en espèces est
+     * autorisé, nécessaires à l'écran de commande (achat invité ou connecté).
+     */
+    public function villes(): JsonResponse
+    {
+        return response()->json([
+            'data' => Setting::VILLES,
+            'ville_especes' => Setting::VILLE_ESPECES,
+        ]);
+    }
+
     protected function formatBook(Book $book, bool $withDetails = false): array
     {
         $seller = $book->seller;
