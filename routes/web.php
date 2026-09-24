@@ -50,6 +50,19 @@ Route::put('/profil/vendeur', [ProfileController::class, 'updateSeller'])
     ->middleware('auth')
     ->name('profile.seller.update');
 
+    // À côté des routes /profil existantes
+Route::put('/profil/client', [ProfileController::class, 'updateClient'])
+    ->middleware('auth')
+    ->name('profile.client.update');
+
+Route::put('/profil/mot-de-passe', [ProfileController::class, 'updatePassword'])
+    ->middleware('auth')
+    ->name('profile.password.update');
+
+Route::delete('/profil', [ProfileController::class, 'destroyAccount'])
+    ->middleware('auth')
+    ->name('profile.destroy');
+    
 // Passage de commande depuis la modal (client connecté uniquement)
 Route::post('/commandes', [OrderController::class, 'store'])
     ->middleware('auth')

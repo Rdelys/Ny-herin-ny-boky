@@ -360,4 +360,17 @@ return [
     'footer_newsletter_button' => "S'abonner",
     'newsletter_success' => 'Merci ! Vous êtes bien inscrit à la newsletter.',
     'newsletter_already' => 'Cette adresse est déjà inscrite à la newsletter.',
+
+    /* ============ Profil : suppression du compte ============ */
+    'profile_change_password' => 'Changer le mot de passe',
+    'profile_current_password' => 'Mot de passe actuel',
+    'profile_new_password' => 'Nouveau mot de passe',
+    'profile_new_password_confirm' => 'Confirmer le nouveau mot de passe',
+    'profile_password_updated' => 'Votre mot de passe a bien été modifié.',
+    'profile_delete_account_title' => 'Supprimer mon compte',
+    'profile_delete_account_text' => 'Cette action est définitive : votre compte et vos informations personnelles seront supprimés. Vos commandes passées restent visibles pour le suivi comptable.',
+    'profile_delete_account_password_label' => 'Confirmez avec votre mot de passe',
+    'profile_delete_account_button' => 'Supprimer définitivement mon compte',
+    'profile_delete_account_confirm' => 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.',
+    'profile_account_deleted' => 'Votre compte a bien été supprimé.',
 ];

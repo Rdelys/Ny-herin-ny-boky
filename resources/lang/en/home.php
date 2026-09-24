@@ -360,4 +360,17 @@ return [
     'footer_newsletter_button' => 'Subscribe',
     'newsletter_success' => 'Thanks! You are now subscribed to the newsletter.',
     'newsletter_already' => 'This email is already subscribed to the newsletter.',
+
+    /* ============ Profile: account deletion ============ */
+    'profile_change_password' => 'Change password',
+    'profile_current_password' => 'Current password',
+    'profile_new_password' => 'New password',
+    'profile_new_password_confirm' => 'Confirm new password',
+    'profile_password_updated' => 'Your password has been updated.',
+    'profile_delete_account_title' => 'Delete my account',
+    'profile_delete_account_text' => 'This is permanent: your account and personal information will be deleted. Past orders remain visible for accounting purposes.',
+    'profile_delete_account_password_label' => 'Confirm with your password',
+    'profile_delete_account_button' => 'Permanently delete my account',
+    'profile_delete_account_confirm' => 'Are you sure you want to delete your account? This cannot be undone.',
+    'profile_account_deleted' => 'Your account has been deleted.',
 ];

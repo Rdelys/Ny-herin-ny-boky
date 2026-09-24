@@ -1970,6 +1970,18 @@
     .foot-newsletter-form button{ width: 100%; }
 }
 
+.btn-danger-outline{
+    background: transparent;
+    color: #b3261e;
+    border: 1px solid rgba(179,38,30,.35);
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: .92rem;
+    transition: background .15s ease, transform .15s ease;
+}
+.btn-danger-outline:hover{ background: rgba(179,38,30,.07); transform: translateY(-1px); }
+
     </style>
     @stack('styles')
     @stack('head')

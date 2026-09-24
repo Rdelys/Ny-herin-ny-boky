@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -87,4 +90,71 @@ class ProfileController extends Controller
             ->route('profile', ['tab' => 'profil'])
             ->with('success', __('home.profile_updated'));
     }
+
+     public function updateClient(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        abort_unless($user->isClient(), 403);
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:120'],
+            'email' => ['required', 'email', 'max:190', Rule::unique('users', 'email')->ignore($user->id)],
+            'localisation' => ['nullable', 'string', 'max:160'],
+            'motif_inscription' => ['nullable', 'string', 'max:255'],
+            'types_livres_recherches' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $user->update([
+            'name' => $data['name'],
+            'email' => $data['email'],
+        ]);
+
+        $user->buyerProfile()->updateOrCreate([], [
+            'localisation' => $data['localisation'] ?? null,
+            'motif_inscription' => $data['motif_inscription'] ?? null,
+            'types_livres_recherches' => $data['types_livres_recherches'] ?? null,
+        ]);
+
+        return redirect()
+            ->route('profile', ['tab' => 'profil'])
+            ->with('success', __('home.profile_updated'));
+    }
+
+     public function updatePassword(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Password::min(8)],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($data['password']),
+        ]);
+
+        return redirect()
+            ->route('profile', ['tab' => 'profil'])
+            ->with('success', __('home.profile_password_updated'));
+    }
+
+    public function destroyAccount(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'password_confirm' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        $user->buyerProfile()?->delete();
+        $user->sellerProfile()?->delete();
+
+        Auth::logout();
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('success', __('home.profile_account_deleted'));
+    }
+
 }

@@ -360,4 +360,17 @@ return [
     'footer_newsletter_button' => 'Hisoratra anarana',
     'newsletter_success' => 'Misaotra! Voasoratra ho mpanaraka ny newsletter ianao.',
     'newsletter_already' => 'Efa voasoratra amin\'ny newsletter ity adiresy ity.',
+
+    /* ============ Profile: account deletion ============ */
+    'profile_change_password' => 'Hanova tenimiafina',
+    'profile_current_password' => 'Tenimiafina ankehitriny',
+    'profile_new_password' => 'Tenimiafina vaovao',
+    'profile_new_password_confirm' => 'Hamerina ny tenimiafina vaovao',
+    'profile_password_updated' => 'Voaova soa aman-tsara ny tenimiafinao.',
+    'profile_delete_account_title' => 'Hamafa ny kaontiko',
+    'profile_delete_account_text' => 'Tsy azo averina ity fihetsika ity : ho fafana ny kaontinao sy ny mombamomba anao. Ny baiko efa vitanao dia mbola hita ho an\'ny fitantanana.',
+    'profile_delete_account_password_label' => 'Hamafiso amin\'ny tenimiafinao',
+    'profile_delete_account_button' => 'Hamafa tanteraka ny kaontiko',
+    'profile_delete_account_confirm' => 'Tena hamafa ny kaontinao ve ianao? Tsy azo averina ity fihetsika ity.',
+    'profile_account_deleted' => 'Voafafa ny kaontinao.',
 ];
