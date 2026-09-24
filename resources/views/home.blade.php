@@ -133,38 +133,6 @@
         </div>
     </section>
 
-    {{-- ============ VENDEURS DISPONIBLES (dynamique, depuis la BDD) ============ --}}
-    <section class="sellers">
-        <div class="wrap">
-            <div class="section-head">
-                <div>
-                    <h2>{{ __('home.sellers_heading') }}</h2>
-                    <p>{{ __('home.sellers_subheading') }}</p>
-                </div>
-                <a href="{{ route('sellers.index') }}" class="see-all">{{ __('home.sellers_see_all') }}</a>
-            </div>
-
-            @if($sellers->isEmpty())
-                <p style="color:rgba(246,239,221,.65);">{{ __('home.sellers_none_yet') }}</p>
-            @else
-                <div class="seller-grid">
-                    @foreach($sellers as $seller)
-                        <a href="{{ route('sellers.show', $seller) }}" class="seller-card">
-                            <div class="seller-avatar">{{ strtoupper(substr($seller->sellerProfile->nom_entreprise ?? $seller->name, 0, 1)) }}</div>
-                            <div>
-                                <h3 class="seller-name">{{ $seller->sellerProfile->nom_entreprise ?? $seller->name }}</h3>
-                                <p class="seller-meta">{{ $seller->sellerProfile->localisation ?? '—' }}</p>
-                                <div class="seller-stats">
-                                    <span>{{ $seller->books_count }} {{ __('home.sellers_books_count') }}</span>
-                                </div>
-                            </div>
-                        </a>
-                    @endforeach
-                </div>
-            @endif
-        </div>
-    </section>
-
     {{-- ============ CTA BAND ============ --}}
     <section>
         <div class="wrap">

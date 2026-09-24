@@ -23,7 +23,7 @@
             <ul>
                 <li><a href="{{ url('/') }}">{{ __('home.nav_home') }}</a></li>
                 <li><a href="{{ route('books.index') }}">{{ __('home.nav_books') }}</a></li>
-                <li><a href="{{ url('/vendeur') }}">{{ __('home.nav_seller') }}</a></li>
+                <!-- <li><a href="{{ url('/vendeur') }}">{{ __('home.nav_seller') }}</a></li> -->
             </ul>
 
             {{-- Recherche repliée dans le panneau mobile --}}
