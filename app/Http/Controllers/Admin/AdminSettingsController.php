@@ -3,18 +3,30 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\NewsletterSubscriber; // <-- ajouter cet import
 use App\Models\Setting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse; // <-- ajouter
+use App\Mail\NewsletterMail;      // <-- ajouter
+use Illuminate\Support\Facades\Mail; // <-- ajouter
+
 
 class AdminSettingsController extends Controller
 {
-    public function edit(): View
+     public function edit(): View
     {
         return view('admin.parametres', [
             'tiers'           => Setting::commissionTiers(),
             'paymentAccounts' => Setting::paymentAccounts(),
+
+            // ---- Newsletter (nom de paginator dédié pour ne pas
+            // interférer si une autre pagination arrive un jour sur
+            // cette page) ----
+            'newsletterSubscribers' => NewsletterSubscriber::latest()
+                ->paginate(10, ['*'], 'newsletter_page'),
+            'newsletterTotal' => NewsletterSubscriber::count(),
         ]);
     }
 
@@ -68,5 +80,60 @@ class AdminSettingsController extends Controller
         return redirect()
             ->route('admin.parametres')
             ->with('success', 'Numéros de paiement mis à jour.');
+    }
+
+    public function exportNewsletter(): StreamedResponse
+    {
+        $filename = 'newsletter-abonnes-' . now()->format('Y-m-d') . '.csv';
+
+        return response()->streamDownload(function () {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['Email', 'Inscrit le']);
+
+            NewsletterSubscriber::orderBy('created_at')
+                ->chunk(200, function ($subscribers) use ($handle) {
+                    foreach ($subscribers as $subscriber) {
+                        fputcsv($handle, [
+                            $subscriber->email,
+                            $subscriber->created_at->format('d/m/Y H:i'),
+                        ]);
+                    }
+                });
+
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
+    }
+
+    public function destroyNewsletterSubscriber(NewsletterSubscriber $subscriber): RedirectResponse
+    {
+        $email = $subscriber->email;
+        $subscriber->delete();
+
+        return redirect()->route('admin.parametres')
+            ->with('success', 'Abonné « ' . $email . ' » retiré de la newsletter.');
+    }
+    
+    public function sendNewsletter(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'newsletter_subject' => ['required', 'string', 'max:150'],
+            'newsletter_message' => ['required', 'string', 'max:5000'],
+        ]);
+
+        $emails = NewsletterSubscriber::pluck('email');
+
+        if ($emails->isEmpty()) {
+            return redirect()->route('admin.parametres')
+                ->with('error', "Aucun abonné à qui envoyer pour l'instant.");
+        }
+
+        foreach ($emails->chunk(50) as $lot) {
+            Mail::to(config('mail.from.address'))
+                ->bcc($lot->all())
+                ->send(new NewsletterMail($data['newsletter_subject'], $data['newsletter_message']));
+        }
+
+        return redirect()->route('admin.parametres')
+            ->with('success', "Email envoyé à {$emails->count()} abonné(s).");
     }
 }

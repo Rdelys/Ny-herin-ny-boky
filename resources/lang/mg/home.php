@@ -353,4 +353,11 @@ return [
     'meta_seller_description' => "Ny boky rehetra avy amin'i :name:location ao amin'ny Ny Herin'ny Boky. Boky :count azo vidina, aterina manerana an'i Madagasikara.",
     'meta_privacy_description' => "Ny fomba anangonan'ny Ny Herin'ny Boky, ampiasany sy iarovany ny angon-drakitra manokana momba anao.",
 
+    /* ============ Newsletter ============ */
+    'footer_newsletter_title' => 'Mba hahafantatra vaovao',
+    'footer_newsletter_subtitle' => 'Ny vaovaon\'ny boky, mivantana amin\'ny mailakao.',
+    'footer_newsletter_placeholder' => 'Ny adiresy mailakao',
+    'footer_newsletter_button' => 'Hisoratra anarana',
+    'newsletter_success' => 'Misaotra! Voasoratra ho mpanaraka ny newsletter ianao.',
+    'newsletter_already' => 'Efa voasoratra amin\'ny newsletter ity adiresy ity.',
 ];

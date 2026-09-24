@@ -353,4 +353,11 @@ return [
     'meta_seller_description' => "All books from :name:location on Ny Herin'ny Boky. :count book(s) available to buy, delivered across Madagascar.",
     'meta_privacy_description' => "How Ny Herin'ny Boky collects, uses and protects your personal data.",
 
+    /* ============ Newsletter ============ */
+    'footer_newsletter_title' => 'Stay in the loop',
+    'footer_newsletter_subtitle' => 'New books and updates, straight to your inbox.',
+    'footer_newsletter_placeholder' => 'Your email address',
+    'footer_newsletter_button' => 'Subscribe',
+    'newsletter_success' => 'Thanks! You are now subscribed to the newsletter.',
+    'newsletter_already' => 'This email is already subscribed to the newsletter.',
 ];

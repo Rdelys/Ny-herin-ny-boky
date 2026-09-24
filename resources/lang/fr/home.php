@@ -353,4 +353,11 @@ return [
     'meta_seller_description' => "Tous les livres de :name:location sur Ny Herin'ny Boky. :count livre(s) disponibles à l'achat, livrés partout à Madagascar.",
     'meta_privacy_description' => "Comment Ny Herin'ny Boky collecte, utilise et protège vos données personnelles.",
 
+    /* ============ Newsletter ============ */
+    'footer_newsletter_title' => 'Restez informé',
+    'footer_newsletter_subtitle' => 'Les nouveautés du catalogue, directement par email.',
+    'footer_newsletter_placeholder' => 'Votre adresse email',
+    'footer_newsletter_button' => "S'abonner",
+    'newsletter_success' => 'Merci ! Vous êtes bien inscrit à la newsletter.',
+    'newsletter_already' => 'Cette adresse est déjà inscrite à la newsletter.',
 ];

@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminSettingsController;
+use App\Http\Controllers\NewsletterController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -30,6 +31,10 @@ Route::post('/connexion', [AuthController::class, 'login'])->name('login');
 Route::post('/inscription/client', [AuthController::class, 'registerClient'])->name('register.client');
 Route::post('/inscription/vendeur', [AuthController::class, 'registerSeller'])->name('register.seller');
 Route::post('/deconnexion', [AuthController::class, 'logout'])->name('logout');
+
+// Public, juste après la route logout par exemple
+Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.subscribe');
+
 
 // SEO : sitemap et robots.txt générés depuis la base (fiches vendeurs
 // incluses automatiquement).
@@ -112,4 +117,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('parametres.paiement');
 
     });
+
+    // ---- Dans le groupe admin, à l'intérieur de Route::middleware('admin')->group(...) ----
+// À côté des routes /parametres existantes :
+Route::get('/parametres/newsletter/export', [AdminSettingsController::class, 'exportNewsletter'])
+    ->name('parametres.newsletter.export');
+Route::delete('/parametres/newsletter/{subscriber}', [AdminSettingsController::class, 'destroyNewsletterSubscriber'])
+    ->name('parametres.newsletter.destroy');
+
+// Dans le groupe admin, à côté des routes /parametres/newsletter/... existantes
+Route::post('/parametres/newsletter/envoyer', [AdminSettingsController::class, 'sendNewsletter'])
+    ->name('parametres.newsletter.send');
+    
 });
