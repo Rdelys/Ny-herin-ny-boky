@@ -387,4 +387,17 @@ return [
     'order_payment_cash' => 'Espèces à la livraison',
     'order_payment_cash_hint' => 'Disponible uniquement pour Antananarivo.',
     'order_delivery_estimate_label' => 'Délai de livraison estimé',
+'order_download_invoice' => 'Télécharger la facture',
+    /* ============ Admin : commandes ============ */
+    'order_guest_legend' => 'Vos coordonnées',
+'order_guest_name_label' => 'Nom complet',
+'order_guest_phone_label' => 'Téléphone',
+'order_guest_address_label' => 'Adresse de livraison',
+'order_guest_address_placeholder' => 'Quartier, rue, point de repère...',
+'order_guest_email_label' => 'Email (facultatif)',
+'order_guest_email_placeholder' => 'Pour recevoir la confirmation',
+'order_guest_account_hint' => 'Vous voulez suivre vos commandes plus tard ?',
+'order_guest_account_link' => 'Créer un compte',
+'order_guest_success_title' => 'Commande enregistrée !',
+'order_guest_success_hint' => "Notez bien votre référence — notre équipe vous contactera au numéro indiqué pour confirmer la livraison.",
 ];

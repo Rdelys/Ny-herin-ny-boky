@@ -45,6 +45,7 @@
                             <th>Paiement client</th>
                             <th>Montant</th>
                             <th>Statut / Livreur</th>
+                            <th>Facture</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -64,8 +65,11 @@
                                 </td>
                                 <td data-label="Acheteur">
                                     <div>
-                                        {{ $order->buyer->name }}<br>
-                                        <span class="admin-table-sub">{{ $order->buyer->email }}</span>
+                                        {{ $order->buyer_name }}<br>
+                                        <span class="admin-table-sub">{{ $order->buyer_contact }}</span>
+                                        @if($order->isGuestOrder())
+                                            <br><span class="admin-badge" style="background:rgba(233,178,63,.2); color:#8a5f14;">Invité</span>
+                                        @endif
                                     </div>
                                 </td>
                                 <td data-label="Vendeur">
@@ -103,6 +107,11 @@
 
                                         <button type="submit" class="admin-btn" style="margin-top:8px;">Mettre à jour</button>
                                     </form>
+                                </td>
+                                <td data-label="Facture">
+                                    @if($order->facture_url)
+                                        <a href="{{ $order->facture_url }}" target="_blank" class="admin-btn admin-btn-ghost">Voir</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

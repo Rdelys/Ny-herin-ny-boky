@@ -64,9 +64,7 @@ Route::delete('/profil', [ProfileController::class, 'destroyAccount'])
     ->name('profile.destroy');
     
 // Passage de commande depuis la modal (client connecté uniquement)
-Route::post('/commandes', [OrderController::class, 'store'])
-    ->middleware('auth')
-    ->name('orders.store');
+Route::post('/commandes', [OrderController::class, 'store'])->name('orders.store');
 
 Route::post('/vendeur/livres', [BookController::class, 'store'])
     ->middleware('auth')

@@ -202,6 +202,24 @@
             border-color: var(--gold);
         }
 
+        .order-guest-success{
+    text-align: center;
+    padding: 20px 8px 8px;
+}
+.order-guest-success svg{ color: var(--green-700); }
+.order-guest-success p{ color: #6b5a4d; font-size: .94rem; margin: 8px 0; }
+.order-guest-reference{
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--maroon-800);
+    background: rgba(233,178,63,.14);
+    border: 1px dashed var(--gold);
+    border-radius: 12px;
+    padding: 10px 18px;
+    display: inline-block;
+    margin: 8px 0 12px !important;
+}
         .lang-dropdown{ position: relative; flex-shrink: 0; }
         .lang-toggle{
             display: flex;
@@ -2069,6 +2087,13 @@
                 link.addEventListener('click', function(e){
                     e.preventDefault();
                     openAuthModal(link.getAttribute('data-auth-switch'));
+                });
+            });
+            document.querySelectorAll('[data-order-to-auth]').forEach(function(link){
+                link.addEventListener('click', function(e){
+                    e.preventDefault();
+                    closeOrderModal();
+                    openAuthModal('registerClient');
                 });
             });
             if (authClose) authClose.addEventListener('click', closeAuthModal);

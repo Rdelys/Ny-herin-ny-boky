@@ -17,6 +17,8 @@
                     <th>{{ __('home.order_total_label') }}</th>
                     <th>Statut</th>
                     <th>{{ __('home.order_deliverer_label') }}</th>
+                    <th>{{ __('home.order_deliverer_label') }}</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +30,10 @@
                         </td>
                         <td>
                             @if($role === 'seller')
-                                {{ $order->buyer->name }}
+                                {{ $order->buyer_name }}
+                                @if($order->isGuestOrder())
+                                    <br><span class="seller-table-sub">Invité</span>
+                                @endif
                             @else
                                 {{ $order->seller->sellerProfile->nom_entreprise ?? $order->seller->name }}
                             @endif
@@ -44,6 +49,19 @@
                                 <span class="seller-table-sub">{{ $order->deliverer->telephone }}</span>
                             @else
                                 <span style="color:#96897d;">—</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($order->deliverer)
+                                {{ $order->deliverer->nom }}<br>
+                                <span class="seller-table-sub">{{ $order->deliverer->telephone }}</span>
+                            @else
+                                <span style="color:#96897d;">—</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($order->facture_url)
+                                <a href="{{ $order->facture_url }}" target="_blank" class="table-action-link">{{ __('home.order_download_invoice') }}</a>
                             @endif
                         </td>
                     </tr>

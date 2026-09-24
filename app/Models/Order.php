@@ -45,6 +45,11 @@ class Order extends Model
     protected $fillable = [
         'reference',
         'buyer_id',
+        'guest_name',
+        'guest_phone',
+        'guest_email',
+        'adresse_livraison',   // <-- renommé
+        'facture_path',        // <-- ajouté
         'seller_id',
         'book_id',
         'book_titre',
@@ -55,6 +60,7 @@ class Order extends Model
         'montant_vendeur',
         'mode_paiement',
         'reference_paiement',
+        'ville',
         'statut',
         'deliverer_id',
         'livree_at',
@@ -148,5 +154,31 @@ class Order extends Model
     public function scopeEnvoyees($query)
     {
         return $query->where('paiement_vendeur', self::PAIEMENT_ENVOYE);
+    }
+
+    /** Nom de l'acheteur, qu'il ait un compte ou non. */
+    public function getBuyerNameAttribute(): string
+    {
+        return $this->buyer?->name ?? $this->guest_name ?? '—';
+    }
+
+    /** Coordonnées de contact — email du compte, ou téléphone/email fournis en invité. */
+    public function getBuyerContactAttribute(): string
+    {
+        if ($this->buyer) {
+            return $this->buyer->email;
+        }
+
+        return $this->guest_phone ?: ($this->guest_email ?: '—');
+    }
+
+    public function isGuestOrder(): bool
+    {
+        return $this->buyer_id === null;
+    }
+
+    public function getFactureUrlAttribute(): ?string
+    {
+        return $this->facture_path ? \Storage::disk('public')->url($this->facture_path) : null;
     }
 }

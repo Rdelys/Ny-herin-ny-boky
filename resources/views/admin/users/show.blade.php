@@ -191,7 +191,7 @@
                                 <td data-label="Livre">{{ $order->book_titre }}</td>
                                 <td data-label="{{ $estVendeur ? 'Acheteur' : 'Vendeur' }}">
                                     @if($estVendeur)
-                                        {{ $order->buyer->name }}
+                                        {{ $order->buyer_name }}
                                     @else
                                         {{ $order->seller->sellerProfile->nom_entreprise ?? $order->seller->name }}
                                     @endif
