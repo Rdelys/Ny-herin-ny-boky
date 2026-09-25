@@ -40,10 +40,11 @@
                     <p class="order-book-seller" id="orderBookSeller"></p>
                     <p class="order-book-author" id="orderBookAuthor"></p>
                     <div class="order-book-badges">
-                        <span class="book-genre" id="orderBookCategory" style="margin:0;"></span>
-                        <span class="book-genre" id="orderBookCondition" style="margin:0; background: rgba(233,178,63,.18); color:#8a5f14;"></span>
-                        <span class="book-genre" id="orderBookDelivery" style="margin:0; background: rgba(92,138,55,.14); color:#395e26;"></span>
-                    </div>
+    <span class="book-genre" id="orderBookCategory" style="margin:0;"></span>
+    <span class="book-genre" id="orderBookCondition" style="margin:0; background: rgba(233,178,63,.18); color:#8a5f14;"></span>
+    <span class="book-genre" id="orderBookDelivery" style="margin:0; background: rgba(92,138,55,.14); color:#395e26;"></span>
+    <span class="book-genre" id="orderBookLanguage" style="margin:0; background: rgba(85,16,29,.08); color: var(--maroon-800);"></span>
+</div>
                 </div>
             </div>
 

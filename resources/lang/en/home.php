@@ -404,4 +404,12 @@ return [
 'order_download_invoice' => 'Download invoice',
 'profile_orders_cancelled' => 'Cancelled orders',
 'profile_orders_cancelled_hint' => 'No amount or commission on these',
+'book_language_label' => 'Book language',
+'book_language_mg' => 'Malagasy',
+'book_language_fr' => 'French',
+'book_language_en' => 'English',
+'book_language_zh' => 'Chinese',
+'book_language_it' => 'Italian',
+'book_language_de' => 'German',
+'book_language_es' => 'Spanish',
 ];

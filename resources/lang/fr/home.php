@@ -402,5 +402,12 @@ return [
 'order_guest_success_hint' => "Notez bien votre référence — notre équipe vous contactera au numéro indiqué pour confirmer la livraison.",
 'profile_orders_cancelled' => 'Commandes annulées',
 'profile_orders_cancelled_hint' => 'Aucun montant ni commission dessus',
-
+'book_language_label' => 'Langue du livre',
+'book_language_mg' => 'Malagasy',
+'book_language_fr' => 'Français',
+'book_language_en' => 'Anglais',
+'book_language_zh' => 'Chinois',
+'book_language_it' => 'Italien',
+'book_language_de' => 'Allemand',
+'book_language_es' => 'Espagnol',
 ];

@@ -1155,6 +1155,27 @@
             margin: 0 0 14px;
         }
 
+.book-language-badge{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 0 14px 6px;
+    vertical-align: middle;
+    box-shadow: 0 0 0 1px rgba(85,16,29,.14);
+    flex-shrink: 0;
+}
+.book-language-badge .fi{
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+}
+
         .book-foot{
             display: flex;
             align-items: center;
@@ -2139,6 +2160,7 @@
             var orderBookId = document.getElementById('orderBookId');
             var orderDeliveryEstimate = document.getElementById('orderDeliveryEstimate');
             var orderBookDelivery = document.getElementById('orderBookDelivery');
+            var orderBookLanguage = document.getElementById('orderBookLanguage'); // <-- ajouté
             var orderVilleSelect = document.getElementById('orderVilleSelect');
             var orderReferenceWrap = document.getElementById('orderReferenceWrap');
             var orderPaymentReference = document.getElementById('orderPaymentReference');
@@ -2243,6 +2265,7 @@
                 var deliveryLabel = trigger.getAttribute('data-book-delivery') || '—';
                 if (orderDeliveryEstimate) orderDeliveryEstimate.textContent = deliveryLabel;
                 setOptionalText(orderBookDelivery, deliveryLabel);
+                setOptionalText(orderBookLanguage, trigger.getAttribute('data-book-language')); // <-- ajouté
 
                 if (orderAvailableQty) {
                     orderAvailableQty.textContent = maxQty;

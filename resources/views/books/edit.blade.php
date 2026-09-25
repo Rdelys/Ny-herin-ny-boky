@@ -55,21 +55,33 @@
                     <p class="field-hint" id="prixLocationClientHint"></p>
 
                     <div class="modal-form-row">
-                        <label>{{ __('home.book_category') }}
-                            <select name="categorie" required>
-                                @foreach(\App\Http\Controllers\BookController::CATEGORIES as $cat)
-                                    <option value="{{ $cat }}" @selected(old('categorie', $book->categorie) === $cat)>{{ $cat }}</option>
-                                @endforeach
-                            </select>
-                        </label>
-                        <label>{{ __('home.book_condition') }}
-                            <select name="etat" required>
-                                <option value="neuf" @selected(old('etat', $book->etat) === 'neuf')>{{ __('home.book_condition_neuf') }}</option>
-                                <option value="tres_bon_etat" @selected(old('etat', $book->etat) === 'tres_bon_etat')>{{ __('home.book_condition_tres_bon_etat') }}</option>
-                                <option value="bon_etat" @selected(old('etat', $book->etat) === 'bon_etat')>{{ __('home.book_condition_bon_etat') }}</option>
-                            </select>
-                        </label>
-                    </div>
+    <label>{{ __('home.book_category') }}
+        <select name="categorie" required>
+            @foreach(\App\Http\Controllers\BookController::CATEGORIES as $cat)
+                <option value="{{ $cat }}" @selected(old('categorie', $book->categorie) === $cat)>{{ $cat }}</option>
+            @endforeach
+        </select>
+    </label>
+    <label>{{ __('home.book_condition') }}
+        <select name="etat" required>
+            <option value="neuf" @selected(old('etat', $book->etat) === 'neuf')>{{ __('home.book_condition_neuf') }}</option>
+            <option value="tres_bon_etat" @selected(old('etat', $book->etat) === 'tres_bon_etat')>{{ __('home.book_condition_tres_bon_etat') }}</option>
+            <option value="bon_etat" @selected(old('etat', $book->etat) === 'bon_etat')>{{ __('home.book_condition_bon_etat') }}</option>
+        </select>
+    </label>
+</div>
+
+<label>{{ __('home.book_language_label') }}
+    <select name="langue" required>
+        <option value="">{{ __('home.auth_choose_placeholder') }}</option>
+        @foreach(\App\Http\Controllers\BookController::LANGUES as $code)
+            <option value="{{ $code }}" @selected(old('langue', $book->langue ?? null) === $code)>
+                {{ __('home.book_language_' . $code) }}
+            </option>
+        @endforeach
+    </select>
+</label>
+@error('langue')<p class="modal-field-error">{{ $message }}</p>@enderror
 
                     <fieldset class="modal-fieldset">
                         <legend>{{ __('home.book_shipping_legend') }}</legend>

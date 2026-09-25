@@ -402,4 +402,12 @@ return [
 'order_guest_success_hint' => "Tehirizo tsara ny kaodinao — hifandray aminao ny ekipanay amin'ny laharana nomenao mba hanamafisana ny fandefasana.",
 'profile_orders_cancelled' => 'Baiko nofoanana',
 'profile_orders_cancelled_hint' => 'Tsy misy vola na komisiona amin\'izy ireo',
+'book_language_label' => 'Fitenim-boky',
+'book_language_mg' => 'Malagasy',
+'book_language_fr' => 'Frantsay',
+'book_language_en' => 'Anglisy',
+'book_language_zh' => 'Sinoa',
+'book_language_it' => 'Italianina',
+'book_language_de' => 'Alemà',
+'book_language_es' => 'Espaniola',
 ];
