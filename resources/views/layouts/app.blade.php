@@ -1310,6 +1310,12 @@
         }
         .profile-stat-card-paid .profile-stat-value{ color: var(--green-700); }
 
+        .profile-stat-card-cancelled{
+    background: linear-gradient(135deg, rgba(179,38,30,.1), rgba(179,38,30,.02));
+    border-color: rgba(179,38,30,.28);
+}
+.profile-stat-card-cancelled .profile-stat-value{ color: #b3261e; }
+
         .profile-tabs{
             display: flex;
             gap: 8px;

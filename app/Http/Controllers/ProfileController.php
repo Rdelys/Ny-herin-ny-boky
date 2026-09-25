@@ -17,35 +17,37 @@ class ProfileController extends Controller
      * Affiche le profil : vue "vendeur" ou "client" selon le rôle de l'utilisateur connecté.
      */
     public function show(Request $request): View
-    {
-        $user = $request->user();
+{
+    $user = $request->user();
 
-        if ($user->isSeller()) {
-            // Tableau de bord vendeur : ce que la plateforme lui doit encore
-            // et ce qu'elle lui a déjà envoyé (statut piloté par l'admin
-            // depuis /admin/paiements).
-            $argent = Order::query()
-                ->facturables()
-                ->where('seller_id', $user->id)
-                ->selectRaw('COALESCE(SUM(montant_vendeur), 0) as total')
-                ->selectRaw('SUM(CASE WHEN paiement_vendeur = ? THEN montant_vendeur ELSE 0 END) as en_attente', [Order::PAIEMENT_DU])
-                ->selectRaw('SUM(CASE WHEN paiement_vendeur = ? THEN montant_vendeur ELSE 0 END) as paye', [Order::PAIEMENT_ENVOYE])
-                ->selectRaw('COUNT(*) as commandes')
-                ->first();
+    if ($user->isSeller()) {
+        $argent = Order::query()
+            ->facturables()
+            ->where('seller_id', $user->id)
+            ->selectRaw('COALESCE(SUM(montant_vendeur), 0) as total')
+            ->selectRaw('SUM(CASE WHEN paiement_vendeur = ? THEN montant_vendeur ELSE 0 END) as en_attente', [Order::PAIEMENT_DU])
+            ->selectRaw('SUM(CASE WHEN paiement_vendeur = ? THEN montant_vendeur ELSE 0 END) as paye', [Order::PAIEMENT_ENVOYE])
+            ->selectRaw('COUNT(*) as commandes')
+            ->first();
 
-            return view('profile.seller', [
-                'user' => $user,
-                'profile' => $user->sellerProfile,
-                'books' => $user->books()->latest()->paginate(10),
-                // Commandes reçues sur ses livres : statut suivi côté admin,
-                // avec le livreur assigné dès que la commande part en livraison.
-                'orders' => $user->sales()->with(['buyer', 'deliverer'])->latest()->get(),
-                'argentEnAttente' => (int) $argent->en_attente,
-                'argentPaye' => (int) $argent->paye,
-                'totalCommandes' => (int) $argent->commandes,
-                'totalStock' => (int) $user->books()->sum('quantite'),
-            ]);
-        }
+        // Commandes annulées : exclues de "facturables", comptées à part.
+        $commandesAnnulees = Order::query()
+            ->where('seller_id', $user->id)
+            ->where('statut', 'annulee')
+            ->count();
+
+        return view('profile.seller', [
+            'user' => $user,
+            'profile' => $user->sellerProfile,
+            'books' => $user->books()->latest()->paginate(10),
+            'orders' => $user->sales()->with(['buyer', 'deliverer'])->latest()->get(),
+            'argentEnAttente' => (int) $argent->en_attente,
+            'argentPaye' => (int) $argent->paye,
+            'totalCommandes' => (int) $argent->commandes,
+            'totalStock' => (int) $user->books()->sum('quantite'),
+            'commandesAnnulees' => $commandesAnnulees,
+        ]);
+    }
 
         return view('profile.client', [
             'user' => $user,

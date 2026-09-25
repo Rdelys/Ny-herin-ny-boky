@@ -101,6 +101,13 @@
                     <strong class="profile-stat-value">{{ $books->total() }}</strong>
                     <span class="profile-stat-sub">{{ $totalStock }} {{ __('home.profile_stock_count') }}</span>
                 </div>
+
+                {{-- ============ AJOUT : commandes annulées ============ --}}
+                <div class="profile-stat-card profile-stat-card-cancelled">
+                    <span class="profile-stat-label">{{ __('home.profile_orders_cancelled') }}</span>
+                    <strong class="profile-stat-value">{{ $commandesAnnulees }}</strong>
+                    <span class="profile-stat-sub">{{ __('home.profile_orders_cancelled_hint') }}</span>
+                </div>
             </div>
 
             {{-- ============ ONGLETS ============ --}}

@@ -400,4 +400,6 @@ return [
 'order_guest_account_link' => 'Mamorona kaonty',
 'order_guest_success_title' => 'Voarakitra ny baiko!',
 'order_guest_success_hint' => "Tehirizo tsara ny kaodinao — hifandray aminao ny ekipanay amin'ny laharana nomenao mba hanamafisana ny fandefasana.",
+'profile_orders_cancelled' => 'Baiko nofoanana',
+'profile_orders_cancelled_hint' => 'Tsy misy vola na komisiona amin\'izy ireo',
 ];

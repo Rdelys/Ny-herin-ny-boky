@@ -400,4 +400,7 @@ return [
 'order_guest_account_link' => 'Créer un compte',
 'order_guest_success_title' => 'Commande enregistrée !',
 'order_guest_success_hint' => "Notez bien votre référence — notre équipe vous contactera au numéro indiqué pour confirmer la livraison.",
+'profile_orders_cancelled' => 'Commandes annulées',
+'profile_orders_cancelled_hint' => 'Aucun montant ni commission dessus',
+
 ];

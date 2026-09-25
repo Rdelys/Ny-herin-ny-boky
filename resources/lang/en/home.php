@@ -402,4 +402,6 @@ return [
 'order_guest_success_hint' => "Save your reference — our team will contact you at the number provided to confirm delivery.",
 
 'order_download_invoice' => 'Download invoice',
+'profile_orders_cancelled' => 'Cancelled orders',
+'profile_orders_cancelled_hint' => 'No amount or commission on these',
 ];
