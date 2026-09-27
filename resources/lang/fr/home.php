@@ -19,8 +19,8 @@ return [
 
     /* ============ Hero (accueil) ============ */
     'hero_eyebrow' => "Ny Herin'ny Boky",
-    'hero_title' => 'Chaque livre mérite une seconde vie',
-    'hero_subtitle' => "Achetez et vendez des livres malgaches entre particuliers, partout dans l'île. Un espace simple, sûr et pensé pour les lecteurs comme pour les vendeurs.",
+    'hero_title' => 'Investis au livre, investis au changement',
+    'hero_subtitle' => "Achetez et vendez des livres entre particuliers, partout dans l'île. Un espace simple, sûr et pensé pour les lecteurs comme pour les vendeurs.",
     'hero_cta_browse' => 'Découvrir les livres',
     'hero_cta_sell' => 'Devenir vendeur',
 
@@ -52,7 +52,7 @@ return [
     'footer_about' => 'À propos de nous',
     'footer_privacy' => "La sécurité qu'on donne",
     'footer_terms' => 'Conditions générales',
-    'footer_copyright' => "© 2026 Ny Herin'ny Boky — Marketplace de vente et location de livres malgaches. Le savoir est la force de tous.",
+    'footer_copyright' => "© 2026 Ny Herin'ny Boky — Une Marketplace Malagasy pour acheter et vendre n'importe quels livres, partout Madagascar.",
 
     /* ============ Modals : connexion / inscription ============ */
     'auth_login_title' => 'Connexion',
@@ -88,6 +88,18 @@ return [
     'auth_genre_4' => 'Histoire',
     'auth_genre_5' => 'Contemporain',
     'auth_genre_6' => 'Cinéma',
+    'auth_genre_7' => 'Business & entrepreneuriat',
+    'auth_genre_8' => 'Développement personnel',
+    'auth_genre_9' => 'Psychologie',
+    'auth_genre_10' => 'Finance',
+    'auth_genre_11' => 'Marketing',
+    'auth_genre_12' => 'Vente',
+    'auth_genre_13' => 'Communication',
+    'auth_genre_14' => 'Investissement',
+    'auth_genre_15' => 'Roman',
+    'auth_genre_16' => 'Thriller',
+    'auth_genre_17' => 'Science-fiction',
+    'auth_genre_18' => 'Éducation financière',
     'auth_submit_register' => "S'inscrire",
     'auth_already_account' => 'Déjà un compte ?',
     'auth_login_link' => 'Se connecter',

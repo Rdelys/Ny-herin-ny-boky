@@ -105,6 +105,18 @@
                                 <option>{{ __('home.auth_genre_4') }}</option>
                                 <option>{{ __('home.auth_genre_5') }}</option>
                                 <option>{{ __('home.auth_genre_6') }}</option>
+                                <option>{{ __('home.auth_genre_7') }}</option>
+                                <option>{{ __('home.auth_genre_8') }}</option>
+                                <option>{{ __('home.auth_genre_9') }}</option>
+                                <option>{{ __('home.auth_genre_10') }}</option>
+                                <option>{{ __('home.auth_genre_11') }}</option>
+                                <option>{{ __('home.auth_genre_12') }}</option>
+                                <option>{{ __('home.auth_genre_13') }}</option>
+                                <option>{{ __('home.auth_genre_14') }}</option>
+                                <option>{{ __('home.auth_genre_15') }}</option>
+                                <option>{{ __('home.auth_genre_16') }}</option>
+                                <option>{{ __('home.auth_genre_17') }}</option>
+                                <option>{{ __('home.auth_genre_18') }}</option>
                             </select>
                         </label>
                     </div>

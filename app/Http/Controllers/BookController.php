@@ -19,6 +19,7 @@ class BookController extends Controller
         'Psychologie',
         'Finance',
         'Marketing',
+        'Business',
         'Vente',
         'Communication',
         'Investissement',

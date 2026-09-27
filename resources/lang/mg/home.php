@@ -19,8 +19,8 @@ return [
 
     /* ============ Hero (accueil) ============ */
     'hero_eyebrow' => "Ny Herin'ny Boky",
-    'hero_title' => "Manana fiainana faharoa ny boky tsirairay",
-    'hero_subtitle' => "Mividia sy mivarotra boky malagasy eo amin'ny tena mpampiasa, na aiza na aiza eto Madagasikara. Toerana tsotra sy azo antoka, natao ho an'ny mpamaky sy ny mpivarotra.",
+    'hero_title' => "Mampiasà vola amin'ny boky, mampiasà vola amin'ny fiovana",
+    'hero_subtitle' => "Mividia sy mivarotra boky eo amin'ny tena mpampiasa, na aiza na aiza eto Madagasikara. Toerana tsotra sy azo antoka, natao ho an'ny mpamaky sy ny mpivarotra.",
     'hero_cta_browse' => 'Hijery boky',
     'hero_cta_sell' => 'Ho mpivarotra',
 
@@ -52,7 +52,7 @@ return [
     'footer_about' => 'Momba anay',
     'footer_privacy' => 'Ny fiarovana omenay',
     'footer_terms' => 'Fepetra ankapobeny',
-    'footer_copyright' => "© 2026 Ny Herin'ny Boky — Toerana fivarotana sy fanofanana boky malagasy. Ny fahalalana no herin'ny rehetra.",
+    'footer_copyright' => "© 2026 Ny Herin'ny Boky — Tsena malagasy ho an'ny fividianana sy fivarotana boky na inona na inona, na aiza na aiza eto Madagasikara.",
 
     /* ============ Modals : connexion / inscription ============ */
     'auth_login_title' => 'Hiditra',
@@ -88,6 +88,18 @@ return [
     'auth_genre_4' => 'Tantara',
     'auth_genre_5' => 'Ankehitriny',
     'auth_genre_6' => 'Sarimihetsika',
+    'auth_genre_7' => 'Varotra sy Fandraharahana',
+    'auth_genre_8' => 'Fivoarana manokana',
+    'auth_genre_9' => 'Psikolojia',
+    'auth_genre_10' => 'Vola',
+    'auth_genre_11' => 'Marketing',
+    'auth_genre_12' => 'Fivarotana',
+    'auth_genre_13' => 'Fifandraisana',
+    'auth_genre_14' => 'Fampiasam-bola',
+    'auth_genre_15' => 'Tantara foronina',
+    'auth_genre_16' => 'Thriller',
+    'auth_genre_17' => 'Siansa foronina',
+    'auth_genre_18' => 'Fanabeazana ara-bola',
     'auth_submit_register' => 'Hisoratra anarana',
     'auth_already_account' => 'Efa manana kaonty ve ianao?',
     'auth_login_link' => 'Hiditra',
