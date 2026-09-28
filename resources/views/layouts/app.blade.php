@@ -1993,6 +1993,109 @@
 }
 .btn-danger-outline:hover{ background: rgba(179,38,30,.07); transform: translateY(-1px); }
 
+
+/* ---- Panier ---- */
+.cart-link{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: var(--cream);
+    background: rgba(246,239,221,.08);
+    border: 1px solid rgba(246,239,221,.16);
+    flex-shrink: 0;
+    transition: background .15s ease;
+}
+.cart-link:hover{ background: rgba(246,239,221,.14); }
+.cart-count{
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--gold);
+    color: var(--maroon-950);
+    font-size: .68rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cart-count[hidden]{ display: none; }
+
+.cart-toast{
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translate(-50%, 20px);
+    max-width: calc(100% - 32px);
+    background: var(--maroon-900);
+    color: var(--cream);
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: .88rem;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 16px 32px -12px rgba(0,0,0,.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+    z-index: 120;
+}
+.cart-toast.show{ opacity: 1; transform: translate(-50%, 0); }
+.cart-toast.is-error{ background: #b3261e; }
+
+.cart-lines{ display: flex; flex-direction: column; gap: 12px; margin-bottom: 22px; }
+.cart-line{
+    display: grid;
+    grid-template-columns: 56px 1fr auto auto auto;
+    gap: 14px;
+    align-items: center;
+    background: #fffdf7;
+    border: 1px solid rgba(85,16,29,.09);
+    border-radius: 16px;
+    padding: 12px 16px;
+}
+.cart-line.is-unavailable{ border-color: rgba(179,38,30,.35); background: rgba(179,38,30,.04); }
+.cart-line-cover{ width: 56px; height: 74px; border-radius: 10px; overflow: hidden; background: var(--cream-dim); }
+.cart-line-cover img{ width: 100%; height: 100%; object-fit: cover; }
+.cart-line-info{ display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cart-line-title{ font-family: var(--serif); font-size: 1rem; color: var(--ink); }
+.cart-line-sub{ font-size: .8rem; color: #96897d; }
+.cart-line-qty input{
+    width: 64px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(85,16,29,.16);
+    background: #fffdf9;
+    font: inherit;
+    text-align: center;
+}
+.cart-line-total{ font-family: var(--serif); color: var(--maroon-800); white-space: nowrap; }
+.cart-summary{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(85,16,29,.04);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    font-size: 1.05rem;
+}
+.cart-summary strong{ font-family: var(--serif); font-size: 1.3rem; color: var(--maroon-800); }
+.cart-success-order{ display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 14px; }
+
+@media (max-width: 600px){
+    .cart-line{ grid-template-columns: 56px 1fr; }
+    .cart-line-qty, .cart-line-total, .cart-line-remove{ grid-column: 2; }
+}
+
+
     </style>
     @stack('styles')
     @stack('head')
@@ -2006,7 +2109,7 @@
     @include('partials.footer')
 
     @include('partials.order-modal')
-
+<div class="cart-toast" id="cartToast" role="status" aria-live="polite"></div>
     <script>
         (function(){
             var toggle = document.getElementById('menuToggle');
@@ -2136,98 +2239,40 @@
             });
 
             // ==========================================================
-            // ---- modal de commande ----
+            // ---- modal "Ajouter au panier" ----
             // ==========================================================
             var orderOverlay = document.getElementById('orderModalOverlay');
             var orderClose = document.getElementById('orderModalClose');
             var orderTitle = document.getElementById('orderModalTitle');
             var orderImage = document.getElementById('orderBookImage');
             var orderSeller = document.getElementById('orderBookSeller');
-            var orderUnitPrice = document.getElementById('orderUnitPrice');
-            var orderTotalPrice = document.getElementById('orderTotalPrice');
-            var orderQtyInput = document.getElementById('orderQtyInput');
-            var orderQtyMinus = document.getElementById('orderQtyMinus');
-            var orderQtyPlus = document.getElementById('orderQtyPlus');
-            var orderPaymentNumber = document.getElementById('orderPaymentNumber');
-            var orderPaymentName = document.getElementById('orderPaymentName');
-            var orderConfirmButton = document.getElementById('orderConfirmButton');
-            var orderStaticNote = document.querySelector('.order-static-note');
             var orderAuthor = document.getElementById('orderBookAuthor');
             var orderCategory = document.getElementById('orderBookCategory');
             var orderCondition = document.getElementById('orderBookCondition');
-            var orderDescription = document.getElementById('orderBookDescription');
-            var orderAvailableQty = document.getElementById('orderAvailableQty');
-            var orderBookId = document.getElementById('orderBookId');
-            var orderDeliveryEstimate = document.getElementById('orderDeliveryEstimate');
             var orderBookDelivery = document.getElementById('orderBookDelivery');
-            var orderBookLanguage = document.getElementById('orderBookLanguage'); // <-- ajouté
-            var orderVilleSelect = document.getElementById('orderVilleSelect');
-            var orderReferenceWrap = document.getElementById('orderReferenceWrap');
-            var orderPaymentReference = document.getElementById('orderPaymentReference');
-            var orderPaymentReferenceError = document.getElementById('orderPaymentReferenceError');
+            var orderBookLanguage = document.getElementById('orderBookLanguage');
+            var orderDescription = document.getElementById('orderBookDescription');
+            var orderBookId = document.getElementById('orderBookId');
+            var orderUnitPrice = document.getElementById('orderUnitPrice');
+            var orderAvailableQty = document.getElementById('orderAvailableQty');
+            var orderDeliveryEstimate = document.getElementById('orderDeliveryEstimate');
+            var orderQtyInput = document.getElementById('orderQtyInput');
+            var orderQtyMinus = document.getElementById('orderQtyMinus');
+            var orderQtyPlus = document.getElementById('orderQtyPlus');
+            var orderTotalPrice = document.getElementById('orderTotalPrice');
+            var orderConfirmButton = document.getElementById('orderConfirmButton');
             var orderForm = document.getElementById('orderForm');
 
             var currentUnitPrice = 0;
+            var toastTimer = null;
+            var CART_ERROR = @json(__('home.cart_error_generic'));
 
             function formatAr(n){
                 return Math.round(n).toLocaleString('fr-FR') + ' Ar';
             }
 
-            function updateOrderTotal(){
-                if (!orderQtyInput || !orderTotalPrice) return;
-                var qty = parseInt(orderQtyInput.value, 10) || 1;
-                orderTotalPrice.textContent = formatAr(currentUnitPrice * qty);
-            }
-
-            // La modal d'inscription vendeur utilise elle aussi un groupe de
-            // radios name="mode_paiement" (commission / abonnement) : toutes
-            // les recherches ci-dessous sont limitées à la modal de commande.
-            function orderPaymentRadios(){
-                return orderOverlay ? orderOverlay.querySelectorAll('input[name="mode_paiement"]') : [];
-            }
-
-            function updateOrderPaymentNumber(){
-                var checked = orderOverlay ? orderOverlay.querySelector('input[name="mode_paiement"]:checked') : null;
-                if (orderPaymentNumber) {
-                    orderPaymentNumber.textContent = checked ? (checked.getAttribute('data-payment-number') || '—') : '—';
-                }
-                if (orderPaymentName) {
-                    orderPaymentName.textContent = checked ? (checked.getAttribute('data-payment-name') || '—') : '—';
-                }
-            }
-
-            // Version unique : masque à la fois le bloc "Number to contact /
-            // Account holder name" ET le champ de référence de paiement
-            // quand "Espèces" est sélectionné.
-            function toggleReferenceRequirement(){
-                var checked = orderOverlay ? orderOverlay.querySelector('input[name="mode_paiement"]:checked') : null;
-                var isCash = checked && checked.value === 'especes';
-
-                var orderPaymentNumberRow = document.getElementById('orderPaymentNumberRow');
-                if (orderPaymentNumberRow) orderPaymentNumberRow.style.display = isCash ? 'none' : '';
-
-                if (orderReferenceWrap) orderReferenceWrap.style.display = isCash ? 'none' : '';
-                if (orderPaymentReference) orderPaymentReference.required = !isCash;
-            }
-
-            // Ville => filtre la disponibilité de l'option "Espèces".
-            function updateCashAvailability(){
-                if (!orderVilleSelect) return;
-                var option = orderVilleSelect.options[orderVilleSelect.selectedIndex];
-                var cashAllowed = option && option.getAttribute('data-cash-allowed') === '1';
-
-                document.querySelectorAll('[data-payment-option][data-cash="1"]').forEach(function(label){
-                    label.style.display = cashAllowed ? '' : 'none';
-                    var radio = label.querySelector('input[type="radio"]');
-                    if (!cashAllowed && radio.checked) {
-                        // Si "espèces" était choisi et n'est plus valide (ville changée),
-                        // on retombe sur le premier moyen mobile disponible.
-                        var fallback = document.querySelector('[data-payment-option][data-cash="0"] input[type="radio"]');
-                        if (fallback) fallback.checked = true;
-                        updateOrderPaymentNumber();
-                        toggleReferenceRequirement();
-                    }
-                });
+            function setText(el, value){
+                if (el) el.textContent = value;
             }
 
             function setOptionalText(el, value){
@@ -2241,57 +2286,62 @@
                 }
             }
 
+            function updateOrderTotal(){
+                if (!orderQtyInput || !orderTotalPrice) return;
+                var qty = parseInt(orderQtyInput.value, 10) || 1;
+                orderTotalPrice.textContent = formatAr(currentUnitPrice * qty);
+            }
+
+            // Badge du header (#cartCount, voir partials/header.blade.php).
+            function updateCartBadge(count){
+                var badge = document.getElementById('cartCount');
+                if (!badge) return;
+                badge.textContent = count;
+                badge.hidden = !(count > 0);
+            }
+
+            // Toast (#cartToast, voir layouts/app.blade.php).
+            function showToast(message, isError){
+                var toast = document.getElementById('cartToast');
+                if (!toast || !message) return;
+                toast.textContent = message;
+                toast.classList.toggle('is-error', !!isError);
+                toast.classList.add('show');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 3200);
+            }
+
             window.openOrderModal = function(trigger){
                 if (!orderOverlay || !trigger) return;
 
                 currentUnitPrice = parseFloat(trigger.getAttribute('data-book-price')) || 0;
                 var maxQty = parseInt(trigger.getAttribute('data-book-max'), 10) || 0;
+                var deliveryLabel = trigger.getAttribute('data-book-delivery') || '—';
 
-                if (orderBookId) {
-                    orderBookId.value = trigger.getAttribute('data-book-id') || '';
+                if (orderBookId) orderBookId.value = trigger.getAttribute('data-book-id') || '';
+
+                setText(orderTitle, trigger.getAttribute('data-book-title') || '');
+                setText(orderSeller, trigger.getAttribute('data-book-seller') || '');
+                if (orderImage) {
+                    orderImage.src = trigger.getAttribute('data-book-image') || '';
+                    orderImage.alt = trigger.getAttribute('data-book-title') || '';
                 }
-
-                orderTitle.textContent = trigger.getAttribute('data-book-title') || '';
-                orderSeller.textContent = trigger.getAttribute('data-book-seller') || '';
-                orderImage.src = trigger.getAttribute('data-book-image') || '';
-                orderImage.alt = trigger.getAttribute('data-book-title') || '';
-                orderUnitPrice.textContent = formatAr(currentUnitPrice);
+                setText(orderUnitPrice, formatAr(currentUnitPrice));
+                setText(orderAvailableQty, maxQty);
+                setText(orderDeliveryEstimate, deliveryLabel);
 
                 setOptionalText(orderAuthor, trigger.getAttribute('data-book-author'));
                 setOptionalText(orderCategory, trigger.getAttribute('data-book-category'));
                 setOptionalText(orderCondition, trigger.getAttribute('data-book-condition'));
                 setOptionalText(orderDescription, trigger.getAttribute('data-book-description'));
-
-                var deliveryLabel = trigger.getAttribute('data-book-delivery') || '—';
-                if (orderDeliveryEstimate) orderDeliveryEstimate.textContent = deliveryLabel;
                 setOptionalText(orderBookDelivery, deliveryLabel);
-                setOptionalText(orderBookLanguage, trigger.getAttribute('data-book-language')); // <-- ajouté
-
-                if (orderAvailableQty) {
-                    orderAvailableQty.textContent = maxQty;
-                }
+                setOptionalText(orderBookLanguage, trigger.getAttribute('data-book-language'));
 
                 if (orderQtyInput) {
                     orderQtyInput.value = 1;
                     orderQtyInput.max = maxQty || 99;
                     updateOrderTotal();
                 }
-
-                if (orderVilleSelect) {
-                    orderVilleSelect.value = '';
-                }
-                updateCashAvailability();
-
-                var firstPayment = orderPaymentRadios()[0];
-                if (firstPayment) firstPayment.checked = true;
-                updateOrderPaymentNumber();
-                toggleReferenceRequirement();
-
-                if (orderPaymentReference) {
-                    orderPaymentReference.value = '';
-                    orderPaymentReference.classList.remove('has-error');
-                }
-                if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = 'none';
 
                 orderOverlay.classList.add('open');
                 document.body.style.overflow = 'hidden';
@@ -2332,38 +2382,33 @@
                     updateOrderTotal();
                 });
             }
-            orderPaymentRadios().forEach(function(radio){
-                radio.addEventListener('change', updateOrderPaymentNumber);
-                radio.addEventListener('change', toggleReferenceRequirement);
-            });
 
-            if (orderVilleSelect) {
-                orderVilleSelect.addEventListener('change', function(){
-                    updateCashAvailability();
-                });
-            }
-
+            // Ajout au panier sans recharger la page : badge du header + toast.
             if (orderForm) {
                 orderForm.addEventListener('submit', function(e){
-                    var checked = orderOverlay.querySelector('input[name="mode_paiement"]:checked');
-                    var isCash = checked && checked.value === 'especes';
-
-                    if (!isCash && orderPaymentReference && orderPaymentReference.value.trim() === '') {
-                        e.preventDefault();
-                        orderPaymentReference.classList.add('has-error');
-                        if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = '';
-                        orderPaymentReference.focus();
-                        return;
-                    }
-                    if (orderPaymentReference) orderPaymentReference.classList.remove('has-error');
-                    if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = 'none';
+                    e.preventDefault();
                     if (orderConfirmButton) orderConfirmButton.disabled = true;
-                });
-            }
-            if (orderPaymentReference) {
-                orderPaymentReference.addEventListener('input', function(){
-                    orderPaymentReference.classList.remove('has-error');
-                    if (orderPaymentReferenceError) orderPaymentReferenceError.style.display = 'none';
+
+                    fetch(orderForm.action, {
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                        body: new FormData(orderForm),
+                        credentials: 'same-origin'
+                    })
+                    .then(function(res){
+                        return res.json().then(function(data){ return { ok: res.ok, data: data }; });
+                    })
+                    .then(function(r){
+                        if (typeof r.data.count !== 'undefined') updateCartBadge(r.data.count);
+                        showToast(r.data.message || CART_ERROR, !r.ok);
+                        if (r.ok) closeOrderModal();
+                    })
+                    .catch(function(){
+                        showToast(CART_ERROR, true);
+                    })
+                    .then(function(){
+                        if (orderConfirmButton) orderConfirmButton.disabled = false;
+                    });
                 });
             }
 

@@ -425,4 +425,15 @@ return [
 'book_language_it' => 'Italian',
 'book_language_de' => 'German',
 'book_language_es' => 'Spanish',
+
+'cart_title' => 'My cart',
+'cart_items_count' => ':count item(s)',
+'cart_add_button' => 'Add to cart',
+'cart_added' => 'Book added to your cart.',
+'cart_empty' => 'Your cart is empty.',
+'cart_browse' => 'Browse books',
+'cart_remove' => 'Remove',
+'cart_unavailable' => 'A book is no longer available in the quantity requested: adjust the quantity or remove it to continue.',
+'cart_checkout_title' => 'Complete your order',
+'cart_error_generic' => 'Something went wrong, please try again.',
 ];

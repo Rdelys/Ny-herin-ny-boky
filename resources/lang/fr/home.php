@@ -423,4 +423,15 @@ return [
 'book_language_it' => 'Italien',
 'book_language_de' => 'Allemand',
 'book_language_es' => 'Espagnol',
+
+'cart_title' => 'Mon panier',
+'cart_items_count' => ':count article(s)',
+'cart_add_button' => 'Ajouter au panier',
+'cart_added' => 'Livre ajouté au panier.',
+'cart_empty' => 'Votre panier est vide.',
+'cart_browse' => 'Parcourir les livres',
+'cart_remove' => 'Retirer',
+'cart_unavailable' => 'Un livre n\'est plus disponible en quantité suffisante : ajustez la quantité ou retirez-le pour continuer.',
+'cart_checkout_title' => 'Finaliser la commande',
+'cart_error_generic' => 'Une erreur est survenue, veuillez réessayer.',
 ];

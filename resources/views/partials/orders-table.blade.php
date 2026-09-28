@@ -17,14 +17,18 @@
                     <th>{{ __('home.order_total_label') }}</th>
                     <th>Statut</th>
                     <th>{{ __('home.order_deliverer_label') }}</th>
-                    <th>{{ __('home.order_deliverer_label') }}</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($orders as $order)
                     <tr>
-                        <td><span class="seller-table-sub">{{ $order->reference }}</span></td>
+                        <td>
+                            <span class="seller-table-sub">{{ $order->reference }}</span>
+                            @if($order->groupe_reference)
+                                <br><span class="seller-table-sub">{{ $order->groupe_reference }}</span>
+                            @endif
+                        </td>
                         <td>
                             <strong>{{ $order->book_titre }}</strong>
                         </td>
@@ -52,15 +56,9 @@
                             @endif
                         </td>
                         <td>
-                            @if($order->deliverer)
-                                {{ $order->deliverer->nom }}<br>
-                                <span class="seller-table-sub">{{ $order->deliverer->telephone }}</span>
-                            @else
-                                <span style="color:#96897d;">—</span>
-                            @endif
-                        </td>
-                        <td>
-                            @if($order->facture_url)
+                            {{-- La facture d'un panier liste les livres de TOUS les vendeurs :
+                                 on ne la montre donc qu'au client. --}}
+                            @if($order->facture_url && $role === 'client')
                                 <a href="{{ $order->facture_url }}" target="_blank" class="table-action-link">{{ __('home.order_download_invoice') }}</a>
                             @endif
                         </td>

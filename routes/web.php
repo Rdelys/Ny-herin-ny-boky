@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\CartController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -88,6 +89,12 @@ Route::get('/livres', [BookCatalogController::class, 'index'])->name('books.inde
 // Pages vendeurs : liste, puis fiche d'un vendeur (tous ses livres)
 Route::get('/vendeur', [SellerController::class, 'index'])->name('sellers.index');
 Route::get('/vendeur/{seller}', [SellerController::class, 'show'])->name('sellers.show');
+
+
+Route::get('/panier', [CartController::class, 'index'])->name('cart.index');
+Route::post('/panier', [CartController::class, 'add'])->name('cart.add');
+Route::patch('/panier/{book}', [CartController::class, 'update'])->whereNumber('book')->name('cart.update');
+Route::delete('/panier/{book}', [CartController::class, 'destroy'])->whereNumber('book')->name('cart.remove');
 
 // Pages statiques (À propos / Confidentialité / CGV)
 Route::view('/a-propos', 'pages.about')->name('pages.about');

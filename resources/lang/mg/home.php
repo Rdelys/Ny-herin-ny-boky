@@ -423,4 +423,15 @@ return [
 'book_language_it' => 'Italianina',
 'book_language_de' => 'Alemà',
 'book_language_es' => 'Espaniola',
+
+'cart_title' => 'Ny haronako',
+'cart_items_count' => ':count boky',
+'cart_add_button' => 'Ampidiro ao amin\'ny harona',
+'cart_added' => 'Nampidirina tao amin\'ny harona ny boky.',
+'cart_empty' => 'Foana ny haronao.',
+'cart_browse' => 'Jereo ny boky',
+'cart_remove' => 'Esory',
+'cart_unavailable' => 'Tsy ampy intsony ny isan\'ny boky misy. Ovay ny isa na esory.',
+'cart_checkout_title' => 'Farano ny kaomandy',
+'cart_error_generic' => 'Nisy olana. Andramo indray.',
 ];
