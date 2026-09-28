@@ -5,26 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Order;
 use App\Models\Setting;
+use App\Services\Cart;
 use App\Services\InvoiceGenerator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
 {
-    public function store(Request $request): RedirectResponse
+    /**
+     * Validation du panier : une Order par livre (chaque ligne a son vendeur,
+     * son reversement, son statut et sa facture).
+     */
+    public function store(Request $request, Cart $cart): RedirectResponse
     {
         $user = $request->user();
 
         abort_if($user && $user->isSeller(), 403);
 
         $rules = [
-            'book_id' => ['required', 'integer', 'exists:books,id'],
-            'quantite' => ['required', 'integer', 'min:1'],
             'ville' => ['required', Rule::in(Setting::VILLES)],
             'mode_paiement' => ['required', Rule::in(array_keys(Setting::PAYMENT_METHODS))],
             'reference_paiement' => ['required_unless:mode_paiement,especes', 'nullable', 'string', 'max:80'],
-            // Adresse : demandée à TOUT le monde désormais.
             'adresse_livraison' => ['required', 'string', 'max:255'],
         ];
 
@@ -42,54 +45,96 @@ class OrderController extends Controller
                 ->withInput();
         }
 
-        $book = Book::with('seller')->findOrFail($data['book_id']);
+        $requested = $cart->raw();
 
-        if ($book->prix_achat === null) {
-            return back()->with('error', __('home.order_error_not_for_sale'));
+        if (empty($requested)) {
+            return redirect()->route('cart.index')->with('error', __('home.cart_empty'));
         }
 
-        if ($data['quantite'] > $book->quantite) {
-            return back()->with('error', __('home.order_error_stock', ['quantite' => $book->quantite]));
+        $groupe = Order::genererGroupeReference();
+
+        try {
+            $orders = DB::transaction(function () use ($requested, $data, $user) {
+                $books = Book::with('seller')
+                    ->whereIn('id', array_keys($requested))
+                    ->lockForUpdate()
+                    ->get()
+                    ->keyBy('id');
+
+                $created = collect();
+
+                foreach ($requested as $bookId => $quantite) {
+                    $book = $books->get($bookId);
+
+                    if (! $book || $book->prix_achat === null) {
+                        throw new \DomainException(($book ? $book->titre . ' : ' : '') . __('home.order_error_not_for_sale'));
+                    }
+
+                    if ($quantite > $book->quantite) {
+                        throw new \DomainException($book->titre . ' : ' . __('home.order_error_stock', ['quantite' => $book->quantite]));
+                    }
+
+                    $rate = Setting::commissionRateFor($book->prix_achat);
+                    $prixUnitaire = (int) $book->prix_achat_client;
+
+                    $created->push(Order::create([
+                        'reference' => Order::genererReference(),
+                        'groupe_reference' => $groupe,
+                        'buyer_id' => $user?->id,
+                        'guest_name' => $user ? null : $data['guest_name'],
+                        'guest_phone' => $user ? null : $data['guest_phone'],
+                        'guest_email' => $user ? null : ($data['guest_email'] ?? null),
+                        'adresse_livraison' => $data['adresse_livraison'],
+                        'seller_id' => $book->seller_id,
+                        'book_id' => $book->id,
+                        'book_titre' => $book->titre,
+                        'quantite' => $quantite,
+                        'prix_unitaire' => $prixUnitaire,
+                        'total' => $prixUnitaire * $quantite,
+                        'commission_rate' => $rate,
+                        'montant_vendeur' => (int) $book->prix_achat * $quantite,
+                        'mode_paiement' => $data['mode_paiement'],
+                        'reference_paiement' => $data['reference_paiement'] ?? __('home.order_payment_cash'),
+                        'ville' => $data['ville'],
+                        'statut' => Order::STATUT_DEFAUT,
+                    ]));
+
+                    $book->decrement('quantite', $quantite);
+                }
+
+                return $created;
+            });
+        } catch (\DomainException $e) {
+            return redirect()->route('cart.index')->withInput()->with('error', $e->getMessage());
         }
 
-        $rate = Setting::commissionRateFor($book->prix_achat);
-        $prixUnitaire = (int) $book->prix_achat_client;
+                // Panier vidé AVANT la facture : si elle échoue, la commande ne peut
+        // jamais être renvoyée deux fois.
+        $cart->clear();
 
-        $order = Order::create([
-            'reference' => Order::genererReference(),
-            'buyer_id' => $user?->id,
-            'guest_name' => $user ? null : $data['guest_name'],
-            'guest_phone' => $user ? null : $data['guest_phone'],
-            'guest_email' => $user ? null : ($data['guest_email'] ?? null),
-            'adresse_livraison' => $data['adresse_livraison'],
-            'seller_id' => $book->seller_id,
-            'book_id' => $book->id,
-            'book_titre' => $book->titre,
-            'quantite' => $data['quantite'],
-            'prix_unitaire' => $prixUnitaire,
-            'total' => $prixUnitaire * $data['quantite'],
-            'commission_rate' => $rate,
-            'montant_vendeur' => (int) $book->prix_achat * $data['quantite'],
-            'mode_paiement' => $data['mode_paiement'],
-            'reference_paiement' => $data['reference_paiement'] ?? __('home.order_payment_cash'),
-            'ville' => $data['ville'],
-            'statut' => Order::STATUT_DEFAUT,
-        ]);
+        // Une seule facture pour tout le panier (rattachée à chaque ligne).
+        try {
+            InvoiceGenerator::generate($orders->first());
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
-        $book->decrement('quantite', $data['quantite']);
+        $factureUrl = $orders->first()->fresh()->facture_url;
 
-        // Facture générée automatiquement, dès la commande créée.
-        InvoiceGenerator::generate($order->fresh(['buyer', 'seller.sellerProfile']));
+        $message = __('home.order_success', ['reference' => $groupe]);
 
         if ($user) {
-            return redirect()->route('profile')
-                ->with('success', __('home.order_success', ['reference' => $order->reference]));
+            return redirect()->route('profile')->with('success', $message);
         }
 
-        return back()->with('guest_order_success', [
-            'reference' => $order->reference,
-            'message' => __('home.order_success', ['reference' => $order->reference]),
-            'invoice_url' => \Storage::disk('public')->url($order->facture_path),
+        return redirect()->route('cart.index')->with('guest_order_success', [
+            'message' => $message,
+            'groupe' => $groupe,
+            'invoice_url' => $factureUrl,
+            'orders' => $orders->map(fn (Order $o) => [
+                'reference' => $o->reference,
+                'titre' => $o->book_titre,
+            ])->all(),
         ]);
     }
 }

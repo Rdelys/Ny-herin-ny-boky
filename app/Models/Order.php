@@ -44,6 +44,7 @@ class Order extends Model
 
     protected $fillable = [
         'reference',
+        'groupe_reference',
         'buyer_id',
         'guest_name',
         'guest_phone',
@@ -103,6 +104,16 @@ class Order extends Model
         do {
             $reference = 'CMD-' . now()->format('ymd') . '-' . strtoupper(Str::random(5));
         } while (static::where('reference', $reference)->exists());
+
+        return $reference;
+    }
+
+    /** Numéro de panier / de facture (ex: PAN-260928-4XK9T), partagé par toutes les lignes d'un même panier. */
+    public static function genererGroupeReference(): string
+    {
+        do {
+            $reference = 'PAN-' . now()->format('ymd') . '-' . strtoupper(Str::random(5));
+        } while (static::where('groupe_reference', $reference)->exists());
 
         return $reference;
     }

@@ -111,6 +111,20 @@
             @endauth
         </nav>
 
+                {{-- Icône panier : hors du menu pour rester visible sur mobile. Masquée pour les vendeurs. --}}
+        @unless(auth()->check() && auth()->user()->isSeller())
+            @php $cartCount = app(\App\Services\Cart::class)->count(); @endphp
+            <a href="{{ route('cart.index') }}" class="cart-link" aria-label="{{ __('home.cart_title') }}">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="8" cy="21" r="1" stroke="currentColor" stroke-width="1.8"/>
+                    <circle cx="19" cy="21" r="1" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="cart-count" id="cartCount" @if(! $cartCount) hidden @endif>{{ $cartCount }}</span>
+            </a>
+        @endunless
+        
+        {{-- Bouton qui ouvre le panneau mobile (menu + recherche + auth) --}}
         <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mainNav" aria-label="Menu">
             <span></span>
         </button>
