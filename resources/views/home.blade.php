@@ -6,8 +6,6 @@
 @section('content')
 
     {{-- ============ HERO ============ --}}
-    {{-- Fond : public/hero.jpg (voir .hero dans layouts/app.blade.php).
-         L'illustration SVG du livre a été retirée. --}}
     <section class="hero">
         <div class="wrap">
             <div class="hero-inner">
@@ -16,13 +14,13 @@
                 <p>{{ __('home.hero_subtitle') }}</p>
                 <div class="hero-actions">
                     <a href="#livres" class="btn btn-primary">{{ __('home.hero_cta_browse') }}</a>
-                    <a href="{{ url('/vendeur') }}" class="btn btn-ghost">{{ __('home.hero_cta_sell') }}</a>
+                    <button type="button" class="btn btn-ghost" data-auth-open="registerSeller">{{ __('home.hero_cta_sell') }}</button>
                 </div>
             </div>
         </div>
     </section>
 
-    {{-- ============ LIVRES DISPONIBLES ============ --}}
+    {{-- ============ LIVRES DISPONIBLES (dynamique, depuis la BDD) ============ --}}
     <section id="livres">
         <div class="wrap">
             <div class="section-head">
@@ -30,79 +28,114 @@
                     <h2>{{ __('home.books_heading') }}</h2>
                     <p>{{ __('home.books_subheading') }}</p>
                 </div>
-                <a href="#" class="see-all">{{ __('home.books_see_all') }}</a>
+                <a href="{{ route('books.index') }}" class="see-all">{{ __('home.books_see_all') }}</a>
             </div>
 
-            @php
-                // NOTE TEST : les photos utilisent picsum.photos (aléatoire, seedé pour
-                // rester stable au reload). Remplacez 'image' par vos vraies URLs / uploads
-                // (ex: asset('storage/livres/xxx.jpg')) avant la mise en production.
-                $books = $books ?? collect([
-                    ['title' => 'Ny Ombalahibemaso', 'author' => 'Conte traditionnel', 'price' => '15 000 Ar', 'city' => 'Antananarivo', 'state' => 'neuf', 'genre' => 'Conte', 'image' => 'https://plus.unsplash.com/premium_photo-1677187301660-5e557d9c0724?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8bGl2cmV8ZW58MHx8MHx8fDA%3D'],
-                    ['title' => 'Ny Fitiavana Very', 'author' => 'Jean-Joseph Rabearivelo', 'price' => '9 500 Ar', 'city' => 'Fianarantsoa', 'state' => 'occasion', 'genre' => 'Poésie', 'image' => 'https://plus.unsplash.com/premium_photo-1677187301660-5e557d9c0724?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8bGl2cmV8ZW58MHx8MHx8fDA%3D'],
-                    ['title' => 'Dinitra sy Aretina', 'author' => 'Rado', 'price' => '12 000 Ar', 'city' => 'Toamasina', 'state' => 'neuf', 'genre' => 'Poésie', 'image' => 'https://plus.unsplash.com/premium_photo-1677187301660-5e557d9c0724?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8bGl2cmV8ZW58MHx8MHx8fDA%3D'],
-                    ['title' => 'Iarivointsara', 'author' => 'Elie Rajaonarison', 'price' => '8 000 Ar', 'city' => 'Mahajanga', 'state' => 'occasion', 'genre' => 'Roman', 'image' => 'https://plus.unsplash.com/premium_photo-1677187301660-5e557d9c0724?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8bGl2cmV8ZW58MHx8MHx8fDA%3D'],
-                ]);
-            @endphp
+            @if($books->isEmpty())
+                <p style="color:#6b5a4d;">{{ __('home.books_none_yet') }}</p>
+            @else
+                <div class="book-grid">
+                    @foreach($books as $book)
+                        <article class="book-card {{ $book->quantite <= 0 ? 'is-out-of-stock' : '' }}">
+                            <div class="book-cover">
+                                <img src="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}" alt="{{ $book->titre }}" loading="lazy">
+                                <div class="book-cover-gradient"></div>
 
-            <div class="book-grid">
-                @foreach($books as $book)
-                    <article class="book-card">
-                        <div class="book-cover">
-                            <img src="{{ $book['image'] }}" alt="{{ $book['title'] }}" loading="lazy">
-                            <span class="book-tag {{ $book['state'] === 'occasion' ? 'occasion' : '' }}">
-                                {{ $book['state'] === 'occasion' ? __('home.books_tag_used') : __('home.books_tag_new') }}
-                            </span>
-                        </div>
-                        <div class="book-body">
-                            <span class="book-genre">{{ $book['genre'] }}</span>
-                            <h3 class="book-title">{{ $book['title'] }}</h3>
-                            <p class="book-author">{{ $book['author'] }}</p>
-                            <div class="book-foot">
-                                <span class="book-price">{{ $book['price'] }}</span>
-                                <span class="book-loc">{{ $book['city'] }}</span>
+                                <span class="book-tag {{ $book->etat !== 'neuf' ? 'occasion' : '' }}">
+                                    {{ __('home.book_condition_' . $book->etat) }}
+                                </span>
+
+                                @if($book->quantite <= 0)
+                                    <span class="book-out-of-stock">{{ __('home.books_out_of_stock') }}</span>
+                                @endif
+
+                                <button type="button" class="book-wishlist" aria-label="{{ __('home.books_wishlist') }}">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path d="M12 21s-7.5-4.6-10-9.1C.6 8.4 2 4.9 5.4 4.1c2-.5 4 .3 5 2 1-1.7 3-2.5 5-2 3.4.8 4.8 4.3 3.4 7.8C19.5 16.4 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+
+                                @if($book->prix_achat_client)
+                                    <span class="book-price-float">{{ number_format($book->prix_achat_client, 0, ',', ' ') }} Ar</span>
+                                @endif
+
+                                @if($book->quantite > 0)
+                                <button type="button" class="book-quickview"
+                                    data-book-order
+                                    data-book-id="{{ $book->id }}"
+                                    data-book-author="{{ $book->auteur }}"
+                                    data-book-category="{{ $book->categorie }}"
+                                    data-book-condition="{{ __('home.book_condition_' . $book->etat) }}"
+                                    data-book-description="{{ $book->description }}"
+                                    data-book-title="{{ $book->titre }}"
+                                    data-book-image="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}"
+                                    data-book-seller="{{ $book->seller->sellerProfile->nom_entreprise ?? $book->seller->name }}"
+                                    data-book-price="{{ $book->prix_achat_client }}"
+                                    data-book-max="{{ $book->quantite }}"
+                                    data-book-delivery="{{ $book->delai_livraison_label }}"
+                                    data-book-language="{{ $book->langue_label }}">
+                                    {{ __('home.books_quick_view') }}
+                                </button>
+                                @endif
                             </div>
-                        </div>
-                    </article>
-                @endforeach
-            </div>
-        </div>
-    </section>
+                            <div class="book-body">
+                                @if($book->categorie)
+                                    <span class="book-genre">{{ $book->categorie }}</span>
+                                @endif
+                                <h3 class="book-title">{{ $book->titre }}</h3>
+                                @if($book->auteur)
+                                    <p class="book-author">{{ $book->auteur }}</p>
+                                @endif
+                                <a href="{{ route('sellers.show', $book->seller) }}" class="book-seller">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path d="M3 7l9-4 9 4-9 4-9-4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                                        <path d="M3 7v7c0 2 4 4 9 4s9-2 9-4V7" stroke="currentColor" stroke-width="1.6"/>
+                                    </svg>
+                                    {{ $book->seller->sellerProfile->nom_entreprise ?? $book->seller->name }}
+                                </a>
 
-    {{-- ============ VENDEURS DISPONIBLES ============ --}}
-    <section class="sellers">
-        <div class="wrap">
-            <div class="section-head">
-                <div>
-                    <h2>{{ __('home.sellers_heading') }}</h2>
-                    <p>{{ __('home.sellers_subheading') }}</p>
+                                {{-- ============ AJOUT : délai de livraison ============ --}}
+                                <span class="book-delivery-badge">{{ $book->delai_livraison_label }}</span>
+@if($book->langue_flag)
+    <span class="book-language-badge" title="{{ $book->langue_label }}">
+        <span class="fi fi-{{ $book->langue_flag }} fis"></span>
+    </span>
+@endif
+                                <div class="book-foot">
+                                <div class="book-foot">
+                                    <span class="book-loc">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path d="M12 22s7-7.58 7-13A7 7 0 1 0 5 9c0 5.42 7 13 7 13z" stroke="currentColor" stroke-width="1.8"/>
+                                            <circle cx="12" cy="9" r="2.4" stroke="currentColor" stroke-width="1.8"/>
+                                        </svg>
+                                        {{ $book->seller->sellerProfile->localisation ?? '—' }}
+                                    </span>
+                                    @if($book->quantite > 0)
+                                    <button type="button" class="book-add" aria-label="{{ __('home.books_add') }}"
+                                        data-book-order
+                                    data-book-id="{{ $book->id }}"
+                                    data-book-author="{{ $book->auteur }}"
+                                    data-book-category="{{ $book->categorie }}"
+                                    data-book-condition="{{ __('home.book_condition_' . $book->etat) }}"
+                                    data-book-description="{{ $book->description }}"
+                                        data-book-title="{{ $book->titre }}"
+                                        data-book-image="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}"
+                                        data-book-seller="{{ $book->seller->sellerProfile->nom_entreprise ?? $book->seller->name }}"
+                                        data-book-price="{{ $book->prix_achat_client }}"
+                                        data-book-max="{{ $book->quantite }}"
+data-book-delivery="{{ $book->delai_livraison_label }}"
+data-book-language="{{ $book->langue_label }}">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path d="M5 12H19M12 5V19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                                        </svg>
+                                    </button>
+                                    @endif
+                                </div>
+                            </div>
+                        </article>
+                    @endforeach
                 </div>
-                <a href="#" class="see-all">{{ __('home.sellers_see_all') }}</a>
-            </div>
-
-            @php
-                $sellers = $sellers ?? collect([
-                    ['name' => 'Miora R.', 'city' => 'Antananarivo', 'count' => 24, 'note' => '4.9'],
-                    ['name' => 'Fenosoa A.', 'city' => 'Fianarantsoa', 'count' => 11, 'note' => '4.8'],
-                    ['name' => 'Tolotra H.', 'city' => 'Toamasina', 'count' => 37, 'note' => '5.0'],
-                ]);
-            @endphp
-
-            <div class="seller-grid">
-                @foreach($sellers as $seller)
-                    <article class="seller-card">
-                        <div class="seller-avatar">{{ strtoupper(substr($seller['name'], 0, 1)) }}</div>
-                        <div>
-                            <h3 class="seller-name">{{ $seller['name'] }}</h3>
-                            <p class="seller-meta">{{ $seller['city'] }}</p>
-                            <div class="seller-stats">
-                                <span>{{ $seller['count'] }} {{ __('home.sellers_books_count') }}</span>
-                                <span>★ {{ $seller['note'] }}</span>
-                            </div>
-                        </div>
-                    </article>
-                @endforeach
-            </div>
+            @endif
         </div>
     </section>
 
@@ -114,7 +147,7 @@
                     <h3>{{ __('home.cta_title') }}</h3>
                     <p>{{ __('home.cta_subtitle') }}</p>
                 </div>
-                <a href="{{ url('/vendeur') }}" class="btn btn-primary">{{ __('home.cta_button') }}</a>
+                <button type="button" class="btn btn-primary" data-auth-open="registerSeller">{{ __('home.cta_button') }}</button>
             </div>
         </div>
     </section>
