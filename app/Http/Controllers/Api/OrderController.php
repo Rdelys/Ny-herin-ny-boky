@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Commandes côté acheteur. Même logique que App\Http\Controllers\OrderController
@@ -55,96 +56,115 @@ class OrderController extends Controller
      * le site web.
      */
     public function store(Request $request): JsonResponse
-    {
-        $user = Auth::guard('sanctum')->user();
+{
+    $user = Auth::guard('sanctum')->user();
 
-        if ($user && $user->isSeller()) {
-            return response()->json([
-                'message' => __('home.order_seller_cant_order'),
-            ], 403);
-        }
-
-        $rules = [
-            'book_id' => ['required', 'integer', 'exists:books,id'],
-            'quantite' => ['required', 'integer', 'min:1'],
-            'ville' => ['required', Rule::in(Setting::VILLES)],
-            'mode_paiement' => ['required', Rule::in(array_keys(Setting::PAYMENT_METHODS))],
-            'reference_paiement' => ['required_unless:mode_paiement,especes', 'nullable', 'string', 'max:80'],
-            'adresse_livraison' => ['required', 'string', 'max:255'],
-        ];
-
-        if (! $user) {
-            $rules['guest_name'] = ['required', 'string', 'max:120'];
-            $rules['guest_phone'] = ['required', 'string', 'max:30'];
-            $rules['guest_email'] = ['nullable', 'email', 'max:190'];
-        }
-
-        $data = $request->validate($rules);
-
-        if ($data['mode_paiement'] === 'especes' && $data['ville'] !== Setting::VILLE_ESPECES) {
-            throw ValidationException::withMessages([
-                'mode_paiement' => ["Le paiement en espèces n'est disponible qu'à Antananarivo."],
-            ]);
-        }
-
-        $book = Book::with('seller')->findOrFail($data['book_id']);
-
-        if ($book->prix_achat === null) {
-            throw ValidationException::withMessages([
-                'book_id' => [__('home.order_error_not_for_sale')],
-            ]);
-        }
-
-        if ($data['quantite'] > $book->quantite) {
-            throw ValidationException::withMessages([
-                'quantite' => [__('home.order_error_stock', ['quantite' => $book->quantite])],
-            ]);
-        }
-
-        $rate = Setting::commissionRate();
-        $prixUnitaire = (int) $book->prix_achat_client;
-
-        $order = Order::create([
-            'reference' => Order::genererReference(),
-            'buyer_id' => $user?->id,
-            'guest_name' => $user ? null : $data['guest_name'],
-            'guest_phone' => $user ? null : $data['guest_phone'],
-            'guest_email' => $user ? null : ($data['guest_email'] ?? null),
-            'adresse_livraison' => $data['adresse_livraison'],
-            'seller_id' => $book->seller_id,
-            'book_id' => $book->id,
-            'book_titre' => $book->titre,
-            'quantite' => $data['quantite'],
-            'prix_unitaire' => $prixUnitaire,
-            'total' => $prixUnitaire * $data['quantite'],
-            'commission_rate' => $rate,
-            'montant_vendeur' => (int) $book->prix_achat * $data['quantite'],
-            'mode_paiement' => $data['mode_paiement'],
-            'reference_paiement' => $data['reference_paiement'] ?? __('home.order_payment_cash'),
-            'ville' => $data['ville'],
-            'statut' => Order::STATUT_DEFAUT,
-        ]);
-
-        // Stock réservé immédiatement, comme sur le site web.
-        $book->decrement('quantite', $data['quantite']);
-
-        // Facture générée automatiquement, comme sur le site — l'app la
-        // télécharge ensuite directement via le champ invoice_url ci-dessous.
-        InvoiceGenerator::generate($order->fresh(['buyer', 'seller.sellerProfile']));
-        $order->refresh();
-
-        return response()->json([
-            'data' => $this->formatOrder($order->fresh(['seller.sellerProfile', 'deliverer'])),
-            'message' => __('home.order_success', ['reference' => $order->reference]),
-            'invoice_url' => $order->facture_url,
-        ], 201);
+    if ($user && $user->isSeller()) {
+        return response()->json(['message' => __('home.order_seller_cant_order')], 403);
     }
+
+    $rules = [
+        'items' => ['required', 'array', 'min:1'],
+        'items.*.book_id' => ['required', 'integer', 'distinct', 'exists:books,id'],
+        'items.*.quantite' => ['required', 'integer', 'min:1'],
+        'ville' => ['required', Rule::in(Setting::VILLES)],
+        'mode_paiement' => ['required', Rule::in(array_keys(Setting::PAYMENT_METHODS))],
+        'reference_paiement' => ['required_unless:mode_paiement,especes', 'nullable', 'string', 'max:80'],
+        'adresse_livraison' => ['required', 'string', 'max:255'],
+    ];
+
+    if (! $user) {
+        $rules['guest_name'] = ['required', 'string', 'max:120'];
+        $rules['guest_phone'] = ['required', 'string', 'max:30'];
+        $rules['guest_email'] = ['nullable', 'email', 'max:190'];
+    }
+
+    $data = $request->validate($rules);
+
+    if ($data['mode_paiement'] === 'especes' && $data['ville'] !== Setting::VILLE_ESPECES) {
+        throw ValidationException::withMessages([
+            'mode_paiement' => ["Le paiement en espèces n'est disponible qu'à Antananarivo."],
+        ]);
+    }
+
+    $requested = collect($data['items'])->pluck('quantite', 'book_id')->all();
+    $groupe = Order::genererGroupeReference();
+
+    try {
+        $orders = DB::transaction(function () use ($requested, $data, $user, $groupe) {
+            $books = Book::with('seller')
+                ->whereIn('id', array_keys($requested))
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('id');
+
+            $created = collect();
+
+            foreach ($requested as $bookId => $quantite) {
+                $book = $books->get($bookId);
+
+                if (! $book || $book->prix_achat === null) {
+                    throw new \DomainException(($book ? $book->titre . ' : ' : '') . __('home.order_error_not_for_sale'));
+                }
+                if ($quantite > $book->quantite) {
+                    throw new \DomainException($book->titre . ' : ' . __('home.order_error_stock', ['quantite' => $book->quantite]));
+                }
+
+                $rate = Setting::commissionRateFor($book->prix_achat);
+                $prixUnitaire = (int) $book->prix_achat_client;
+
+                $created->push(Order::create([
+                    'reference' => Order::genererReference(),
+                    'groupe_reference' => $groupe,
+                    'buyer_id' => $user?->id,
+                    'guest_name' => $user ? null : $data['guest_name'],
+                    'guest_phone' => $user ? null : $data['guest_phone'],
+                    'guest_email' => $user ? null : ($data['guest_email'] ?? null),
+                    'adresse_livraison' => $data['adresse_livraison'],
+                    'seller_id' => $book->seller_id,
+                    'book_id' => $book->id,
+                    'book_titre' => $book->titre,
+                    'quantite' => $quantite,
+                    'prix_unitaire' => $prixUnitaire,
+                    'total' => $prixUnitaire * $quantite,
+                    'commission_rate' => $rate,
+                    'montant_vendeur' => (int) $book->prix_achat * $quantite,
+                    'mode_paiement' => $data['mode_paiement'],
+                    'reference_paiement' => $data['reference_paiement'] ?? __('home.order_payment_cash'),
+                    'ville' => $data['ville'],
+                    'statut' => Order::STATUT_DEFAUT,
+                ]));
+
+                $book->decrement('quantite', $quantite);
+            }
+
+            return $created;
+        });
+    } catch (\DomainException $e) {
+        throw ValidationException::withMessages(['items' => [$e->getMessage()]]);
+    }
+
+    // Une seule facture pour tout le panier (comme le site).
+    try {
+        InvoiceGenerator::generate($orders->first());
+    } catch (\Throwable $e) {
+        report($e);
+    }
+
+    return response()->json([
+        'data' => $orders->map(fn (Order $o) => $this->formatOrder($o->fresh(['seller.sellerProfile', 'deliverer']))),
+        'groupe_reference' => $groupe,
+        'message' => __('home.order_success', ['reference' => $groupe]),
+        'invoice_url' => $orders->first()->fresh()->facture_url,
+    ], 201);
+}
 
     protected function formatOrder(Order $order): array
     {
         return [
             'id' => $order->id,
-            'reference' => $order->reference,
+'reference' => $order->reference,
+'groupe_reference' => $order->groupe_reference,
             'book_titre' => $order->book_titre,
             'quantite' => $order->quantite,
             'prix_unitaire' => $order->prix_unitaire,
