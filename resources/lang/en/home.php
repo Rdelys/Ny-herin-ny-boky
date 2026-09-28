@@ -436,4 +436,10 @@ return [
 'cart_unavailable' => 'A book is no longer available in the quantity requested: adjust the quantity or remove it to continue.',
 'cart_checkout_title' => 'Complete your order',
 'cart_error_generic' => 'Something went wrong, please try again.',
+
+'footer_app_title' => 'Get the app',
+'footer_app_direct' => 'Direct download',
+'footer_app_download' => 'Download the APK',
+'footer_app_hint' => 'After downloading, open the file and allow installation from this source if Android asks.',
+
 ];

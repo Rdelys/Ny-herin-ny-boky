@@ -434,4 +434,9 @@ return [
 'cart_unavailable' => 'Tsy ampy intsony ny isan\'ny boky misy. Ovay ny isa na esory.',
 'cart_checkout_title' => 'Farano ny kaomandy',
 'cart_error_generic' => 'Nisy olana. Andramo indray.',
+
+'footer_app_title' => "Alaivo ny application",
+'footer_app_direct' => 'Fisintonana mivantana',
+'footer_app_download' => "Alaina ny APK",
+'footer_app_hint' => "Aorian'ny fisintonana, sokafy ny rakitra ary avelao ny fametrahana raha angatahin'i Android.",
 ];
