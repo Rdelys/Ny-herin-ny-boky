@@ -16,11 +16,22 @@ class Book extends Model
         'quantite',
         'categorie',
         'etat',
+        'langue',              // <-- ajouté
         'image_path',
         'livraison_disponible',
-        'delai_livraison_min',   // <-- ajouter
-        'delai_livraison_max',   // <-- ajouter
+        'delai_livraison_min',
+        'delai_livraison_max',
     ];
+
+    private const LANGUE_FLAGS = [
+    'mg' => 'mg', // Madagascar
+    'fr' => 'fr', // France
+    'en' => 'gb', // Royaume-Uni
+    'zh' => 'cn', // Chine
+    'it' => 'it', // Italie
+    'de' => 'de', // Allemagne
+    'es' => 'es', // Espagne
+];
 
     /** Libellé prêt à afficher : "Disponible, livraison sous 24h" ou "Livraison sous X à Y jours". */
     public function getDelaiLivraisonLabelAttribute(): string
@@ -79,4 +90,23 @@ class Book extends Model
     {
         return $this->belongsTo(User::class, 'seller_id');
     }
+
+    /** Libellé traduit de la langue du livre, selon la locale active. */
+public function getLangueLabelAttribute(): ?string
+{
+    if (! $this->langue) {
+        return null;
+    }
+
+    return __('home.book_language_' . $this->langue);
+}
+
+public function getLangueFlagAttribute(): ?string
+{
+    if (! $this->langue) {
+        return null;
+    }
+
+    return self::LANGUE_FLAGS[$this->langue] ?? null;
+}
 }

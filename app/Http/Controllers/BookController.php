@@ -31,29 +31,32 @@ class BookController extends Controller
     ];
 
     /**
+ * Langues disponibles pour un livre (code => libellé), dans l'ordre de priorité.
+ */
+public const LANGUES = ['mg', 'fr', 'en', 'zh', 'it', 'de', 'es'];
+
+    /**
      * États possibles d'un livre (clé technique => libellé traduit).
      */
     public const CONDITIONS = ['neuf', 'tres_bon_etat', 'bon_etat'];
 
     protected function rules(): array
-    {
-        return [
-            'titre' => ['required', 'string', 'max:255'],
-            'auteur' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:2000'],
-            'prix_achat' => ['nullable', 'integer', 'min:0'],
-            'prix_location' => ['nullable', 'integer', 'min:0'],
-            'quantite' => ['required', 'integer', 'min:1'],
-            'categorie' => ['required', Rule::in(self::CATEGORIES)],
-            'etat' => ['required', Rule::in(self::CONDITIONS)],
-            'livraison_disponible' => ['nullable', 'boolean'],
-            // Délai de livraison : 1 par défaut (disponible tout de suite),
-            // à monter si le livre doit être importé de l'étranger.
-            'delai_livraison_min' => ['required', 'integer', 'min:1', 'max:60'],
-            'delai_livraison_max' => ['required', 'integer', 'min:1', 'max:60', 'gte:delai_livraison_min'],
-            'image' => ['nullable', 'image', 'max:4096'],
-        ];
-    }
+{
+    return [
+        'titre' => ['required', 'string', 'max:255'],
+        'auteur' => ['nullable', 'string', 'max:255'],
+        'description' => ['nullable', 'string', 'max:2000'],
+        'prix_achat' => ['nullable', 'integer', 'min:0'],
+        'prix_location' => ['nullable', 'integer', 'min:0'],
+        'quantite' => ['required', 'integer', 'min:1'],
+        'categorie' => ['required', Rule::in(self::CATEGORIES)],
+        'etat' => ['required', Rule::in(self::CONDITIONS)],
+'langue' => ['required', Rule::in(self::LANGUES)], // <-- corrigé, sans array_keys        'livraison_disponible' => ['nullable', 'boolean'],
+        'delai_livraison_min' => ['required', 'integer', 'min:1', 'max:60'],
+        'delai_livraison_max' => ['required', 'integer', 'min:1', 'max:60', 'gte:delai_livraison_min'],
+        'image' => ['nullable', 'image', 'max:4096'],
+    ];
+}
 
     public function store(Request $request): RedirectResponse
     {
@@ -67,19 +70,20 @@ class BookController extends Controller
         }
 
         $request->user()->books()->create([
-            'titre' => $data['titre'],
-            'auteur' => $data['auteur'] ?? null,
-            'description' => $data['description'] ?? null,
-            'prix_achat' => $data['prix_achat'] ?? null,
-            'prix_location' => $data['prix_location'] ?? null,
-            'quantite' => $data['quantite'],
-            'categorie' => $data['categorie'],
-            'etat' => $data['etat'],
-            'image_path' => $imagePath,
-            'livraison_disponible' => $request->boolean('livraison_disponible'),
-            'delai_livraison_min' => $data['delai_livraison_min'],
-            'delai_livraison_max' => $data['delai_livraison_max'],
-        ]);
+    'titre' => $data['titre'],
+    'auteur' => $data['auteur'] ?? null,
+    'description' => $data['description'] ?? null,
+    'prix_achat' => $data['prix_achat'] ?? null,
+    'prix_location' => $data['prix_location'] ?? null,
+    'quantite' => $data['quantite'],
+    'categorie' => $data['categorie'],
+    'etat' => $data['etat'],
+    'langue' => $data['langue'],          // <-- ajouté
+    'image_path' => $imagePath,
+    'livraison_disponible' => $request->boolean('livraison_disponible'),
+    'delai_livraison_min' => $data['delai_livraison_min'],
+    'delai_livraison_max' => $data['delai_livraison_max'],
+]);
 
         return redirect()
             ->route('profile', ['tab' => 'livres'])
@@ -104,18 +108,19 @@ class BookController extends Controller
         }
 
         $book->fill([
-            'titre' => $data['titre'],
-            'auteur' => $data['auteur'] ?? null,
-            'description' => $data['description'] ?? null,
-            'prix_achat' => $data['prix_achat'] ?? null,
-            'prix_location' => $data['prix_location'] ?? null,
-            'quantite' => $data['quantite'],
-            'categorie' => $data['categorie'],
-            'etat' => $data['etat'],
-            'livraison_disponible' => $request->boolean('livraison_disponible'),
-            'delai_livraison_min' => $data['delai_livraison_min'],
-            'delai_livraison_max' => $data['delai_livraison_max'],
-        ])->save();
+    'titre' => $data['titre'],
+    'auteur' => $data['auteur'] ?? null,
+    'description' => $data['description'] ?? null,
+    'prix_achat' => $data['prix_achat'] ?? null,
+    'prix_location' => $data['prix_location'] ?? null,
+    'quantite' => $data['quantite'],
+    'categorie' => $data['categorie'],
+    'etat' => $data['etat'],
+    'langue' => $data['langue'],          // <-- ajouté
+    'livraison_disponible' => $request->boolean('livraison_disponible'),
+    'delai_livraison_min' => $data['delai_livraison_min'],
+    'delai_livraison_max' => $data['delai_livraison_max'],
+])->save();
 
         return redirect()
             ->route('profile', ['tab' => 'livres'])
