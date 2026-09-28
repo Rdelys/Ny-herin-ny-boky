@@ -31,7 +31,9 @@
     <meta name="twitter:title" content="@yield('meta_title', __('home.meta_title'))">
     <meta name="twitter:description" content="@yield('meta_description', __('home.meta_description'))">
     <meta name="twitter:image" content="{{ asset('logo.png') }}">
-
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+    
     <script type="application/ld+json">
     {
         "@@context": "https://schema.org",
