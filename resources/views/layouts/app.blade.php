@@ -1178,6 +1178,17 @@
     border-radius: 50%;
 }
 
+.book-format-badge{
+    display: inline-block;
+    font-size: .72rem;
+    font-weight: 600;
+    color: var(--green-700);
+    background: rgba(92,138,55,.1);
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin: 0 0 14px 6px;
+}
+
         .book-foot{
             display: flex;
             align-items: center;
@@ -2304,6 +2315,7 @@
             var orderCondition = document.getElementById('orderBookCondition');
             var orderBookDelivery = document.getElementById('orderBookDelivery');
             var orderBookLanguage = document.getElementById('orderBookLanguage');
+            var orderBookFormat = document.getElementById('orderBookFormat'); // <-- ajouté
             var orderDescription = document.getElementById('orderBookDescription');
             var orderBookId = document.getElementById('orderBookId');
             var orderUnitPrice = document.getElementById('orderUnitPrice');
@@ -2389,7 +2401,8 @@
                 setOptionalText(orderDescription, trigger.getAttribute('data-book-description'));
                 setOptionalText(orderBookDelivery, deliveryLabel);
                 setOptionalText(orderBookLanguage, trigger.getAttribute('data-book-language'));
-
+                setOptionalText(orderBookFormat, trigger.getAttribute('data-book-format')); // <-- ajouté
+                
                 if (orderQtyInput) {
                     orderQtyInput.value = 1;
                     orderQtyInput.max = maxQty || 99;

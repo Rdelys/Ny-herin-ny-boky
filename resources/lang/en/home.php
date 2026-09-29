@@ -72,9 +72,8 @@ return [
     'auth_tab_seller' => 'Become a seller',
     'auth_firstname' => 'First name',
     'auth_lastname' => 'Last name',
-    'auth_location' => 'Location',
-    'auth_location_placeholder' => 'Antananarivo, Fianarantsoa...',
-    'auth_reason_legend' => 'Why are you signing up?',
+    'auth_location' => 'Exact address',
+    'auth_location_placeholder' => 'District, plot number...','auth_reason_legend' => 'Why are you signing up?',
     'auth_choose_placeholder' => 'choose ...',
     'auth_reason_1' => 'Learn about and respect books',
     'auth_reason_2' => 'Look for Malagasy books',
@@ -442,4 +441,8 @@ return [
 'footer_app_download' => 'Download the APK',
 'footer_app_hint' => 'After downloading, open the file and allow installation from this source if Android asks.',
 
+'book_format_label' => 'Format',
+'book_format_poche' => 'Pocket',
+'book_format_broche' => 'Paperback',
+'book_format_relie' => 'Hardcover',
 ];

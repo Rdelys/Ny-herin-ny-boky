@@ -73,9 +73,8 @@ return [
     'auth_firstname' => 'Anarana voalohany',
     'auth_lastname' => 'Fanampin\'anarana',
     'auth_location' => 'Toerana',
-    'auth_location_placeholder' => 'Antananarivo, Fianarantsoa...',
-    'auth_reason_legend' => 'Nahoana ianao no misoratra anarana?',
-    'auth_choose_placeholder' => 'safidio ...',
+    'auth_location' => 'Adiresy marina',
+    'auth_location_placeholder' => 'Toko, ...','auth_choose_placeholder' => 'safidio ...',
     'auth_reason_1' => 'Hianatra sy hanaja ny boky',
     'auth_reason_2' => 'Hitady boky malagasy',
     'auth_reason_3' => 'Hamaky ho fahafinaretana',
@@ -439,4 +438,9 @@ return [
 'footer_app_direct' => 'Fisintonana mivantana',
 'footer_app_download' => "Alaina ny APK",
 'footer_app_hint' => "Aorian'ny fisintonana, sokafy ny rakitra ary avelao ny fametrahana raha angatahin'i Android.",
+
+'book_format_label' => 'Endrika',
+'book_format_poche' => 'Kely (poche)',
+'book_format_broche' => 'Mety',
+'book_format_relie' => 'Mafy fonony',
 ];

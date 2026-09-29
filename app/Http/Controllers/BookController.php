@@ -31,6 +31,8 @@ class BookController extends Controller
         'Éducation financière',
     ];
 
+    public const FORMATS = ['poche', 'broche', 'relie'];
+
     /**
  * Langues disponibles pour un livre (code => libellé), dans l'ordre de priorité.
  */
@@ -56,6 +58,7 @@ public const LANGUES = ['mg', 'fr', 'en', 'zh', 'it', 'de', 'es'];
         'delai_livraison_min' => ['required', 'integer', 'min:1', 'max:60'],
         'delai_livraison_max' => ['required', 'integer', 'min:1', 'max:60', 'gte:delai_livraison_min'],
         'image' => ['nullable', 'image', 'max:4096'],
+        'format' => ['required', Rule::in(self::FORMATS)],
     ];
 }
 
@@ -79,7 +82,8 @@ public const LANGUES = ['mg', 'fr', 'en', 'zh', 'it', 'de', 'es'];
     'quantite' => $data['quantite'],
     'categorie' => $data['categorie'],
     'etat' => $data['etat'],
-    'langue' => $data['langue'],          // <-- ajouté
+    'langue' => $data['langue'],       
+    'format' => $data['format'],   // <-- ajouté
     'image_path' => $imagePath,
     'livraison_disponible' => $request->boolean('livraison_disponible'),
     'delai_livraison_min' => $data['delai_livraison_min'],
@@ -117,7 +121,8 @@ public const LANGUES = ['mg', 'fr', 'en', 'zh', 'it', 'de', 'es'];
     'quantite' => $data['quantite'],
     'categorie' => $data['categorie'],
     'etat' => $data['etat'],
-    'langue' => $data['langue'],          // <-- ajouté
+    'langue' => $data['langue'],
+    'format' => $data['format'],          // <-- ajouté
     'livraison_disponible' => $request->boolean('livraison_disponible'),
     'delai_livraison_min' => $data['delai_livraison_min'],
     'delai_livraison_max' => $data['delai_livraison_max'],

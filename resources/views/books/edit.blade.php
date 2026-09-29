@@ -82,6 +82,17 @@
     </select>
 </label>
 @error('langue')<p class="modal-field-error">{{ $message }}</p>@enderror
+<label>{{ __('home.book_format_label') }}
+    <select name="format" required>
+        <option value="">{{ __('home.auth_choose_placeholder') }}</option>
+        @foreach(\App\Http\Controllers\BookController::FORMATS as $code)
+            <option value="{{ $code }}" @selected(old('format', $book->format ?? null) === $code)>
+                {{ __('home.book_format_' . $code) }}
+            </option>
+        @endforeach
+    </select>
+</label>
+@error('format')<p class="modal-field-error">{{ $message }}</p>@enderror
 
                     <fieldset class="modal-fieldset">
                         <legend>{{ __('home.book_shipping_legend') }}</legend>

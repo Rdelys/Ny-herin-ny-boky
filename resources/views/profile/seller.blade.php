@@ -17,7 +17,8 @@
     // une erreur de validation sur l'un de ses champs, il faut le rouvrir
     // automatiquement au chargement, sinon l'erreur reste invisible derrière
     // un modal fermé.
-$addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_achat', 'prix_location', 'quantite', 'categorie', 'etat', 'langue', 'image']);@endphp
+    $addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_achat', 'prix_location', 'quantite', 'categorie', 'etat', 'langue', 'format', 'image']);
+@endphp
 
 @section('content')
     <section>
@@ -158,6 +159,7 @@ $addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_acha
                                     <th>{{ __('home.book_col_title') }}</th>
                                     <th>{{ __('home.book_col_category') }}</th>
                                     <th>{{ __('home.book_language_label') }}</th>
+                                    <th>{{ __('home.book_format_label') }}</th>
                                     <th>{{ __('home.book_col_price') }}</th>
                                     <th>{{ __('home.book_col_quantity') }}</th>
                                     <th>{{ __('home.book_col_shipping') }}</th>
@@ -180,6 +182,7 @@ $addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_acha
                                         </td>
                                         <td><span class="book-genre" style="margin:0;">{{ $book->categorie }}</span></td>
                                         <td>{{ $book->langue_label ?? '—' }}</td>
+                                        <td>{{ $book->format_label ?? '—' }}</td>
                                         <td>{{ $book->prix_achat ? number_format($book->prix_achat, 0, ',', ' ').' Ar' : '—' }}</td>
                                         <td>
                                             @if($book->quantite <= 0)

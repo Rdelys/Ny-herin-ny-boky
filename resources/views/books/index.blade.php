@@ -77,6 +77,9 @@
         <span class="fi fi-{{ $book->langue_flag }} fis"></span>
     </span>
 @endif
+@if($book->format)
+    <span class="book-format-badge">{{ $book->format_label }}</span>
+@endif
                                 <div class="book-foot">
                                 <div class="book-foot">
                                     <span class="book-loc">{{ $book->seller->sellerProfile->localisation ?? '—' }}</span>
@@ -94,7 +97,8 @@
                                         data-book-price="{{ $book->prix_achat_client }}"
                                         data-book-max="{{ $book->quantite }}"
 data-book-delivery="{{ $book->delai_livraison_label }}"
-data-book-language="{{ $book->langue_label }}">
+data-book-language="{{ $book->langue_label }}"
+data-book-format="{{ $book->format_label }}">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path d="M5 12H19M12 5V19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
                                         </svg>

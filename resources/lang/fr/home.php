@@ -72,8 +72,8 @@ return [
     'auth_tab_seller' => 'Devenir vendeur',
     'auth_firstname' => 'Prénom',
     'auth_lastname' => 'Nom',
-    'auth_location' => 'Localisation',
-    'auth_location_placeholder' => 'Antananarivo, Fianarantsoa...',
+    'auth_location' => 'Adresse exacte',
+    'auth_location_placeholder' => 'Quartier lot ....',
     'auth_reason_legend' => 'Pourquoi vous inscrivez-vous ?',
     'auth_choose_placeholder' => 'choisissez ...',
     'auth_reason_1' => 'Apprendre et respecter les livres',
@@ -434,4 +434,9 @@ return [
 'cart_unavailable' => 'Un livre n\'est plus disponible en quantité suffisante : ajustez la quantité ou retirez-le pour continuer.',
 'cart_checkout_title' => 'Finaliser la commande',
 'cart_error_generic' => 'Une erreur est survenue, veuillez réessayer.',
+
+'book_format_label' => 'Format',
+'book_format_poche' => 'Poche',
+'book_format_broche' => 'Broché',
+'book_format_relie' => 'Relié',
 ];

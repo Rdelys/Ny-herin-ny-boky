@@ -17,6 +17,7 @@ class Book extends Model
         'categorie',
         'etat',
         'langue',              // <-- ajouté
+            'format',              // <-- ajouté
         'image_path',
         'livraison_disponible',
         'delai_livraison_min',
@@ -99,6 +100,16 @@ public function getLangueLabelAttribute(): ?string
     }
 
     return __('home.book_language_' . $this->langue);
+}
+
+/** Libellé traduit du format du livre. */
+public function getFormatLabelAttribute(): ?string
+{
+    if (! $this->format) {
+        return null;
+    }
+
+    return __('home.book_format_' . $this->format);
 }
 
 public function getLangueFlagAttribute(): ?string
