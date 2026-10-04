@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\Admin\AdminDeliveryController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -134,8 +135,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/parametres/paiement', [AdminSettingsController::class, 'updatePaymentAccounts'])
             ->name('parametres.paiement');
 
-    });
+            Route::get('/livraison', [AdminDeliveryController::class, 'index'])->name('livraison');
+Route::post('/livraison/reglages', [AdminDeliveryController::class, 'updateSettings'])->name('livraison.reglages');
 
+Route::post('/livraison/zones', [AdminDeliveryController::class, 'storeZone'])->name('livraison.zones.store');
+Route::put('/livraison/zones/{zone}', [AdminDeliveryController::class, 'updateZone'])->name('livraison.zones.update');
+
+Route::post('/livraison/quartiers', [AdminDeliveryController::class, 'storeQuartier'])->name('livraison.quartiers.store');
+Route::put('/livraison/quartiers/{quartier}', [AdminDeliveryController::class, 'updateQuartier'])->name('livraison.quartiers.update');
+Route::delete('/livraison/quartiers/{quartier}', [AdminDeliveryController::class, 'destroyQuartier'])->name('livraison.quartiers.destroy');
+
+Route::post('/livraison/cooperatives', [AdminDeliveryController::class, 'storeCooperative'])->name('livraison.cooperatives.store');
+Route::put('/livraison/cooperatives/{cooperative}', [AdminDeliveryController::class, 'updateCooperative'])->name('livraison.cooperatives.update');
+Route::delete('/livraison/cooperatives/{cooperative}', [AdminDeliveryController::class, 'destroyCooperative'])->name('livraison.cooperatives.destroy');
+
+Route::post('/livraison/a-valider/quartier/{delivery}', [AdminDeliveryController::class, 'approveQuartier'])->name('livraison.approve.quartier');
+Route::post('/livraison/a-valider/cooperative/{delivery}', [AdminDeliveryController::class, 'approveCooperative'])->name('livraison.approve.cooperative');
+Route::post('/livraison/frais/{delivery}', [AdminDeliveryController::class, 'setFee'])->name('livraison.frais');
     // ---- Dans le groupe admin, à l'intérieur de Route::middleware('admin')->group(...) ----
 // À côté des routes /parametres existantes :
 Route::get('/parametres/newsletter/export', [AdminSettingsController::class, 'exportNewsletter'])
@@ -146,5 +162,8 @@ Route::delete('/parametres/newsletter/{subscriber}', [AdminSettingsController::c
 // Dans le groupe admin, à côté des routes /parametres/newsletter/... existantes
 Route::post('/parametres/newsletter/envoyer', [AdminSettingsController::class, 'sendNewsletter'])
     ->name('parametres.newsletter.send');
-    
+      
+});
+
+ 
 });

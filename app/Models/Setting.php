@@ -91,13 +91,27 @@ class Setting extends Model
 
     /** Villes desservies ; seule Antananarivo autorise le paiement espèces. */
     public const VILLES = [
-        'Antananarivo',
-        'Antsiranana',
-        'Mahajanga',
-        'Toamasina',
-        'Toliara',
-        'Fianarantsoa',
-    ];
+    'Antananarivo', 'Antsiranana', 'Mahajanga', 'Toamasina', 'Toliara',
+    'Fianarantsoa', 'Sainte-Marie', 'Nosy Be', 'Manakara',
+];
 
     public const VILLE_ESPECES = 'Antananarivo';
+
+    /** Réglages de livraison pilotés par l'admin (clés `delivery_*`). */
+public static function deliverySettings(): array
+{
+    $v = static::query()->where('key', 'like', 'delivery_%')->pluck('value', 'key');
+    $int = fn (string $k, int $default) => (int) ($v['delivery_' . $k] ?? $default);
+
+    return [
+        'vip_actif'      => (bool) $int('vip_actif', 1),
+        'vip_min_h'      => $int('vip_min_h', 5),
+        'vip_max_h'      => $int('vip_max_h', 12),
+        'vip_surcharge'  => $int('vip_surcharge', 5000),   // supplément VIP en Ar
+        'vip_open_hour'  => $int('vip_open_hour', 7),
+        'vip_close_hour' => $int('vip_close_hour', 20),
+        'vip_max_lead_h' => $int('vip_max_lead_h', 24),    // au-delà : VIP coupé
+        'standard_max_h' => $int('standard_max_h', 72),    // au-delà : « long délai »
+    ];
+}
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Setting;
 use App\Services\Cart;
+use App\Services\DeliveryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,8 +26,7 @@ class CartController extends Controller
             'total' => $this->cart->total($lines),
             'canCheckout' => $lines->every(fn ($line) => $line->disponible),
             'paymentAccounts' => array_filter(Setting::paymentAccounts(), fn ($a) => $a['numero'] !== ''),
-            'villes' => Setting::VILLES,
-            'villeEspeces' => Setting::VILLE_ESPECES,
+            'delivery' => DeliveryService::config($lines->pluck('book')->values()),
         ]);
     }
 

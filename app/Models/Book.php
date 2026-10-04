@@ -120,4 +120,10 @@ public function getLangueFlagAttribute(): ?string
 
     return self::LANGUE_FLAGS[$this->langue] ?? null;
 }
+
+/** Livres du compte officiel du site : livraison offerte. */
+public function getLivraisonGratuiteAttribute(): bool
+{
+    return (bool) $this->seller?->is_platform;
+}
 }

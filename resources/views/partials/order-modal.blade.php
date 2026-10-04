@@ -51,6 +51,8 @@
     .pd-media{
         position: relative;
         min-height: 460px;
+        overflow: hidden;
+        cursor: zoom-in;
         background: linear-gradient(160deg, var(--cream-dim), #d9c99f);
     }
     .pd-media img{
@@ -59,7 +61,12 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        transition: transform .18s ease-out;
+        will-change: transform;
+        user-select: none;
+        -webkit-user-drag: none;
     }
+    .pd-media.is-zooming img{ transform: scale(2.2); }
     .pd-media::after{
         content: '';
         position: absolute;
@@ -67,6 +74,25 @@
         background: linear-gradient(180deg, rgba(0,0,0,0) 70%, rgba(20,4,7,.35) 100%);
         pointer-events: none;
     }
+    .pd-zoom-btn{
+        position: absolute;
+        right: 14px;
+        bottom: 14px;
+        z-index: 2;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255,253,247,.95);
+        color: var(--maroon-900);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 18px -8px rgba(0,0,0,.45);
+        transition: opacity .15s ease, background .15s ease;
+        pointer-events: none; /* le clic est capté par .pd-media */
+    }
+    .pd-media:hover .pd-zoom-btn{ background: var(--gold); }
+    .pd-media.is-zooming .pd-zoom-btn{ opacity: 0; }
 
     /* ---- infos à droite (c'est cette colonne qui défile) ---- */
     .pd-info{
@@ -250,6 +276,98 @@
         .pd-delivery{ flex-wrap: wrap; }
         .pd-delivery strong{ margin-left: 0; text-align: left; }
     }
+
+    /* ============ VISIONNEUSE ZOOM PLEIN ÉCRAN ============ */
+    .zoom-lightbox{
+        position: fixed;
+        inset: 0;
+        z-index: 130;
+        background: rgba(12,2,5,.94);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .2s ease;
+    }
+    .zoom-lightbox.open{ opacity: 1; pointer-events: auto; }
+    .zoom-stage{
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        touch-action: none;
+        cursor: grab;
+    }
+    .zoom-stage.is-dragging{ cursor: grabbing; }
+    .zoom-stage img{
+        max-width: 94%;
+        max-height: 86%;
+        object-fit: contain;
+        border-radius: 6px;
+        transform-origin: center center;
+        will-change: transform;
+        user-select: none;
+        -webkit-user-drag: none;
+        box-shadow: 0 30px 60px -20px rgba(0,0,0,.7);
+    }
+    .zoom-close{
+        position: absolute;
+        top: calc(14px + env(safe-area-inset-top));
+        right: 14px;
+        z-index: 3;
+        width: 42px;
+        height: 42px;
+        border: 0;
+        border-radius: 50%;
+        background: rgba(255,253,247,.95);
+        color: var(--maroon-900);
+        font-size: 1.5rem;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .zoom-close:hover{ background: var(--gold); }
+    .zoom-toolbar{
+        position: absolute;
+        left: 50%;
+        bottom: calc(18px + env(safe-area-inset-bottom));
+        transform: translateX(-50%);
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(61,11,21,.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(246,239,221,.18);
+        border-radius: 999px;
+        padding: 6px;
+    }
+    .zoom-toolbar button{
+        min-width: 40px;
+        height: 40px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--cream);
+        font-size: 1.2rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background .15s ease;
+    }
+    .zoom-toolbar button:hover{ background: rgba(246,239,221,.14); }
+    .zoom-toolbar button.zoom-reset{ font-size: .8rem; letter-spacing: .03em; }
+    .zoom-level{
+        min-width: 52px;
+        text-align: center;
+        font-size: .82rem;
+        font-weight: 700;
+        color: var(--gold);
+    }
 </style>
 
 <div class="modal-overlay" id="orderModalOverlay">
@@ -258,8 +376,14 @@
 
         <div class="pd-grid">
             {{-- ============ IMAGE (gauche) ============ --}}
-            <div class="pd-media">
+            <div class="pd-media" id="orderMedia">
                 <img id="orderBookImage" src="" alt="">
+                <span class="pd-zoom-btn" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/>
+                        <path d="m20 20-3.5-3.5M11 8v6M8 11h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                </span>
             </div>
 
             {{-- ============ INFOS (droite) ============ --}}
@@ -337,3 +461,206 @@
         </div>
     </div>
 </div>
+
+{{-- ============ VISIONNEUSE ZOOM ============ --}}
+<div class="zoom-lightbox" id="zoomLightbox" role="dialog" aria-modal="true" aria-label="Zoom" aria-hidden="true">
+    <div class="zoom-stage" id="zoomStage">
+        <img id="zoomImg" src="" alt="" draggable="false">
+    </div>
+
+    <button type="button" class="zoom-close" id="zoomClose" aria-label="Fermer">&times;</button>
+
+    <div class="zoom-toolbar">
+        <button type="button" id="zoomOut" aria-label="Zoom -">&minus;</button>
+        <span class="zoom-level" id="zoomLevel">100%</span>
+        <button type="button" id="zoomIn" aria-label="Zoom +">&plus;</button>
+        <button type="button" class="zoom-reset" id="zoomReset">1:1</button>
+    </div>
+</div>
+
+<script>
+(function(){
+    var media   = document.getElementById('orderMedia');
+    var img     = document.getElementById('orderBookImage');
+    var overlay = document.getElementById('orderModalOverlay');
+    var lb      = document.getElementById('zoomLightbox');
+    var stage   = document.getElementById('zoomStage');
+    var zimg    = document.getElementById('zoomImg');
+    var level   = document.getElementById('zoomLevel');
+    if (!media || !img || !overlay || !lb || !stage || !zimg) return;
+
+    // ---------- 1) zoom au survol (desktop avec souris uniquement) ----------
+    var canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    function setOrigin(e){
+        var r = media.getBoundingClientRect();
+        img.style.transformOrigin =
+            ((e.clientX - r.left) / r.width * 100) + '% ' +
+            ((e.clientY - r.top) / r.height * 100) + '%';
+    }
+    if (canHover) {
+        media.addEventListener('mouseenter', function(e){
+            if (!img.getAttribute('src')) return;
+            setOrigin(e);
+            media.classList.add('is-zooming');
+        });
+        media.addEventListener('mousemove', setOrigin);
+        media.addEventListener('mouseleave', function(){
+            media.classList.remove('is-zooming');
+        });
+    }
+
+    // ---------- 2) visionneuse plein écran ----------
+    var MIN = 1, MAX = 5;
+    var s = 1, x = 0, y = 0;
+    var ptrs = new Map();
+    var lastDist = 0, lastTap = 0, downOnImg = false, startPt = null;
+
+    function apply(){
+        zimg.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')';
+        level.textContent = Math.round(s * 100) + '%';
+    }
+
+    // Empêche de faire sortir l'image du cadre.
+    function clampPan(){
+        var mx = Math.max(0, (zimg.offsetWidth * s - stage.clientWidth) / 2);
+        var my = Math.max(0, (zimg.offsetHeight * s - stage.clientHeight) / 2);
+        x = Math.min(mx, Math.max(-mx, x));
+        y = Math.min(my, Math.max(-my, y));
+    }
+
+    // Zoome en gardant fixe le point (cx, cy) de l'écran.
+    function zoomAt(ns, cx, cy){
+        ns = Math.min(MAX, Math.max(MIN, ns));
+        var r = stage.getBoundingClientRect();
+        var px = cx - (r.left + r.width / 2);
+        var py = cy - (r.top + r.height / 2);
+        x = px - (px - x) * (ns / s);
+        y = py - (py - y) * (ns / s);
+        s = ns;
+        if (s === MIN) { x = 0; y = 0; }
+        clampPan();
+        apply();
+    }
+
+    function centerPoint(){
+        var r = stage.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    }
+
+    function reset(){
+        s = 1; x = 0; y = 0;
+        ptrs.clear();
+        lastDist = 0;
+        stage.classList.remove('is-dragging');
+        apply();
+    }
+
+    function openLightbox(){
+        var src = img.currentSrc || img.src;
+        if (!src || !img.getAttribute('src')) return;
+        zimg.src = src;
+        zimg.alt = img.alt || '';
+        reset();
+        media.classList.remove('is-zooming');
+        lb.classList.add('open');
+        lb.setAttribute('aria-hidden', 'false');
+    }
+    function closeLightbox(){
+        lb.classList.remove('open');
+        lb.setAttribute('aria-hidden', 'true');
+    }
+
+    media.addEventListener('click', openLightbox);
+    document.getElementById('zoomClose').addEventListener('click', closeLightbox);
+    document.getElementById('zoomReset').addEventListener('click', reset);
+    document.getElementById('zoomIn').addEventListener('click', function(){
+        var c = centerPoint(); zoomAt(s * 1.4, c.x, c.y);
+    });
+    document.getElementById('zoomOut').addEventListener('click', function(){
+        var c = centerPoint(); zoomAt(s / 1.4, c.x, c.y);
+    });
+
+    // Molette (souris / trackpad)
+    stage.addEventListener('wheel', function(e){
+        e.preventDefault();
+        zoomAt(s * (e.deltaY < 0 ? 1.15 : 1 / 1.15), e.clientX, e.clientY);
+    }, { passive: false });
+
+    function dist(){
+        var p = Array.from(ptrs.values());
+        return Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
+    }
+    function mid(){
+        var p = Array.from(ptrs.values());
+        return { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 };
+    }
+
+    // Glisser (1 doigt / souris) + pincer (2 doigts)
+    stage.addEventListener('pointerdown', function(e){
+        stage.setPointerCapture(e.pointerId);
+        ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (ptrs.size === 1) { downOnImg = (e.target === zimg); startPt = { x: e.clientX, y: e.clientY }; }
+        if (ptrs.size === 2) lastDist = dist();
+        stage.classList.add('is-dragging');
+    });
+
+    stage.addEventListener('pointermove', function(e){
+        var p = ptrs.get(e.pointerId);
+        if (!p) return;
+        var dx = e.clientX - p.x, dy = e.clientY - p.y;
+        p.x = e.clientX; p.y = e.clientY;
+
+        if (ptrs.size === 2) {
+            var d = dist(), m = mid();
+            if (lastDist) zoomAt(s * d / lastDist, m.x, m.y);
+            lastDist = d;
+        } else if (ptrs.size === 1 && s > 1) {
+            x += dx; y += dy;
+            clampPan();
+            apply();
+        }
+    });
+
+    function endPointer(e){
+        if (!ptrs.has(e.pointerId)) return;
+        var wasSingle = ptrs.size === 1;
+        ptrs.delete(e.pointerId);
+        lastDist = 0;
+        if (!ptrs.size) stage.classList.remove('is-dragging');
+
+        // Double-clic / double-tap : alterne 1x ↔ 2.5x ; tap dans le vide : ferme.
+        if (wasSingle && e.type === 'pointerup' && startPt &&
+            Math.hypot(e.clientX - startPt.x, e.clientY - startPt.y) < 8) {
+            var now = Date.now();
+            if (now - lastTap < 300) {
+                zoomAt(s > 1 ? 1 : 2.5, e.clientX, e.clientY);
+                lastTap = 0;
+            } else {
+                lastTap = now;
+                if (!downOnImg && s === 1) closeLightbox();
+            }
+        }
+    }
+    stage.addEventListener('pointerup', endPointer);
+    stage.addEventListener('pointercancel', endPointer);
+
+    window.addEventListener('resize', function(){ clampPan(); apply(); });
+
+    // Échap : ferme d'abord la visionneuse, sans fermer la modal dessous.
+    window.addEventListener('keydown', function(e){
+        if (e.key === 'Escape' && lb.classList.contains('open')) {
+            e.stopImmediatePropagation();
+            closeLightbox();
+        }
+    }, true);
+
+    // Si la modal se ferme, tout est remis à zéro.
+    new MutationObserver(function(){
+        if (!overlay.classList.contains('open')) {
+            closeLightbox();
+            media.classList.remove('is-zooming');
+        }
+    }).observe(overlay, { attributes: true, attributeFilter: ['class'] });
+})();
+</script>

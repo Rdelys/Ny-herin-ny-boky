@@ -28,6 +28,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_platform' => 'boolean',
         ];
     }
 
@@ -66,5 +67,10 @@ class User extends Authenticatable
     public function isClient(): bool
     {
         return $this->role === 'client';
+    }
+
+    public function isPlatform(): bool
+    {
+        return (bool) $this->is_platform;
     }
 }

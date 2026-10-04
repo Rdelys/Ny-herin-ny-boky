@@ -479,6 +479,10 @@
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="9" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.8"/><path d="M15 12h3.5L21 15v3h-6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="6" cy="19.5" r="1.8" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="19.5" r="1.8" stroke="currentColor" stroke-width="1.6"/></svg>
                 <span>Livreurs</span>
             </a>
+            <a href="{{ route('admin.livraison') }}" class="{{ request()->routeIs('admin.livraison*') ? 'active' : '' }}">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s7-7.58 7-13A7 7 0 1 0 5 9c0 5.42 7 13 7 13z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="9" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>
+                <span>Tarifs livraison</span>
+            </a>
             <a href="{{ route('admin.parametres') }}" class="{{ request()->routeIs('admin.parametres') ? 'active' : '' }}">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2.05 2.05 0 1 1-2.9 2.9l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2.05 2.05 0 1 1-4.1 0v-.09A1.7 1.7 0 0 0 8.8 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2.05 2.05 0 1 1-2.9-2.9l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H2.7a2.05 2.05 0 1 1 0-4.1h.09A1.7 1.7 0 0 0 4.3 8.8a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2.05 2.05 0 1 1 2.9-2.9l.06.06a1.7 1.7 0 0 0 1.87.34H8.8A1.7 1.7 0 0 0 9.83 2.7V2.6a2.05 2.05 0 1 1 4.1 0v.09a1.7 1.7 0 0 0 1.03 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2.05 2.05 0 1 1 2.9 2.9l-.06.06a1.7 1.7 0 0 0-.34 1.87V8.8a1.7 1.7 0 0 0 1.55 1h.09a2.05 2.05 0 1 1 0 4.1h-.09a1.7 1.7 0 0 0-1.55 1.03z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
                 <span>Paramètres</span>

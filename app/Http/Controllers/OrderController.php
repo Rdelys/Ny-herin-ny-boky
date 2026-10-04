@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Delivery;
 use App\Models\Order;
 use App\Models\Setting;
 use App\Services\Cart;
+use App\Services\DeliveryService;
 use App\Services\InvoiceGenerator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,7 +18,7 @@ class OrderController extends Controller
 {
     /**
      * Validation du panier : une Order par livre (chaque ligne a son vendeur,
-     * son reversement, son statut et sa facture).
+     * son reversement, son statut) + UNE livraison pour tout le panier.
      */
     public function store(Request $request, Cart $cart): RedirectResponse
     {
@@ -25,7 +27,13 @@ class OrderController extends Controller
         abort_if($user && $user->isSeller(), 403);
 
         $rules = [
-            'ville' => ['required', Rule::in(Setting::VILLES)],
+            'ville' => ['required', Rule::exists('delivery_zones', 'nom')->where('actif', true)],
+            'livraison_type' => ['required', Rule::in([DeliveryService::TYPE_STANDARD, DeliveryService::TYPE_VIP])],
+            'quartier_id' => ['nullable', 'string', 'max:20'],
+            'quartier_autre' => ['nullable', 'string', 'max:120'],
+            'cooperative_id' => ['nullable', 'string', 'max:20'],
+            'cooperative_autre' => ['nullable', 'string', 'max:120'],
+            'heure_prevue' => ['nullable', 'date_format:Y-m-d H:i'],
             'mode_paiement' => ['required', Rule::in(array_keys(Setting::PAYMENT_METHODS))],
             'reference_paiement' => ['required_unless:mode_paiement,especes', 'nullable', 'string', 'max:80'],
             'adresse_livraison' => ['required', 'string', 'max:255'],
@@ -54,12 +62,17 @@ class OrderController extends Controller
         $groupe = Order::genererGroupeReference();
 
         try {
-            $orders = DB::transaction(function () use ($requested, $data, $user) {
+            $orders = DB::transaction(function () use ($requested, $data, $user, $groupe) {
                 $books = Book::with('seller')
                     ->whereIn('id', array_keys($requested))
                     ->lockForUpdate()
                     ->get()
                     ->keyBy('id');
+
+                // Livraison : validée et chiffrée côté serveur (ValidationException => retour au formulaire).
+                Delivery::create(
+                    ['groupe_reference' => $groupe] + DeliveryService::resolve($data, $books->values())
+                );
 
                 $created = collect();
 
@@ -108,11 +121,10 @@ class OrderController extends Controller
             return redirect()->route('cart.index')->withInput()->with('error', $e->getMessage());
         }
 
-                // Panier vidé AVANT la facture : si elle échoue, la commande ne peut
+        // Panier vidé AVANT la facture : si elle échoue, la commande ne peut
         // jamais être renvoyée deux fois.
         $cart->clear();
 
-        // Une seule facture pour tout le panier (rattachée à chaque ligne).
         try {
             InvoiceGenerator::generate($orders->first());
         } catch (\Throwable $e) {

@@ -1,6 +1,9 @@
 @php
     $order = $orders->first();
     $vendeurs = $orders->pluck('seller')->unique('id');
+    $delivery = $order->delivery;
+    $sousTotal = (int) $orders->sum('total');
+    $fraisLiv = (int) ($delivery->frais ?? 0);
 @endphp
 <!DOCTYPE html>
 <html lang="fr">
@@ -70,6 +73,10 @@
                     {{ $order->buyer_name }}<br>
                     {{ $order->adresse_livraison }}<br>
                     {{ $order->ville }}<br>
+                    @if($delivery)
+                        {{ $delivery->type_label }} · {{ $delivery->quartier_nom ?? $delivery->cooperative_nom }}<br>
+                        @if($delivery->heure_prevue)Arrivée prévue : {{ $delivery->heure_prevue->format('d/m/Y H:i') }}<br>@endif
+                    @endif
                     @if($order->buyer)
                         {{ $order->buyer->email }}
                     @else
@@ -106,13 +113,24 @@
     </table>
 
     <table class="totals" align="right">
-        <tr>
-            <td>Mode de paiement</td>
-            <td class="text-right">{{ $order->mode_paiement_label }}</td>
-        </tr>
+        <tr><td>Mode de paiement</td><td class="text-right">{{ $order->mode_paiement_label }}</td></tr>
+        <tr><td>Sous-total</td><td class="text-right">{{ number_format($sousTotal, 0, ',', ' ') }} Ar</td></tr>
+        @if($delivery)
+            <tr>
+                <td>Livraison ({{ $delivery->type_label }})</td>
+                <td class="text-right">
+                    @if($delivery->frais_gratuit && $fraisLiv === 0) Gratuite
+                    @elseif($delivery->frais_a_confirmer) À confirmer
+                    @else {{ number_format($fraisLiv, 0, ',', ' ') }} Ar @endif
+                </td>
+            </tr>
+            @if($delivery->taxi_brousse_pa)
+                <tr><td colspan="2" style="font-size:9px; color:#9c8b7d;">Taxi-brousse ({{ $delivery->cooperative_nom }}) : frais payés à l'arrivée (PA)</td></tr>
+            @endif
+        @endif
         <tr class="grand">
             <td>Total payé</td>
-            <td class="text-right">{{ number_format($orders->sum('total'), 0, ',', ' ') }} Ar</td>
+            <td class="text-right">{{ number_format($sousTotal + $fraisLiv, 0, ',', ' ') }} Ar</td>
         </tr>
     </table>
 
