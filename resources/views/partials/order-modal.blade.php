@@ -406,6 +406,7 @@
                     <span class="book-genre" id="orderBookDelivery" style="background: rgba(92,138,55,.14); color:#395e26;"></span>
                     <span class="book-genre" id="orderBookLanguage" style="background: rgba(85,16,29,.08); color: var(--maroon-800);"></span>
                     <span class="book-genre" id="orderBookFormat" style="background: rgba(92,138,55,.1); color: var(--green-700);"></span>
+                    <span class="book-genre" id="orderBookPages" style="background: rgba(85,16,29,.06); color:#6b5a4d;"></span>
                 </div>
 
                 <p class="pd-desc-title">{{ __('home.book_description_label') }}</p>

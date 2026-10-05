@@ -478,4 +478,9 @@ return [
     'delivery_error_quartier' => 'Choisissez votre quartier ou indiquez son nom.',
     'delivery_error_coop' => 'Choisissez une coopérative ou indiquez son nom.',
     'delivery_error_vip_slot' => "Le créneau VIP choisi n'est plus disponible, choisissez-en un autre.",
+
+        'book_pages_label' => 'Nombre de pages',
+    'book_pages_placeholder' => 'Ex : 320',
+    'book_pages_count' => ':n page(s)',
+    'book_col_pages' => 'Pages',
 ];

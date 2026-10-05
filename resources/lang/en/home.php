@@ -484,4 +484,9 @@ return [
     'delivery_error_quartier' => 'Choose your neighborhood or type its name.',
     'delivery_error_coop' => 'Choose a cooperative or type its name.',
     'delivery_error_vip_slot' => 'The selected VIP time slot is no longer available, please pick another one.',
+
+        'book_pages_label' => 'Number of pages',
+    'book_pages_placeholder' => 'e.g. 320',
+    'book_pages_count' => ':n page(s)',
+    'book_col_pages' => 'Pages',
 ];

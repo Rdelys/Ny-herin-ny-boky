@@ -93,7 +93,11 @@
     </select>
 </label>
 @error('format')<p class="modal-field-error">{{ $message }}</p>@enderror
-
+<label>{{ __('home.book_pages_label') }}
+    <input type="number" name="nombre_pages" min="1" max="20000" inputmode="numeric"
+           placeholder="{{ __('home.book_pages_placeholder') }}" value="{{ old('nombre_pages', $book->nombre_pages) }}">
+</label>
+@error('nombre_pages')<p class="modal-field-error">{{ $message }}</p>@enderror
                     <fieldset class="modal-fieldset">
                         <legend>{{ __('home.book_shipping_legend') }}</legend>
                         <label class="modal-radio-card">

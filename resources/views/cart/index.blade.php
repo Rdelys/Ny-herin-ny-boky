@@ -204,6 +204,9 @@
                                         @if($book->format_label)
                                             <span class="book-genre" style="background: rgba(92,138,55,.1); color: var(--green-700);">{{ $book->format_label }}</span>
                                         @endif
+                                        @if($book->pages_label)
+                                            <span class="book-genre" style="background: rgba(85,16,29,.06); color:#6b5a4d;">{{ $book->pages_label }}</span>
+                                        @endif
                                         <span class="book-genre" style="background: rgba(92,138,55,.14); color:#395e26;">{{ $book->delai_livraison_label }}</span>
                                     </div>
 

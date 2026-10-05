@@ -16,6 +16,7 @@ class Book extends Model
         'quantite',
         'categorie',
         'etat',
+        'nombre_pages',
         'langue',              // <-- ajouté
             'format',              // <-- ajouté
         'image_path',
@@ -110,6 +111,14 @@ public function getFormatLabelAttribute(): ?string
     }
 
     return __('home.book_format_' . $this->format);
+}
+
+/** « 320 pages » (null si non renseigné). */
+public function getPagesLabelAttribute(): ?string
+{
+    return $this->nombre_pages
+        ? __('home.book_pages_count', ['n' => $this->nombre_pages])
+        : null;
 }
 
 public function getLangueFlagAttribute(): ?string

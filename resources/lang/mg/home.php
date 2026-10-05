@@ -482,4 +482,9 @@ return [
     'delivery_error_quartier' => "Safidio ny faritra misy anao na soraty ny anarany.",
     'delivery_error_coop' => 'Safidio ny koperativa na soraty ny anarany.',
     'delivery_error_vip_slot' => "Tsy malalaka intsony ny ora VIP nosafidinao, misafidiana iray hafa.",
+
+        'book_pages_label' => "Isan'ny pejy",
+    'book_pages_placeholder' => 'Ohatra: 320',
+    'book_pages_count' => 'pejy :n',
+    'book_col_pages' => 'Pejy',
 ];

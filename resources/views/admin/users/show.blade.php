@@ -105,6 +105,7 @@
                                 <th>Livre</th>
                                 <th>Catégorie</th>
                                 <th>État</th>
+                                <th>Pages</th>
                                 <th>Prix vendeur</th>
                                 <th>Prix client</th>
                                 <th>Stock</th>
@@ -128,6 +129,7 @@
                                     </td>
                                     <td data-label="Catégorie">{{ $book->categorie ?: '—' }}</td>
                                     <td data-label="État">{{ __('home.book_condition_' . $book->etat) }}</td>
+                                    <td data-label="Pages">{{ $book->nombre_pages ?: '—' }}</td>
                                     <td data-label="Prix vendeur">{{ $book->prix_achat ? number_format($book->prix_achat, 0, ',', ' ').' Ar' : '—' }}</td>
                                     <td data-label="Prix client">{{ $book->prix_achat ? number_format($book->prix_achat_client, 0, ',', ' ').' Ar' : '—' }}</td>
                                     <td data-label="Stock">{{ $book->quantite }}</td>

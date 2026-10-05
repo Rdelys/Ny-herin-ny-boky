@@ -17,8 +17,7 @@
     // une erreur de validation sur l'un de ses champs, il faut le rouvrir
     // automatiquement au chargement, sinon l'erreur reste invisible derrière
     // un modal fermé.
-    $addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_achat', 'prix_location', 'quantite', 'categorie', 'etat', 'langue', 'format', 'image']);
-    if ($errors->hasAny(['current_password', 'password'])) { $tabActif = 'profil'; }
+$addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_achat', 'prix_location', 'quantite', 'categorie', 'etat', 'langue', 'format', 'nombre_pages', 'image']);    if ($errors->hasAny(['current_password', 'password'])) { $tabActif = 'profil'; }
     
 @endphp
 

@@ -84,6 +84,11 @@
     </select>
 </label>
 @error('format')<p class="modal-field-error">{{ $message }}</p>@enderror            
+            <label>{{ __('home.book_pages_label') }}
+                <input type="number" name="nombre_pages" min="1" max="20000" inputmode="numeric"
+                    placeholder="{{ __('home.book_pages_placeholder') }}" value="{{ old('nombre_pages') }}">
+            </label>
+@error('nombre_pages')<p class="modal-field-error">{{ $message }}</p>@enderror
 <fieldset class="modal-fieldset">
                 <legend>{{ __('home.book_shipping_legend') }}</legend>
                 <label class="modal-radio-card">
@@ -99,10 +104,10 @@
                 <p class="field-hint" style="margin:0 0 12px;">{{ __('home.book_delivery_hint') }}</p>
                 <div class="modal-form-row">
                     <label>{{ __('home.book_delivery_min_label') }}
-                        <input type="number" name="delai_livraison_min" min="1" max="60" value="{{ old('delai_livraison_min', 1) }}" required>
+                        <input type="number" name="delai_livraison_min" min="1" max="60" value="{{ old('delai_livraison_min', $book->delai_livraison_min) }}" required>
                     </label>
                     <label>{{ __('home.book_delivery_max_label') }}
-                        <input type="number" name="delai_livraison_max" min="1" max="60" value="{{ old('delai_livraison_max', 1) }}" required>
+                        <input type="number" name="delai_livraison_max" min="1" max="60" value="{{ old('delai_livraison_max', $book->delai_livraison_max) }}" required>
                     </label>
                 </div>
                 @error('delai_livraison_min')<p class="modal-field-error">{{ $message }}</p>@enderror
@@ -113,6 +118,7 @@
                 <input type="file" name="image" accept="image/*">
             </label>
             <p class="field-hint">{{ __('home.book_image_hint') }}</p>
+
             @error('image')<p class="modal-field-error">{{ $message }}</p>@enderror
 
             <button type="submit" class="btn-modal-primary">{{ __('home.book_submit_add') }}</button>

@@ -62,6 +62,7 @@
                                 @if($book->quantite > 0)
                                 <button type="button" class="book-quickview"
                                     data-book-order
+                                    data-book-pages="{{ $book->pages_label }}"
                                     data-book-id="{{ $book->id }}"
                                     data-book-author="{{ $book->auteur }}"
                                     data-book-category="{{ $book->categorie }}"
@@ -104,6 +105,9 @@
 @if($book->format)
     <span class="book-format-badge">{{ $book->format_label }}</span>
 @endif
+@if($book->nombre_pages)
+    <span class="book-pages-badge">{{ $book->pages_label }}</span>
+@endif
 
                                 <div class="book-foot">
                                 <div class="book-foot">
@@ -118,6 +122,7 @@
                                     <button type="button" class="book-add" aria-label="{{ __('home.books_add') }}"
                                         data-book-order
                                     data-book-id="{{ $book->id }}"
+                                    data-book-pages="{{ $book->pages_label }}"
                                     data-book-author="{{ $book->auteur }}"
                                     data-book-category="{{ $book->categorie }}"
                                     data-book-condition="{{ __('home.book_condition_' . $book->etat) }}"
