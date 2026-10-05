@@ -18,6 +18,8 @@
     // automatiquement au chargement, sinon l'erreur reste invisible derrière
     // un modal fermé.
     $addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_achat', 'prix_location', 'quantite', 'categorie', 'etat', 'langue', 'format', 'image']);
+    if ($errors->hasAny(['current_password', 'password'])) { $tabActif = 'profil'; }
+    
 @endphp
 
 @section('content')
@@ -274,6 +276,25 @@
                         @error('numero_paiement')<p class="modal-field-error">{{ $message }}</p>@enderror
 
                         <button type="submit" class="btn-modal-primary">{{ __('home.profile_save') }}</button>
+                    </form>
+                    <h3 class="add-book-title">{{ __('home.profile_change_password') }}</h3>
+                    <form method="POST" action="{{ route('profile.password.update') }}" class="modal-form">
+                        @csrf
+                        @method('PUT')
+                        <label>{{ __('home.profile_current_password') }}
+                            <input type="password" name="current_password" required>
+                        </label>
+                        @error('current_password')<p class="modal-field-error">{{ $message }}</p>@enderror
+                        <div class="modal-form-row">
+                            <label>{{ __('home.profile_new_password') }}
+                                <input type="password" name="password" minlength="8" required>
+                            </label>
+                            <label>{{ __('home.profile_new_password_confirm') }}
+                                <input type="password" name="password_confirmation" minlength="8" required>
+                            </label>
+                        </div>
+                        @error('password')<p class="modal-field-error">{{ $message }}</p>@enderror
+                        <button type="submit" class="btn-modal-primary">{{ __('home.profile_change_password') }}</button>
                     </form>
                 </div>
             </div>

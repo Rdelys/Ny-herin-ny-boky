@@ -3,13 +3,126 @@
 @section('meta_title', __('home.cart_title') . ' — ' . config('app.name'))
 @section('meta_robots', 'noindex, nofollow')
 
+@push('styles')
+<style>
+    .cart-layout{
+        display: grid;
+        grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+        gap: 28px;
+        align-items: start;
+    }
+    .cart-items{ display: flex; flex-direction: column; gap: 18px; }
+
+    /* ---- ligne = mini fiche produit ---- */
+    .cart-item{
+        display: grid;
+        grid-template-columns: 170px minmax(0, 1fr);
+        background: #fffdf7;
+        border: 1px solid rgba(85,16,29,.09);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(61,11,21,.05), 0 14px 26px -20px rgba(61,11,21,.3);
+    }
+    .cart-item.is-unavailable{ border-color: rgba(179,38,30,.4); background: rgba(179,38,30,.03); }
+    .cart-item-media{
+        position: relative;
+        background: var(--cream-dim);
+        min-height: 230px;
+    }
+    .cart-item-media img{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .cart-item-body{ display: flex; flex-direction: column; gap: 8px; padding: 20px 22px; min-width: 0; }
+    .cart-item-top{ display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .cart-item-title{
+        font-family: var(--serif);
+        font-weight: 600;
+        font-size: 1.2rem;
+        line-height: 1.2;
+        color: var(--ink);
+        margin: 0;
+    }
+    .cart-item-author{ margin: 0; font-size: .86rem; font-style: italic; color: #7a6a5d; }
+    .cart-item-seller{ margin: 0; font-size: .78rem; font-weight: 600; color: #a8957f; }
+    .cart-item-badges{ display: flex; flex-wrap: wrap; gap: 6px; }
+    .cart-item-badges .book-genre{ margin: 0; font-size: .64rem; }
+    .cart-item-price{ font-family: var(--serif); font-size: 1rem; color: #7a6a5d; }
+    .cart-item-foot{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: auto;
+        padding-top: 14px;
+        border-top: 1px dashed rgba(85,16,29,.14);
+    }
+    .cart-item-total{ font-family: var(--serif); font-weight: 700; font-size: 1.3rem; color: var(--maroon-800); white-space: nowrap; }
+    .cart-item-remove button{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px; height: 34px;
+        border-radius: 50%;
+        border: 1px solid rgba(179,38,30,.28);
+        background: transparent;
+        color: #b3261e;
+        transition: background .15s ease;
+    }
+    .cart-item-remove button:hover{ background: rgba(179,38,30,.08); }
+
+    .cart-stepper{ display: flex; align-items: center; border: 1px solid rgba(85,16,29,.18); border-radius: 999px; overflow: hidden; }
+    .cart-stepper button{
+        width: 36px; height: 36px;
+        border: 0;
+        background: rgba(85,16,29,.06);
+        color: var(--maroon-800);
+        font-size: 1.1rem;
+        display: flex; align-items: center; justify-content: center;
+        transition: background .15s ease;
+    }
+    .cart-stepper button:hover{ background: rgba(85,16,29,.13); }
+    .cart-stepper input{
+        width: 48px; height: 36px;
+        border: 0;
+        background: transparent;
+        text-align: center;
+        font: inherit;
+        font-weight: 700;
+        -moz-appearance: textfield;
+    }
+    .cart-stepper input::-webkit-outer-spin-button,
+    .cart-stepper input::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
+
+    /* ---- colonne de droite ---- */
+    .cart-aside{ display: flex; flex-direction: column; gap: 18px; }
+    .cart-aside .cart-summary{ margin: 0; }
+    .cart-aside .add-book-card{ margin: 0; max-width: none; padding: 24px 22px; }
+
+    @media (max-width: 960px){
+        .cart-layout{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px){
+        .cart-item{ grid-template-columns: 112px minmax(0, 1fr); border-radius: 16px; }
+        .cart-item-media{ min-height: 170px; }
+        .cart-item-body{ padding: 14px; gap: 6px; }
+        .cart-item-title{ font-size: 1.02rem; }
+        .cart-item-total{ font-size: 1.1rem; }
+        .cart-aside .add-book-card{ padding: 20px 16px; }
+    }
+    @media (max-width: 380px){
+        .cart-item{ grid-template-columns: 1fr; }
+        .cart-item-media{ min-height: 0; height: 210px; }
+        .cart-item-media img{ object-fit: contain; }
+    }
+</style>
+@endpush
+
 @section('content')
     @php
         $guestSuccess = session('guest_order_success');
     @endphp
 
     <section>
-        <div class="wrap" style="max-width: 860px;">
+        <div class="wrap" style="max-width: {{ ($guestSuccess || $lines->isEmpty()) ? '860px' : '1120px' }};">
             <div class="section-head">
                 <div>
                     <h2>{{ __('home.cart_title') }}</h2>
@@ -57,149 +170,84 @@
                 <p style="color:#7a6a5d;">{{ __('home.cart_empty') }}</p>
 
             @else
-                {{-- ============ LIGNES DU PANIER ============ --}}
-                <div class="cart-lines">
-                    @foreach($lines as $line)
-                        <div class="cart-line {{ $line->disponible ? '' : 'is-unavailable' }}">
-                            <div class="cart-line-cover">
-                                <img src="{{ $line->book->image_path ? asset('storage/'.$line->book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$line->book->id.'/500/667' }}" alt="{{ $line->book->titre }}">
-                            </div>
+                <div class="cart-layout">
 
-                            <div class="cart-line-info">
-                                <strong class="cart-line-title">{{ $line->book->titre }}</strong>
-                                <span class="cart-line-sub">{{ $line->book->seller->sellerProfile->nom_entreprise ?? $line->book->seller->name }}</span>
-                                <span class="cart-line-sub">{{ number_format($line->prix_unitaire, 0, ',', ' ') }} Ar</span>
-                                @unless($line->disponible)
-                                    <span class="modal-field-error" style="margin:4px 0 0;">{{ __('home.order_error_stock', ['quantite' => $line->book->quantite]) }}</span>
-                                @endunless
-                            </div>
+                    {{-- ============ LIGNES DU PANIER (fiches produit) ============ --}}
+                    <div class="cart-items">
+                        @foreach($lines as $line)
+                            @php $book = $line->book; @endphp
+                            <article class="cart-item {{ $line->disponible ? '' : 'is-unavailable' }}">
+                                <div class="cart-item-media">
+                                    <img src="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}" alt="{{ $book->titre }}" loading="lazy">
+                                </div>
 
-                            <form method="POST" action="{{ route('cart.update', $line->book->id) }}" class="cart-line-qty">
-                                @csrf
-                                @method('PATCH')
-                                <input type="number" name="quantite" value="{{ $line->quantite }}" min="1" max="{{ max(1, $line->book->quantite) }}" onchange="this.form.submit()" aria-label="{{ __('home.order_quantity_label') }}">
-                            </form>
-
-                            <strong class="cart-line-total">{{ number_format($line->total, 0, ',', ' ') }} Ar</strong>
-
-                            <form method="POST" action="{{ route('cart.remove', $line->book->id) }}" class="cart-line-remove">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="table-action-link table-action-danger">{{ __('home.cart_remove') }}</button>
-                            </form>
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="cart-summary">
-                    <span>{{ __('home.order_total_label') }}</span>
-                    <strong>{{ number_format($total, 0, ',', ' ') }} Ar</strong>
-                </div>
-
-                {{-- ============ FINALISER LA COMMANDE ============ --}}
-                <div class="add-book-card" style="max-width:none;">
-                    <h3 class="add-book-title">{{ __('home.cart_checkout_title') }}</h3>
-
-                    @if(! count($paymentAccounts))
-                        <p style="color:#7a6a5d;">{{ __('home.order_no_payment_account') }}</p>
-                    @else
-                        <form method="POST" action="{{ route('orders.store') }}" id="checkoutForm" class="modal-form">
-                            @csrf
-
-                            @guest
-                                <fieldset class="modal-fieldset">
-                                    <legend>{{ __('home.order_guest_legend') }}</legend>
-                                    <div class="modal-form-row">
-                                        <label>{{ __('home.order_guest_name_label') }}
-                                            <input type="text" name="guest_name" value="{{ old('guest_name') }}" required>
-                                        </label>
-                                        <label>{{ __('home.order_guest_phone_label') }}
-                                            <input type="text" name="guest_phone" value="{{ old('guest_phone') }}" placeholder="034 xx xxx xx" required>
-                                        </label>
+                                <div class="cart-item-body">
+                                    <div class="cart-item-top">
+                                        <div>
+                                            @if($book->categorie)
+                                                <span class="book-genre">{{ $book->categorie }}</span>
+                                            @endif
+                                            <h3 class="cart-item-title">{{ $book->titre }}</h3>
+                                        </div>
                                     </div>
-                                    @error('guest_name')<p class="modal-field-error">{{ $message }}</p>@enderror
-                                    @error('guest_phone')<p class="modal-field-error">{{ $message }}</p>@enderror
 
-                                    <label>{{ __('home.order_guest_email_label') }}
-                                        <input type="email" name="guest_email" value="{{ old('guest_email') }}" placeholder="{{ __('home.order_guest_email_placeholder') }}">
-                                    </label>
-                                    @error('guest_email')<p class="modal-field-error">{{ $message }}</p>@enderror
+                                    @if($book->auteur)
+                                        <p class="cart-item-author">{{ $book->auteur }}</p>
+                                    @endif
+                                    <p class="cart-item-seller">{{ $book->seller->sellerProfile->nom_entreprise ?? $book->seller->name }}</p>
 
-                                    <p class="field-hint">{{ __('home.order_guest_account_hint') }}
-                                        <a href="#" data-auth-switch="registerClient">{{ __('home.order_guest_account_link') }}</a>
-                                    </p>
-                                </fieldset>
-                            @endguest
+                                    <div class="cart-item-badges">
+                                        <span class="book-genre" style="background: rgba(233,178,63,.18); color:#8a5f14;">{{ __('home.book_condition_' . $book->etat) }}</span>
+                                        @if($book->langue_label)
+                                            <span class="book-genre" style="background: rgba(85,16,29,.08); color: var(--maroon-800);">{{ $book->langue_label }}</span>
+                                        @endif
+                                        @if($book->format_label)
+                                            <span class="book-genre" style="background: rgba(92,138,55,.1); color: var(--green-700);">{{ $book->format_label }}</span>
+                                        @endif
+                                        <span class="book-genre" style="background: rgba(92,138,55,.14); color:#395e26;">{{ $book->delai_livraison_label }}</span>
+                                    </div>
 
-                            <label class="order-reference-field">
-                                {{ __('home.order_guest_address_label') }}
-                                <input type="text" name="adresse_livraison" value="{{ old('adresse_livraison') }}" placeholder="{{ __('home.order_guest_address_placeholder') }}" required>
-                            </label>
-                            @error('adresse_livraison')<p class="modal-field-error">{{ $message }}</p>@enderror
+                                    <span class="cart-item-price">{{ number_format($line->prix_unitaire, 0, ',', ' ') }} Ar / {{ __('home.order_unit_price') }}</span>
 
-                            <fieldset class="modal-fieldset">
-                                <legend>{{ __('home.order_payment_legend') }}</legend>
-                                <div class="modal-radio-group order-payment-group">
-                                    @foreach($paymentAccounts as $key => $account)
-                                        <label class="modal-radio-card" data-payment-option data-cash="0">
-                                            <input type="radio" name="mode_paiement" value="{{ $key }}"
-                                                data-payment-number="{{ $account['numero'] }}"
-                                                data-payment-name="{{ $account['nom'] }}"
-                                                @checked(old('mode_paiement', $loop->first ? $key : null) === $key)>
-                                            <span><strong>{{ $account['label'] }}</strong></span>
-                                        </label>
-                                    @endforeach
+                                    @unless($line->disponible)
+                                        <span class="modal-field-error" style="margin:0;">{{ __('home.order_error_stock', ['quantite' => $book->quantite]) }}</span>
+                                    @endunless
 
-                                    <label class="modal-radio-card" data-payment-option data-cash="1" style="display:none;">
-                                        <input type="radio" name="mode_paiement" value="especes"
-                                            data-payment-number="" data-payment-name=""
-                                            @checked(old('mode_paiement') === 'especes')>
-                                        <span><strong>{{ __('home.order_payment_cash') }}</strong>
-                                            <small>{{ __('home.order_payment_cash_hint') }}</small>
-                                        </span>
-                                    </label>
+                                    <div class="cart-item-foot">
+                                        <form method="POST" action="{{ route('cart.update', $book->id) }}" class="cart-stepper" data-cart-form>
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="button" data-cart-step="-1" aria-label="-">&minus;</button>
+                                            <input type="number" name="quantite" value="{{ $line->quantite }}" min="1" max="{{ max(1, $book->quantite) }}" inputmode="numeric" aria-label="{{ __('home.order_quantity_label') }}">
+                                            <button type="button" data-cart-step="1" aria-label="+">&plus;</button>
+                                        </form>
+
+                                        <strong class="cart-item-total">{{ number_format($line->total, 0, ',', ' ') }} Ar</strong>
+
+                                        <form method="POST" action="{{ route('cart.remove', $book->id) }}" class="cart-item-remove">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" aria-label="{{ __('home.cart_remove') }}" title="{{ __('home.cart_remove') }}">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                                    <path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
-                            </fieldset>
-                            @error('mode_paiement')<p class="modal-field-error">{{ $message }}</p>@enderror
+                            </article>
+                        @endforeach
+                    </div>
 
-                            <div class="order-payment-number" id="checkoutPaymentNumberRow">
-                                <div>
-                                    <span>{{ __('home.order_payment_number_label') }}</span>
-                                    <strong id="checkoutPaymentNumber">—</strong>
-                                </div>
-                                <div class="order-payment-owner">
-                                    <span>{{ __('home.order_payment_name_label') }}</span>
-                                    <strong id="checkoutPaymentName">—</strong>
-                                </div>
-                            </div>
+                    {{-- ============ RÉCAP + FINALISER ============ --}}
+                    <aside class="cart-aside">
+                        <div class="cart-summary">
+                            <span>{{ __('home.delivery_subtotal') }}</span>
+                            <strong>{{ number_format($total, 0, ',', ' ') }} Ar</strong>
+                        </div>
 
-                            <label class="order-reference-field">
-                                {{ __('home.order_city_label') }}
-                                <select name="ville" id="checkoutVille" required>
-                                    <option value="">{{ __('home.order_city_placeholder') }}</option>
-                                    @foreach($villes as $ville)
-                                        <option value="{{ $ville }}" data-cash-allowed="{{ $ville === $villeEspeces ? '1' : '0' }}" @selected(old('ville') === $ville)>{{ $ville }}</option>
-                                    @endforeach
-                                </select>
-                            </label>
-                            @error('ville')<p class="modal-field-error">{{ $message }}</p>@enderror
-
-                            <div id="checkoutReferenceWrap">
-                                <label class="order-reference-field">
-                                    {{ __('home.order_payment_reference_label') }}
-                                    <input type="text" name="reference_paiement" id="checkoutReference" maxlength="80" value="{{ old('reference_paiement') }}" placeholder="{{ __('home.order_payment_reference_placeholder') }}">
-                                </label>
-                                @error('reference_paiement')<p class="modal-field-error">{{ $message }}</p>@enderror
-                            </div>
-
-                            @unless($canCheckout)
-                                <p class="modal-field-error">{{ __('home.cart_unavailable') }}</p>
-                            @endunless
-
-                            <button type="submit" class="btn-modal-primary" id="checkoutSubmit" @disabled(! $canCheckout)>{{ __('home.order_confirm_button') }}</button>
-                            <p class="order-static-note">{{ __('home.order_pending_note') }}</p>
-                        </form>
-                    @endif
+                        @include('cart._checkout')
+                    </aside>
                 </div>
             @endif
         </div>
@@ -207,6 +255,40 @@
 @endsection
 
 @push('scripts')
+<script>
+    // ---- boutons − / + des quantités du panier ----
+    (function(){
+        document.querySelectorAll('[data-cart-form]').forEach(function(form){
+            var input = form.querySelector('input[name="quantite"]');
+            var timer = null;
+
+            function clamp(v){
+                var min = parseInt(input.min, 10) || 1;
+                var max = parseInt(input.max, 10) || 99;
+                return Math.max(min, Math.min(max, v || min));
+            }
+            function submitLater(){
+                clearTimeout(timer);
+                timer = setTimeout(function(){ form.submit(); }, 350);
+            }
+
+            form.querySelectorAll('[data-cart-step]').forEach(function(btn){
+                btn.addEventListener('click', function(){
+                    var current = parseInt(input.value, 10) || 1;
+                    var next = clamp(current + parseInt(btn.getAttribute('data-cart-step'), 10));
+                    if (next === current) return;
+                    input.value = next;
+                    submitLater();
+                });
+            });
+            input.addEventListener('change', function(){
+                input.value = clamp(parseInt(input.value, 10));
+                submitLater();
+            });
+        });
+    })();
+</script>
+
 <script>
     (function(){
         var form = document.getElementById('checkoutForm');

@@ -21,7 +21,7 @@ class InvoiceGenerator
             ? Order::where('groupe_reference', $order->groupe_reference)->orderBy('id')->get()
             : new EloquentCollection([$order]);
 
-        $orders->loadMissing(['buyer', 'seller.sellerProfile']);
+        $orders->loadMissing(['buyer', 'seller.sellerProfile', 'delivery']);
 
         $numero = $order->groupe_reference ?? $order->reference;
 

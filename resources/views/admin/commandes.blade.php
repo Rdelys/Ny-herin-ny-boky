@@ -45,6 +45,7 @@
                             <th>Paiement client</th>
                             <th>Montant</th>
                             <th>Statut / Livreur</th>
+                            <th>Livraison</th>
                             <th>Facture</th>
                         </tr>
                     </thead>
@@ -107,6 +108,23 @@
 
                                         <button type="submit" class="admin-btn" style="margin-top:8px;">Mettre à jour</button>
                                     </form>
+                                </td>
+                                <td data-label="Livraison">
+                                    @if($order->delivery)
+                                        @php $dl = $order->delivery; @endphp
+                                        <div>
+                                            <span class="admin-badge {{ $dl->type === 'vip' ? 'admin-badge-vendeur' : 'admin-badge-client' }}">{{ $dl->type_label }}</span>
+                                            @if($dl->heure_prevue)<br><span class="admin-table-sub">Arrivée : {{ $dl->heure_prevue->format('d/m H:i') }}</span>@endif
+                                            <br><span class="admin-table-sub">{{ $dl->zone_nom }} · {{ $dl->lieu_label }}</span>
+                                            <br><span class="admin-table-sub">
+                                                {{ $dl->frais_gratuit ? 'Gratuite' : number_format($dl->frais, 0, ',', ' ') . ' Ar' }}
+                                                @if($dl->frais_a_confirmer) · <strong style="color:#b3261e;">frais à confirmer</strong>@endif
+                                                @if($dl->taxi_brousse_pa) · taxi-brousse PA @endif
+                                            </span>
+                                        </div>
+                                    @else
+                                        —
+                                    @endif
                                 </td>
                                 <td data-label="Facture">
                                     @if($order->facture_url)

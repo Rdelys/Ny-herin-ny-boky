@@ -192,4 +192,9 @@ class Order extends Model
     {
         return $this->facture_path ? \Storage::disk('public')->url($this->facture_path) : null;
     }
+
+    public function delivery()
+    {
+        return $this->belongsTo(Delivery::class, 'groupe_reference', 'groupe_reference');
+    }
 }

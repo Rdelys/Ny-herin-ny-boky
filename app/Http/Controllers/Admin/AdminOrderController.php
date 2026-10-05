@@ -27,7 +27,7 @@ class AdminOrderController extends Controller
         $statutActif = in_array($statut, Order::STATUTS, true) ? $statut : null;
 
         $orders = Order::query()
-            ->with(['buyer', 'seller.sellerProfile', 'deliverer'])
+            >with(['buyer', 'seller.sellerProfile', 'deliverer', 'delivery'])
             ->when($statutActif, fn ($q) => $q->where('statut', $statutActif))
             ->latest()
             ->paginate(20)

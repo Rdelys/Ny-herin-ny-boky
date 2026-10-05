@@ -104,6 +104,7 @@
 @if($book->format)
     <span class="book-format-badge">{{ $book->format_label }}</span>
 @endif
+
                                 <div class="book-foot">
                                 <div class="book-foot">
                                     <span class="book-loc">
