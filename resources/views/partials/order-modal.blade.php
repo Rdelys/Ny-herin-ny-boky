@@ -3,7 +3,7 @@
 @endphp
 
 <style>
-    /* ============ MODAL FICHE PRODUIT (aperçu rapide / ajout au panier) ============ */
+    /* ============ MODAL FICHE PRODUIT ============ */
     .pd-panel{
         position: relative;
         display: flex;
@@ -11,7 +11,7 @@
         max-width: 980px;
         max-height: 92vh;
         overflow: hidden;
-        background: var(--cream);
+        background: var(--cream, #f6efdd);
         border-radius: 24px;
         box-shadow: 0 30px 60px -20px rgba(0,0,0,.5);
         transform: translateY(14px) scale(.98);
@@ -29,7 +29,7 @@
         border: 0;
         border-radius: 50%;
         background: rgba(255,253,247,.95);
-        color: var(--maroon-900);
+        color: var(--maroon-900, #3d0b15);
         font-size: 1.4rem;
         line-height: 1;
         display: flex;
@@ -38,7 +38,7 @@
         box-shadow: 0 6px 16px -6px rgba(0,0,0,.35);
         transition: background .15s ease, transform .15s ease;
     }
-    .pd-close:hover{ background: var(--gold); transform: rotate(90deg); }
+    .pd-close:hover{ background: var(--gold, #e9b23f); transform: rotate(90deg); }
 
     .pd-grid{
         display: grid;
@@ -47,13 +47,12 @@
         max-height: 92vh;
     }
 
-    /* ---- image à gauche ---- */
     .pd-media{
         position: relative;
         min-height: 460px;
         overflow: hidden;
         cursor: zoom-in;
-        background: linear-gradient(160deg, var(--cream-dim), #d9c99f);
+        background: linear-gradient(160deg, #f6efdd, #d9c99f);
     }
     .pd-media img{
         position: absolute;
@@ -83,18 +82,17 @@
         height: 40px;
         border-radius: 50%;
         background: rgba(255,253,247,.95);
-        color: var(--maroon-900);
+        color: var(--maroon-900, #3d0b15);
         display: flex;
         align-items: center;
         justify-content: center;
         box-shadow: 0 8px 18px -8px rgba(0,0,0,.45);
         transition: opacity .15s ease, background .15s ease;
-        pointer-events: none; /* le clic est capté par .pd-media */
+        pointer-events: none;
     }
-    .pd-media:hover .pd-zoom-btn{ background: var(--gold); }
+    .pd-media:hover .pd-zoom-btn{ background: var(--gold, #e9b23f); }
     .pd-media.is-zooming .pd-zoom-btn{ opacity: 0; }
 
-    /* ---- infos à droite (c'est cette colonne qui défile) ---- */
     .pd-info{
         display: flex;
         flex-direction: column;
@@ -117,15 +115,15 @@
         content: '';
         width: 7px; height: 7px;
         border-radius: 50%;
-        background: var(--gold);
+        background: var(--gold, #e9b23f);
         flex-shrink: 0;
     }
     .pd-title{
-        font-family: var(--serif);
+        font-family: var(--serif, Georgia, serif);
         font-weight: 600;
         font-size: clamp(1.45rem, 2.6vw, 2rem);
         line-height: 1.15;
-        color: var(--ink);
+        color: var(--ink, #2a1a14);
         margin: 0;
     }
     .pd-author{ margin: -6px 0 0; font-size: .95rem; color: #7a6a5d; font-style: italic; }
@@ -140,10 +138,10 @@
         border-bottom: 1px dashed rgba(85,16,29,.16);
     }
     .pd-price{
-        font-family: var(--serif);
+        font-family: var(--serif, Georgia, serif);
         font-weight: 700;
         font-size: 1.9rem;
-        color: var(--maroon-800);
+        color: var(--maroon-800, #55101d);
         line-height: 1;
     }
     .pd-stock{
@@ -152,12 +150,12 @@
         gap: 6px;
         font-size: .78rem;
         font-weight: 700;
-        color: var(--green-700);
+        color: #395e26;
         background: rgba(92,138,55,.12);
         padding: 4px 11px;
         border-radius: 999px;
     }
-    .pd-stock::before{ content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--green-500); }
+    .pd-stock::before{ content: ''; width: 7px; height: 7px; border-radius: 50%; background: #5c8a37; }
 
     .pd-badges{ display: flex; flex-wrap: wrap; gap: 6px; }
     .pd-badges .book-genre{ margin: 0; }
@@ -203,7 +201,7 @@
         flex-wrap: wrap;
     }
     .pd-buy-row .pd-label{ font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: #9c8b7d; }
-    .pd-total{ font-family: var(--serif); font-weight: 700; font-size: 1.35rem; color: var(--maroon-800); }
+    .pd-total{ font-family: var(--serif, Georgia, serif); font-weight: 700; font-size: 1.35rem; color: var(--maroon-800, #55101d); }
     .pd-qty .order-qty-stepper button{ width: 40px; height: 40px; font-size: 1.2rem; }
     .pd-qty .order-qty-stepper input{ width: 52px; height: 40px; background: transparent; }
 
@@ -216,24 +214,123 @@
         padding: 15px 22px;
         border: 0;
         border-radius: 999px;
-        background: var(--maroon-900);
-        color: var(--cream);
+        background: var(--maroon-900, #3d0b15);
+        color: var(--cream, #f6efdd);
         font-weight: 700;
         font-size: 1rem;
         transition: background .15s ease, transform .15s ease, box-shadow .15s ease;
     }
-    .pd-add:hover{ background: var(--maroon-800); transform: translateY(-1px); box-shadow: 0 12px 24px -12px rgba(85,16,29,.6); }
+    .pd-add:hover{ background: var(--maroon-800, #55101d); transform: translateY(-1px); box-shadow: 0 12px 24px -12px rgba(85,16,29,.6); }
     .pd-add:disabled{ opacity: .6; cursor: wait; transform: none; }
 
     .pd-seller-block{
         margin: auto 0;
         text-align: center;
         background: rgba(233,178,63,.12);
-        border: 1px dashed var(--gold);
+        border: 1px dashed var(--gold, #e9b23f);
         border-radius: 14px;
         padding: 20px;
         color: #6b5a4d;
         font-size: .92rem;
+    }
+
+    /* ============ RECHERCHE QUARTIER ============ */
+    .pd-district-wrap{
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 4px;
+    }
+    .pd-district-label{
+        font-size: .78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+        color: #9c8b7d;
+    }
+    .pd-district-search{ position: relative; }
+    .pd-district-search input{
+        width: 100%;
+        padding: 11px 38px 11px 14px;
+        border: 1px solid rgba(85,16,29,.2);
+        border-radius: 10px;
+        background: #fffdf7;
+        font-size: .92rem;
+        color: var(--ink, #2a1a14);
+        outline: none;
+        transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    .pd-district-search input:focus{
+        border-color: var(--gold, #e9b23f);
+        box-shadow: 0 0 0 3px rgba(233,178,63,.22);
+    }
+    .pd-district-search .pd-district-icon{
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9c8b7d;
+        pointer-events: none;
+    }
+    .pd-district-list{
+        max-height: 190px;
+        overflow-y: auto;
+        border: 1px solid rgba(85,16,29,.12);
+        border-radius: 10px;
+        background: #fffdf7;
+        padding: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .pd-district-list:empty{ display: none; }
+    .pd-district-item{
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 11px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        text-align: left;
+        font-size: .9rem;
+        color: var(--ink, #2a1a14);
+        cursor: pointer;
+        transition: background .12s ease, color .12s ease;
+    }
+    .pd-district-item:hover,
+    .pd-district-item.is-active{
+        background: rgba(233,178,63,.18);
+        color: var(--maroon-800, #55101d);
+    }
+    .pd-district-item svg{ flex-shrink: 0; color: #9c8b7d; }
+    .pd-district-item.is-active svg{ color: var(--maroon-800, #55101d); }
+    .pd-district-empty{
+        padding: 14px;
+        text-align: center;
+        font-size: .86rem;
+        color: #9c8b7d;
+        font-style: italic;
+    }
+    .pd-district-selected{
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: .8rem;
+        color: #395e26;
+        background: rgba(92,138,55,.12);
+        padding: 4px 10px;
+        border-radius: 999px;
+        align-self: flex-start;
+    }
+    .pd-district-selected button{
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font-size: 1rem;
+        line-height: 1;
+        cursor: pointer;
+        padding: 0 2px;
     }
 
     /* ---- tablette ---- */
@@ -242,7 +339,7 @@
         .pd-info{ padding: 34px 26px 26px; }
     }
 
-    /* ---- mobile : bottom sheet, image en haut ---- */
+    /* ---- mobile ---- */
     @media (max-width: 720px){
         .pd-panel{
             display: block;
@@ -260,11 +357,10 @@
         .pd-price{ font-size: 1.65rem; }
         .pd-close{ position: sticky; top: 10px; margin: 10px 10px -46px auto; }
 
-        /* bouton d'ajout toujours accessible en bas de la fiche */
         .pd-buy{
             position: sticky;
             bottom: -26px;
-            background: var(--cream);
+            background: var(--cream, #f6efdd);
             margin: 4px -20px -26px;
             padding: 14px 20px calc(18px + env(safe-area-inset-bottom));
             border-top: 1px solid rgba(85,16,29,.1);
@@ -277,7 +373,7 @@
         .pd-delivery strong{ margin-left: 0; text-align: left; }
     }
 
-    /* ============ VISIONNEUSE ZOOM PLEIN ÉCRAN ============ */
+    /* ============ VISIONNEUSE ZOOM ============ */
     .zoom-lightbox{
         position: fixed;
         inset: 0;
@@ -320,14 +416,14 @@
         border: 0;
         border-radius: 50%;
         background: rgba(255,253,247,.95);
-        color: var(--maroon-900);
+        color: var(--maroon-900, #3d0b15);
         font-size: 1.5rem;
         line-height: 1;
         display: flex;
         align-items: center;
         justify-content: center;
     }
-    .zoom-close:hover{ background: var(--gold); }
+    .zoom-close:hover{ background: var(--gold, #e9b23f); }
     .zoom-toolbar{
         position: absolute;
         left: 50%;
@@ -351,7 +447,7 @@
         border: 0;
         border-radius: 999px;
         background: transparent;
-        color: var(--cream);
+        color: var(--cream, #f6efdd);
         font-size: 1.2rem;
         font-weight: 600;
         display: flex;
@@ -366,7 +462,7 @@
         text-align: center;
         font-size: .82rem;
         font-weight: 700;
-        color: var(--gold);
+        color: var(--gold, #e9b23f);
     }
 </style>
 
@@ -375,7 +471,6 @@
         <button type="button" class="pd-close" id="orderModalClose" aria-label="Fermer">&times;</button>
 
         <div class="pd-grid">
-            {{-- ============ IMAGE (gauche) ============ --}}
             <div class="pd-media" id="orderMedia">
                 <img id="orderBookImage" src="" alt="">
                 <span class="pd-zoom-btn" aria-hidden="true">
@@ -386,7 +481,6 @@
                 </span>
             </div>
 
-            {{-- ============ INFOS (droite) ============ --}}
             <div class="pd-info">
                 <div class="pd-meta-top">
                     <span class="book-genre" id="orderBookCategory" style="margin:0;"></span>
@@ -420,6 +514,34 @@
                     <form method="POST" action="{{ route('cart.add') }}" id="orderForm" class="pd-buy">
                         @csrf
                         <input type="hidden" name="book_id" id="orderBookId" value="">
+                        <input type="hidden" name="district" id="orderDistrictInput" value="">
+
+                        {{-- ============ RECHERCHE QUARTIER ============ --}}
+                        <div class="pd-district-wrap">
+                            <span class="pd-district-label">{{ __('home.order_district_label') ?? 'Quartier de livraison' }}</span>
+                            <div class="pd-district-search">
+                                <input type="text"
+                                       id="orderDistrictSearch"
+                                       placeholder="{{ __('home.order_district_search_placeholder') ?? 'Rechercher un quartier...' }}"
+                                       autocomplete="off"
+                                       inputmode="search">
+                                <span class="pd-district-icon" aria-hidden="true">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/>
+                                        <path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="pd-district-list" id="orderDistrictList" role="listbox"></div>
+                            <span class="pd-district-selected" id="orderDistrictSelected" hidden>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 22s7-7.58 7-13A7 7 0 1 0 5 9c0 5.42 7 13 7 13z" stroke="currentColor" stroke-width="1.8"/>
+                                    <circle cx="12" cy="9" r="2.4" stroke="currentColor" stroke-width="1.8"/>
+                                </svg>
+                                <span id="orderDistrictSelectedLabel"></span>
+                                <button type="button" id="orderDistrictClear" aria-label="Effacer">&times;</button>
+                            </span>
+                        </div>
 
                         <div class="pd-delivery">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -479,8 +601,54 @@
     </div>
 </div>
 
+@php
+    // ⚠️ Remplacez par votre vraie source : \App\Models\District::orderBy('nom')->pluck('nom')->toArray();
+    $districts = $districts ?? [
+        'Analakely', 'Antaninarenina', 'Ambatomitsangana', 'Isoraka', 'Tsaralalàna',
+        'Antohomadinika', 'Ankadifotsy', 'Ambohipo', 'Ambohijatovo', 'Andravoahangy',
+        'Ankadikely', 'Ivandry', 'Analamahitsy', 'Ankorondrano', 'Ambanidia',
+        'Antanimena', 'Mahamasina', 'Ampefiloha', 'Anosy', 'Andoharanofotsy',
+        'Itaosy', 'Ankadimbahoaka', 'Anosibe', 'Ambolokandrina', 'Andrefan\'Ambohijanahary',
+        'Ambohipo Ambony', 'Ankatso', 'Ambatobe', 'Soavimasoandro', 'Miandrarivo',
+        'Antsahavola', 'Ambodivona', 'Ankorondrano Avaratra', 'Ankadivato', 'Amparibe',
+        'Ambatonakanga', 'Amboasarikely', 'Ambohipo Ambany', 'Andohan\'Analakely', 'Ankazomanga',
+        'Anosipatrana', 'Antsobolo', 'Mahazoarivo', 'Ambohimitsimbina', 'Ambatomitsangana',
+        'Antanimora', 'Andranomena', 'Ambohibao', 'Ankaditapaka', 'Amboniloha',
+    ];
+    sort($districts);
+@endphp
+
 <script>
 (function(){
+    /* ====================================================================
+       OUVERTURE DU MODAL AU CLIC SUR LA CARD
+    ==================================================================== */
+    (function initCardClick(){
+        var cards = document.querySelectorAll('[data-book-card]');
+        cards.forEach(function(card){
+            card.addEventListener('click', function(e){
+                if (e.target.closest('.book-quickview')) return;
+                if (e.target.closest('.book-add')) return;
+                if (e.target.closest('.book-wishlist')) return;
+                if (e.target.closest('a')) return;
+
+                var trigger = card.querySelector('[data-book-order]');
+                if (trigger) trigger.click();
+            });
+
+            card.addEventListener('keydown', function(e){
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    var trigger = card.querySelector('[data-book-order]');
+                    if (trigger) trigger.click();
+                }
+            });
+        });
+    })();
+
+    /* ====================================================================
+       ZOOM
+    ==================================================================== */
     var media   = document.getElementById('orderMedia');
     var img     = document.getElementById('orderBookImage');
     var overlay = document.getElementById('orderModalOverlay');
@@ -490,7 +658,6 @@
     var level   = document.getElementById('zoomLevel');
     if (!media || !img || !overlay || !lb || !stage || !zimg) return;
 
-    // ---------- 1) zoom au survol (desktop avec souris uniquement) ----------
     var canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
     function setOrigin(e){
@@ -511,7 +678,6 @@
         });
     }
 
-    // ---------- 2) visionneuse plein écran ----------
     var MIN = 1, MAX = 5;
     var s = 1, x = 0, y = 0;
     var ptrs = new Map();
@@ -521,16 +687,12 @@
         zimg.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')';
         level.textContent = Math.round(s * 100) + '%';
     }
-
-    // Empêche de faire sortir l'image du cadre.
     function clampPan(){
         var mx = Math.max(0, (zimg.offsetWidth * s - stage.clientWidth) / 2);
         var my = Math.max(0, (zimg.offsetHeight * s - stage.clientHeight) / 2);
         x = Math.min(mx, Math.max(-mx, x));
         y = Math.min(my, Math.max(-my, y));
     }
-
-    // Zoome en gardant fixe le point (cx, cy) de l'écran.
     function zoomAt(ns, cx, cy){
         ns = Math.min(MAX, Math.max(MIN, ns));
         var r = stage.getBoundingClientRect();
@@ -543,12 +705,10 @@
         clampPan();
         apply();
     }
-
     function centerPoint(){
         var r = stage.getBoundingClientRect();
         return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
     }
-
     function reset(){
         s = 1; x = 0; y = 0;
         ptrs.clear();
@@ -556,7 +716,6 @@
         stage.classList.remove('is-dragging');
         apply();
     }
-
     function openLightbox(){
         var src = img.currentSrc || img.src;
         if (!src || !img.getAttribute('src')) return;
@@ -582,7 +741,6 @@
         var c = centerPoint(); zoomAt(s / 1.4, c.x, c.y);
     });
 
-    // Molette (souris / trackpad)
     stage.addEventListener('wheel', function(e){
         e.preventDefault();
         zoomAt(s * (e.deltaY < 0 ? 1.15 : 1 / 1.15), e.clientX, e.clientY);
@@ -597,7 +755,6 @@
         return { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 };
     }
 
-    // Glisser (1 doigt / souris) + pincer (2 doigts)
     stage.addEventListener('pointerdown', function(e){
         stage.setPointerCapture(e.pointerId);
         ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -605,7 +762,6 @@
         if (ptrs.size === 2) lastDist = dist();
         stage.classList.add('is-dragging');
     });
-
     stage.addEventListener('pointermove', function(e){
         var p = ptrs.get(e.pointerId);
         if (!p) return;
@@ -622,7 +778,6 @@
             apply();
         }
     });
-
     function endPointer(e){
         if (!ptrs.has(e.pointerId)) return;
         var wasSingle = ptrs.size === 1;
@@ -630,7 +785,6 @@
         lastDist = 0;
         if (!ptrs.size) stage.classList.remove('is-dragging');
 
-        // Double-clic / double-tap : alterne 1x ↔ 2.5x ; tap dans le vide : ferme.
         if (wasSingle && e.type === 'pointerup' && startPt &&
             Math.hypot(e.clientX - startPt.x, e.clientY - startPt.y) < 8) {
             var now = Date.now();
@@ -647,21 +801,130 @@
     stage.addEventListener('pointercancel', endPointer);
 
     window.addEventListener('resize', function(){ clampPan(); apply(); });
-
-    // Échap : ferme d'abord la visionneuse, sans fermer la modal dessous.
     window.addEventListener('keydown', function(e){
         if (e.key === 'Escape' && lb.classList.contains('open')) {
             e.stopImmediatePropagation();
             closeLightbox();
         }
     }, true);
-
-    // Si la modal se ferme, tout est remis à zéro.
     new MutationObserver(function(){
         if (!overlay.classList.contains('open')) {
             closeLightbox();
             media.classList.remove('is-zooming');
         }
     }).observe(overlay, { attributes: true, attributeFilter: ['class'] });
+
+    /* ====================================================================
+       RECHERCHE QUARTIER
+    ==================================================================== */
+    var DISTRICTS = @json($districts);
+    var districtInput    = document.getElementById('orderDistrictInput');
+    var districtSearch   = document.getElementById('orderDistrictSearch');
+    var districtList     = document.getElementById('orderDistrictList');
+    var districtSelected = document.getElementById('orderDistrictSelected');
+    var districtSelectedLabel = document.getElementById('orderDistrictSelectedLabel');
+    var districtClear    = document.getElementById('orderDistrictClear');
+
+    if (districtSearch && districtList) {
+        var activeIndex = -1;
+
+        function normalize(str){
+            return (str || '').toString().toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        }
+        function renderDistricts(query){
+            var q = normalize(query);
+            var filtered = DISTRICTS.filter(function(d){
+                return normalize(d).indexOf(q) !== -1;
+            });
+
+            districtList.innerHTML = '';
+            activeIndex = -1;
+
+            if (!filtered.length) {
+                var empty = document.createElement('div');
+                empty.className = 'pd-district-empty';
+                empty.textContent = '{{ __('home.order_district_no_result') ?? "Aucun quartier trouvé" }}';
+                districtList.appendChild(empty);
+                return;
+            }
+            filtered.slice(0, 100).forEach(function(name){
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'pd-district-item';
+                btn.setAttribute('role', 'option');
+                btn.dataset.value = name;
+                btn.innerHTML =
+                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none">' +
+                        '<path d="M12 22s7-7.58 7-13A7 7 0 1 0 5 9c0 5.42 7 13 7 13z" stroke="currentColor" stroke-width="1.8"/>' +
+                        '<circle cx="12" cy="9" r="2.4" stroke="currentColor" stroke-width="1.8"/>' +
+                    '</svg>' +
+                    '<span></span>';
+                btn.querySelector('span').textContent = name;
+                btn.addEventListener('click', function(){ selectDistrict(name); });
+                districtList.appendChild(btn);
+            });
+        }
+        function selectDistrict(name){
+            districtInput.value = name;
+            districtSelectedLabel.textContent = name;
+            districtSelected.hidden = false;
+            districtSearch.value = '';
+            districtSearch.placeholder = name;
+            districtList.innerHTML = '';
+            districtSearch.focus();
+        }
+        function clearDistrict(){
+            districtInput.value = '';
+            districtSelected.hidden = true;
+            districtSelectedLabel.textContent = '';
+            districtSearch.value = '';
+            districtSearch.placeholder = '{{ __('home.order_district_search_placeholder') ?? "Rechercher un quartier..." }}';
+            renderDistricts('');
+            districtSearch.focus();
+        }
+        districtSearch.addEventListener('input', function(){ renderDistricts(this.value); });
+        districtSearch.addEventListener('focus', function(){
+            if (!districtList.children.length) renderDistricts(this.value);
+        });
+        districtSearch.addEventListener('keydown', function(e){
+            var items = districtList.querySelectorAll('.pd-district-item');
+            if (!items.length) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                activeIndex = Math.min(activeIndex + 1, items.length - 1);
+                updateActive(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                activeIndex = Math.max(activeIndex - 1, 0);
+                updateActive(items);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (activeIndex >= 0 && items[activeIndex]) {
+                    selectDistrict(items[activeIndex].dataset.value);
+                } else if (items.length === 1) {
+                    selectDistrict(items[0].dataset.value);
+                }
+            } else if (e.key === 'Escape') {
+                districtList.innerHTML = '';
+                activeIndex = -1;
+            }
+        });
+        function updateActive(items){
+            items.forEach(function(el, i){
+                el.classList.toggle('is-active', i === activeIndex);
+                if (i === activeIndex) el.scrollIntoView({ block: 'nearest' });
+            });
+        }
+        districtClear.addEventListener('click', clearDistrict);
+        document.addEventListener('click', function(e){
+            if (!e.target.closest('.pd-district-wrap')) {
+                districtList.innerHTML = '';
+                activeIndex = -1;
+            }
+        });
+        renderDistricts('');
+    }
 })();
 </script>

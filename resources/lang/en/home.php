@@ -489,4 +489,7 @@ return [
     'book_pages_placeholder' => 'e.g. 320',
     'book_pages_count' => ':n page(s)',
     'book_col_pages' => 'Pages',
+    'order_district_label' => 'Delivery district',
+'order_district_search_placeholder' => 'Search for a district...',
+'order_district_no_result' => 'No district found',
 ];

@@ -487,4 +487,8 @@ return [
     'book_pages_placeholder' => 'Ohatra: 320',
     'book_pages_count' => 'pejy :n',
     'book_col_pages' => 'Pejy',
+
+    'order_district_label' => 'Fokontany fitaterana',
+'order_district_search_placeholder' => 'Mitady fokontany...',
+'order_district_no_result' => 'Tsy nahitana fokontany',
 ];

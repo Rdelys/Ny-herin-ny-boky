@@ -483,4 +483,8 @@ return [
     'book_pages_placeholder' => 'Ex : 320',
     'book_pages_count' => ':n page(s)',
     'book_col_pages' => 'Pages',
+
+    'order_district_label' => 'Quartier de livraison',
+'order_district_search_placeholder' => 'Rechercher un quartier...',
+'order_district_no_result' => 'Aucun quartier trouvé',
 ];
