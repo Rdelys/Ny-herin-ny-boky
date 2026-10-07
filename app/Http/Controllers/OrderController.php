@@ -59,10 +59,9 @@ class OrderController extends Controller
             return redirect()->route('cart.index')->with('error', __('home.cart_empty'));
         }
 
-        $groupe = Order::genererGroupeReference();
-
         try {
-            $orders = DB::transaction(function () use ($requested, $data, $user, $groupe) {
+            $orders = DB::transaction(function () use ($requested, $data, $user) {
+                $groupe = Order::genererGroupeReference();
                 $books = Book::with('seller')
                     ->whereIn('id', array_keys($requested))
                     ->lockForUpdate()
@@ -91,7 +90,7 @@ class OrderController extends Controller
                     $prixUnitaire = (int) $book->prix_achat_client;
 
                     $created->push(Order::create([
-                        'reference' => Order::genererReference(),
+                        'reference' => Order::genererReference($groupe, $created->count() + 1),
                         'groupe_reference' => $groupe,
                         'buyer_id' => $user?->id,
                         'guest_name' => $user ? null : $data['guest_name'],
@@ -120,6 +119,8 @@ class OrderController extends Controller
         } catch (\DomainException $e) {
             return redirect()->route('cart.index')->withInput()->with('error', $e->getMessage());
         }
+
+        $groupe = $orders->first()->groupe_reference;
 
         // Panier vidé AVANT la facture : si elle échoue, la commande ne peut
         // jamais être renvoyée deux fois.

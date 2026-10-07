@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
@@ -99,24 +100,29 @@ class Order extends Model
     }
 
     /** Référence lisible et unique de la commande (ex: CMD-260917-4XK9T). */
-    public static function genererReference(): string
+    public static function genererReference(string $groupe, int $position): string
     {
-        do {
-            $reference = 'CMD-' . now()->format('ymd') . '-' . strtoupper(Str::random(5));
-        } while (static::where('reference', $reference)->exists());
-
-        return $reference;
+        return $groupe . '-' . $position;
     }
 
     /** Numéro de panier / de facture (ex: PAN-260928-4XK9T), partagé par toutes les lignes d'un même panier. */
     public static function genererGroupeReference(): string
     {
-        do {
-            $reference = 'PAN-' . now()->format('ymd') . '-' . strtoupper(Str::random(5));
-        } while (static::where('groupe_reference', $reference)->exists());
+        return DB::transaction(function () {
+            $row = DB::table('sequences')->where('nom', 'commande')->lockForUpdate()->first();
 
-        return $reference;
+            if (! $row) {
+                DB::table('sequences')->insertOrIgnore(['nom' => 'commande', 'valeur' => 0]);
+                $row = DB::table('sequences')->where('nom', 'commande')->lockForUpdate()->first();
+            }
+
+            $numero = $row->valeur + 1;
+            DB::table('sequences')->where('nom', 'commande')->update(['valeur' => $numero]);
+
+            return 'NHB' . str_pad((string) $numero, 6, '0', STR_PAD_LEFT);
+        });
     }
+
 
     /** Libellé français du statut (back-office). */
     public function getStatutLabelAttribute(): string
