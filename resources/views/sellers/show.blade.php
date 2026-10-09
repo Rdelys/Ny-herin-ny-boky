@@ -14,7 +14,7 @@
 
 @push('head')
     {{-- Données structurées : le vendeur est une librairie, avec le
-         catalogue visible sur cette page. --}}
+         catalogue visible sur cette page. Le prix est déjà remisé si promo. --}}
     @php
         $storeSchema = array_filter([
             '@context' => 'https://schema.org',
@@ -68,6 +68,10 @@
                                 <img src="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}" alt="{{ $book->titre }}" loading="lazy">
                                 <div class="book-cover-gradient"></div>
                                 <span class="book-tag {{ $book->etat !== 'neuf' ? 'occasion' : '' }}">{{ __('home.book_condition_' . $book->etat) }}</span>
+
+                                {{-- ============ AJOUT : étiquette promo ============ --}}
+                                @include('partials.book-price', ['book' => $book, 'mode' => 'tag'])
+
                                 @if($book->quantite <= 0)
                                     <span class="book-out-of-stock">{{ __('home.books_out_of_stock') }}</span>
                                 @endif
@@ -81,30 +85,33 @@
                                     <p class="book-author">{{ $book->auteur }}</p>
                                 @endif
 
-                                {{-- ============ AJOUT : délai de livraison ============ --}}
+                                {{-- délai de livraison --}}
                                 <span class="book-delivery-badge">{{ $book->delai_livraison_label }}</span>
 
                                 <div class="book-foot">
-                                <div class="book-foot">
-                                    <span class="book-loc">{{ $book->prix_achat_client ? number_format($book->prix_achat_client, 0, ',', ' ').' Ar' : '—' }}</span>
+                                    {{-- ============ AJOUT : prix avec promo ============ --}}
+                                    @include('partials.book-price', ['book' => $book, 'size' => 'sm'])
+
                                     @if($book->quantite > 0)
-                                    <button type="button" class="book-add" aria-label="{{ __('home.books_add') }}"
-                                        data-book-order
-                                    data-book-id="{{ $book->id }}"
-                                    data-book-author="{{ $book->auteur }}"
-                                    data-book-category="{{ $book->categorie }}"
-                                    data-book-condition="{{ __('home.book_condition_' . $book->etat) }}"
-                                    data-book-description="{{ $book->description }}"
-                                        data-book-title="{{ $book->titre }}"
-                                        data-book-image="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}"
-                                        data-book-seller="{{ $seller->sellerProfile->nom_entreprise ?? $seller->name }}"
-                                        data-book-price="{{ $book->prix_achat_client }}"
-                                        data-book-max="{{ $book->quantite }}"
-                                        data-book-delivery="{{ $book->delai_livraison_label }}">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path d="M5 12H19M12 5V19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-                                        </svg>
-                                    </button>
+                                        <button type="button" class="book-add" aria-label="{{ __('home.books_add') }}"
+                                            data-book-order
+                                            data-book-id="{{ $book->id }}"
+                                            data-book-author="{{ $book->auteur }}"
+                                            data-book-category="{{ $book->categorie }}"
+                                            data-book-condition="{{ __('home.book_condition_' . $book->etat) }}"
+                                            data-book-description="{{ $book->description }}"
+                                            data-book-title="{{ $book->titre }}"
+                                            data-book-image="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}"
+                                            data-book-seller="{{ $seller->sellerProfile->nom_entreprise ?? $seller->name }}"
+                                            data-book-price="{{ $book->prix_achat_client }}"
+                                            data-book-old-price="{{ $book->en_promo ? $book->prix_achat_client_original : '' }}"
+                                            data-book-promo-label="{{ $book->promo_label }}"
+                                            data-book-max="{{ $book->quantite }}"
+                                            data-book-delivery="{{ $book->delai_livraison_label }}">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path d="M5 12H19M12 5V19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                                            </svg>
+                                        </button>
                                     @endif
                                 </div>
                             </div>

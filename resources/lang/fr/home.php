@@ -492,4 +492,19 @@ return [
     'auth_contact_number_placeholder' => '034 xx xxx xx',
     'auth_contact_number_hint' => "Votre numéro personnel de contact n'est jamais affiché publiquement : seule notre équipe l'utilise pour vous joindre.",
     'profile_contact_number' => 'Numéro personnel de contact',
-];
+
+'book_promo_legend'        => 'Promotion',
+'book_promo_hint'          => 'Applique une remise sur le prix de vente. Elle apparaît partout sur le site.',
+'book_promo_type_label'    => 'Type de promotion',
+'book_promo_none'          => 'Aucune promotion',
+'book_promo_percent'       => 'Pourcentage (%)',
+'book_promo_amount'        => 'Somme directe (Ar)',
+'book_promo_value_label'   => 'Valeur de la remise',
+'book_promo_client_hint'   => 'Prix client avec promotion :',
+'book_promo_instead_of'    => 'au lieu de',
+'book_promo_error_no_price'=> 'Indiquez d\'abord un prix de vente pour appliquer une promotion.',
+'book_promo_error_percent' => 'Le pourcentage ne peut pas dépasser :max %.',
+'book_promo_error_amount'  => 'La remise doit être inférieure au prix de vente.',
+'cart_savings_label' => 'Vous économisez',
+
+    ];

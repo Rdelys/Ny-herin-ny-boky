@@ -86,7 +86,14 @@ class OrderController extends Controller
                         throw new \DomainException($book->titre . ' : ' . __('home.order_error_stock', ['quantite' => $book->quantite]));
                     }
 
-                    $rate = Setting::commissionRateFor($book->prix_achat);
+                    // ============ PROMOTION ============
+                    // Prix vendeur après promo (= prix_achat s'il n'y en a pas) :
+                    // c'est ce que le vendeur perçoit, et la commission est
+                    // calculée sur ce montant.
+                    $prixVendeur = (int) $book->prix_achat_promo;
+                    $rate = Setting::commissionRateFor($prixVendeur);
+
+                    // Prix payé par le client : déjà remisé si promo.
                     $prixUnitaire = (int) $book->prix_achat_client;
 
                     $created->push(Order::create([
@@ -104,7 +111,7 @@ class OrderController extends Controller
                         'prix_unitaire' => $prixUnitaire,
                         'total' => $prixUnitaire * $quantite,
                         'commission_rate' => $rate,
-                        'montant_vendeur' => (int) $book->prix_achat * $quantite,
+                        'montant_vendeur' => $prixVendeur * $quantite,
                         'mode_paiement' => $data['mode_paiement'],
                         'reference_paiement' => $data['reference_paiement'] ?? __('home.order_payment_cash'),
                         'ville' => $data['ville'],

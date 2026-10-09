@@ -497,4 +497,18 @@ return [
     'auth_contact_number_placeholder' => '034 xx xxx xx',
     'auth_contact_number_hint' => "Tsy aseho ampahibemaso ny laharanao manokana : ny ekipanay ihany no mampiasa azy hifandraisana aminao.",
     'profile_contact_number' => 'Laharana manokana hifandraisana',
+
+    'book_promo_legend'        => 'Fihenam-bidy',
+'book_promo_hint'          => 'Mampihena ny vidin\'ny fividianana. Hita eran\'ny tranokala izany.',
+'book_promo_type_label'    => 'Karazana fihenam-bidy',
+'book_promo_none'          => 'Tsy misy fihenam-bidy',
+'book_promo_percent'       => 'Isan-jato (%)',
+'book_promo_amount'        => 'Vola mivantana (Ar)',
+'book_promo_value_label'   => 'Habetsaky ny fihenam-bidy',
+'book_promo_client_hint'   => 'Vidin\'ny mpanjifa miaraka amin\'ny fihenam-bidy :',
+'book_promo_instead_of'    => 'fa tsy',
+'book_promo_error_no_price'=> 'Ampidiro aloha ny vidin\'ny fividianana.',
+'book_promo_error_percent' => 'Tsy tokony hihoatra ny :max % ny isan-jato.',
+'book_promo_error_amount'  => 'Tsy maintsy ambany noho ny vidin\'ny fividianana ny fihenam-bidy.',
+'cart_savings_label' => 'Voavonjy ianao',
 ];

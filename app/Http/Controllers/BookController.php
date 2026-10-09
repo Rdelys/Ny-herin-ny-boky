@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class BookController extends Controller
 {
@@ -47,6 +48,8 @@ class BookController extends Controller
             'description' => ['nullable', 'string', 'max:2000'],
             'prix_achat' => ['nullable', 'integer', 'min:0'],
             'prix_location' => ['nullable', 'integer', 'min:0'],
+            'promo_type' => ['nullable', Rule::in([Book::PROMO_PERCENT, Book::PROMO_AMOUNT])],
+            'promo_valeur' => ['required_if:promo_type,percent,amount', 'nullable', 'integer', 'min:1'],
             'quantite' => ['required', 'integer', 'min:1'],
             'categorie' => ['required', Rule::in(self::CATEGORIES)],
             'etat' => ['required', Rule::in(self::CONDITIONS)],
@@ -60,11 +63,48 @@ class BookController extends Controller
         ];
     }
 
+    /**
+     * Contrôles métier de la promotion + valeurs à enregistrer.
+     * Sans type => promotion supprimée.
+     */
+    protected function promoAttributes(array $data): array
+    {
+        $type = $data['promo_type'] ?? null;
+
+        if (! $type) {
+            return ['promo_type' => null, 'promo_valeur' => null];
+        }
+
+        $valeur = (int) ($data['promo_valeur'] ?? 0);
+        $prix = (int) ($data['prix_achat'] ?? 0);
+
+        if ($prix <= 0) {
+            throw ValidationException::withMessages([
+                'promo_valeur' => __('home.book_promo_error_no_price'),
+            ]);
+        }
+
+        if ($type === Book::PROMO_PERCENT && $valeur > Book::PROMO_MAX_PERCENT) {
+            throw ValidationException::withMessages([
+                'promo_valeur' => __('home.book_promo_error_percent', ['max' => Book::PROMO_MAX_PERCENT]),
+            ]);
+        }
+
+        if ($type === Book::PROMO_AMOUNT && $valeur >= $prix) {
+            throw ValidationException::withMessages([
+                'promo_valeur' => __('home.book_promo_error_amount'),
+            ]);
+        }
+
+        return ['promo_type' => $type, 'promo_valeur' => $valeur];
+    }
+
     public function store(Request $request): RedirectResponse
     {
         abort_unless($request->user()->isSeller(), 403, "Seuls les vendeurs peuvent ajouter un livre.");
 
         $data = $request->validate($this->rules());
+        $promo = $this->promoAttributes($data);
 
         $imagePath = null;
         if ($request->hasFile('image')) {
@@ -77,6 +117,8 @@ class BookController extends Controller
             'description' => $data['description'] ?? null,
             'prix_achat' => $data['prix_achat'] ?? null,
             'prix_location' => $data['prix_location'] ?? null,
+            'promo_type' => $promo['promo_type'],
+            'promo_valeur' => $promo['promo_valeur'],
             'quantite' => $data['quantite'],
             'categorie' => $data['categorie'],
             'etat' => $data['etat'],
@@ -106,6 +148,7 @@ class BookController extends Controller
         abort_unless($book->seller_id === $request->user()->id, 403);
 
         $data = $request->validate($this->rules());
+        $promo = $this->promoAttributes($data);
 
         if ($request->hasFile('image')) {
             $book->image_path = $request->file('image')->store('livres', 'public');
@@ -117,6 +160,8 @@ class BookController extends Controller
             'description' => $data['description'] ?? null,
             'prix_achat' => $data['prix_achat'] ?? null,
             'prix_location' => $data['prix_location'] ?? null,
+            'promo_type' => $promo['promo_type'],
+            'promo_valeur' => $promo['promo_valeur'],
             'quantite' => $data['quantite'],
             'categorie' => $data['categorie'],
             'etat' => $data['etat'],

@@ -30,6 +30,8 @@
         min-height: 230px;
     }
     .cart-item-media img{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    /* étiquette promo : pas de pastille d'état au-dessus ici */
+    .cart-item-media .book-promo-tag{ top: 10px; left: 10px; }
     .cart-item-body{ display: flex; flex-direction: column; gap: 8px; padding: 20px 22px; min-width: 0; }
     .cart-item-top{ display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
     .cart-item-title{
@@ -44,7 +46,33 @@
     .cart-item-seller{ margin: 0; font-size: .78rem; font-weight: 600; color: #a8957f; }
     .cart-item-badges{ display: flex; flex-wrap: wrap; gap: 6px; }
     .cart-item-badges .book-genre{ margin: 0; font-size: .64rem; }
-    .cart-item-price{ font-family: var(--serif); font-size: 1rem; color: #7a6a5d; }
+    .cart-item-price{
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 4px 8px;
+        font-family: var(--serif);
+        font-size: 1rem;
+        color: #7a6a5d;
+    }
+    .cart-item-old{
+        font-size: .82rem;
+        color: #9c8b7d;
+        text-decoration: line-through;
+        text-decoration-thickness: 1.5px;
+    }
+    .cart-item-promo-badge{
+        align-self: center;
+        font-family: var(--sans, system-ui, sans-serif);
+        font-size: .64rem;
+        font-weight: 800;
+        letter-spacing: .03em;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: rgba(179,38,30,.12);
+        color: #b3261e;
+        white-space: nowrap;
+    }
     .cart-item-foot{
         display: flex;
         align-items: center;
@@ -96,6 +124,19 @@
     .cart-aside{ display: flex; flex-direction: column; gap: 18px; }
     .cart-aside .cart-summary{ margin: 0; }
     .cart-aside .add-book-card{ margin: 0; max-width: none; padding: 24px 22px; }
+    .cart-savings{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: -6px 0 0;
+        padding: 10px 16px;
+        border-radius: 12px;
+        background: rgba(179,38,30,.07);
+        color: #b3261e;
+        font-size: .86rem;
+        font-weight: 700;
+    }
 
     @media (max-width: 960px){
         .cart-layout{ grid-template-columns: 1fr; }
@@ -119,6 +160,14 @@
 @section('content')
     @php
         $guestSuccess = session('guest_order_success');
+
+        // Économie totale réalisée grâce aux promotions (prix client).
+        $economie = $lines->sum(function ($line) {
+            $b = $line->book;
+            return $b->en_promo
+                ? max(0, $b->prix_achat_client_original - $b->prix_achat_client) * $line->quantite
+                : 0;
+        });
     @endphp
 
     <section>
@@ -179,6 +228,9 @@
                             <article class="cart-item {{ $line->disponible ? '' : 'is-unavailable' }}">
                                 <div class="cart-item-media">
                                     <img src="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}" alt="{{ $book->titre }}" loading="lazy">
+
+                                    {{-- ============ AJOUT : étiquette promo ============ --}}
+                                    @include('partials.book-price', ['book' => $book, 'mode' => 'tag'])
                                 </div>
 
                                 <div class="cart-item-body">
@@ -210,7 +262,16 @@
                                         <span class="book-genre" style="background: rgba(92,138,55,.14); color:#395e26;">{{ $book->delai_livraison_label }}</span>
                                     </div>
 
-                                    <span class="cart-item-price">{{ number_format($line->prix_unitaire, 0, ',', ' ') }} Ar / {{ __('home.order_unit_price') }}</span>
+                                    {{-- ============ MODIFIÉ : ancien prix barré + badge promo ============ --}}
+                                    <span class="cart-item-price">
+                                        @if($book->en_promo)
+                                            <s class="cart-item-old">{{ number_format($book->prix_achat_client_original, 0, ',', ' ') }} Ar</s>
+                                        @endif
+                                        <span>{{ number_format($line->prix_unitaire, 0, ',', ' ') }} Ar / {{ __('home.order_unit_price') }}</span>
+                                        @if($book->en_promo)
+                                            <span class="cart-item-promo-badge">{{ $book->promo_label }}</span>
+                                        @endif
+                                    </span>
 
                                     @unless($line->disponible)
                                         <span class="modal-field-error" style="margin:0;">{{ __('home.order_error_stock', ['quantite' => $book->quantite]) }}</span>
@@ -248,6 +309,14 @@
                             <span>{{ __('home.delivery_subtotal') }}</span>
                             <strong>{{ number_format($total, 0, ',', ' ') }} Ar</strong>
                         </div>
+
+                        {{-- ============ AJOUT : économie réalisée grâce aux promos ============ --}}
+                        @if($economie > 0)
+                            <p class="cart-savings">
+                                <span>{{ __('home.cart_savings_label') }}</span>
+                                <span>-{{ number_format($economie, 0, ',', ' ') }} Ar</span>
+                            </p>
+                        @endif
 
                         @include('cart._checkout')
                     </aside>
@@ -289,65 +358,6 @@
                 submitLater();
             });
         });
-    })();
-</script>
-
-<script>
-    (function(){
-        var form = document.getElementById('checkoutForm');
-        if (!form) return;
-
-        var villeSelect = document.getElementById('checkoutVille');
-        var numberEl = document.getElementById('checkoutPaymentNumber');
-        var nameEl = document.getElementById('checkoutPaymentName');
-        var numberRow = document.getElementById('checkoutPaymentNumberRow');
-        var refWrap = document.getElementById('checkoutReferenceWrap');
-        var refInput = document.getElementById('checkoutReference');
-        var submitBtn = document.getElementById('checkoutSubmit');
-        var cashOption = form.querySelector('[data-payment-option][data-cash="1"]');
-
-        function selected(){
-            return form.querySelector('input[name="mode_paiement"]:checked');
-        }
-
-        // Numéro à contacter + champ référence : masqués pour "Espèces".
-        function refresh(){
-            var checked = selected();
-            var isCash = !!checked && checked.value === 'especes';
-
-            numberEl.textContent = checked ? (checked.getAttribute('data-payment-number') || '—') : '—';
-            nameEl.textContent = checked ? (checked.getAttribute('data-payment-name') || '—') : '—';
-            numberRow.style.display = isCash ? 'none' : '';
-            refWrap.style.display = isCash ? 'none' : '';
-            refInput.required = !isCash;
-        }
-
-        // "Espèces" n'apparaît que pour la ville qui l'autorise.
-        function updateCash(){
-            var option = villeSelect.options[villeSelect.selectedIndex];
-            var allowed = !!option && option.getAttribute('data-cash-allowed') === '1';
-
-            if (cashOption) {
-                cashOption.style.display = allowed ? '' : 'none';
-                var radio = cashOption.querySelector('input[type="radio"]');
-                if (!allowed && radio.checked) {
-                    var fallback = form.querySelector('[data-payment-option][data-cash="0"] input[type="radio"]');
-                    if (fallback) fallback.checked = true;
-                }
-            }
-            refresh();
-        }
-
-        form.querySelectorAll('input[name="mode_paiement"]').forEach(function(radio){
-            radio.addEventListener('change', refresh);
-        });
-        villeSelect.addEventListener('change', updateCash);
-
-        form.addEventListener('submit', function(){
-            if (submitBtn) submitBtn.disabled = true;
-        });
-
-        updateCash();
     })();
 </script>
 @endpush

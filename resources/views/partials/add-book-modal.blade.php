@@ -38,58 +38,64 @@
             @error('quantite')<p class="modal-field-error">{{ $message }}</p>@enderror
             <p class="field-hint" id="prixAchatClientHint"></p>
 
+            {{-- ============ AJOUT : PROMOTION (% ou somme directe) ============ --}}
+            @include('partials.book-promo-fields', ['book' => null])
+
             <label>{{ __('home.book_rental_price') }}
                 <input type="number" name="prix_location" min="0" value="{{ old('prix_location') }}" id="prixLocationInput">
             </label>
             <p class="field-hint" id="prixLocationClientHint"></p>
 
             <div class="modal-form-row">
-    <label>{{ __('home.book_category') }}
-        <select name="categorie" required>
-            <option value="">{{ __('home.auth_choose_placeholder') }}</option>
-            @foreach(\App\Http\Controllers\BookController::CATEGORIES as $cat)
-                <option value="{{ $cat }}" @selected(old('categorie') === $cat)>{{ $cat }}</option>
-            @endforeach
-        </select>
-    </label>
-    <label>{{ __('home.book_condition') }}
-        <select name="etat" required>
-            <option value="neuf" @selected(old('etat') === 'neuf')>{{ __('home.book_condition_neuf') }}</option>
-            <option value="tres_bon_etat" @selected(old('etat', 'bon_etat') === 'tres_bon_etat')>{{ __('home.book_condition_tres_bon_etat') }}</option>
-            <option value="bon_etat" @selected(old('etat', 'bon_etat') === 'bon_etat')>{{ __('home.book_condition_bon_etat') }}</option>
-        </select>
-    </label>
-</div>
-@error('categorie')<p class="modal-field-error">{{ $message }}</p>@enderror
+                <label>{{ __('home.book_category') }}
+                    <select name="categorie" required>
+                        <option value="">{{ __('home.auth_choose_placeholder') }}</option>
+                        @foreach(\App\Http\Controllers\BookController::CATEGORIES as $cat)
+                            <option value="{{ $cat }}" @selected(old('categorie') === $cat)>{{ $cat }}</option>
+                        @endforeach
+                    </select>
+                </label>
+                <label>{{ __('home.book_condition') }}
+                    <select name="etat" required>
+                        <option value="neuf" @selected(old('etat') === 'neuf')>{{ __('home.book_condition_neuf') }}</option>
+                        <option value="tres_bon_etat" @selected(old('etat', 'bon_etat') === 'tres_bon_etat')>{{ __('home.book_condition_tres_bon_etat') }}</option>
+                        <option value="bon_etat" @selected(old('etat', 'bon_etat') === 'bon_etat')>{{ __('home.book_condition_bon_etat') }}</option>
+                    </select>
+                </label>
+            </div>
+            @error('categorie')<p class="modal-field-error">{{ $message }}</p>@enderror
 
-<label>{{ __('home.book_language_label') }}
-    <select name="langue" required>
-        <option value="">{{ __('home.auth_choose_placeholder') }}</option>
-        @foreach(\App\Http\Controllers\BookController::LANGUES as $code)
-            <option value="{{ $code }}" @selected(old('langue', $book->langue ?? null) === $code)>
-                {{ __('home.book_language_' . $code) }}
-            </option>
-        @endforeach
-    </select>
-</label>
-@error('langue')<p class="modal-field-error">{{ $message }}</p>@enderror
-<label>{{ __('home.book_format_label') }}
-    <select name="format" required>
-        <option value="">{{ __('home.auth_choose_placeholder') }}</option>
-        @foreach(\App\Http\Controllers\BookController::FORMATS as $code)
-            <option value="{{ $code }}" @selected(old('format', $book->format ?? null) === $code)>
-                {{ __('home.book_format_' . $code) }}
-            </option>
-        @endforeach
-    </select>
-</label>
-@error('format')<p class="modal-field-error">{{ $message }}</p>@enderror            
+            <label>{{ __('home.book_language_label') }}
+                <select name="langue" required>
+                    <option value="">{{ __('home.auth_choose_placeholder') }}</option>
+                    @foreach(\App\Http\Controllers\BookController::LANGUES as $code)
+                        <option value="{{ $code }}" @selected(old('langue') === $code)>
+                            {{ __('home.book_language_' . $code) }}
+                        </option>
+                    @endforeach
+                </select>
+            </label>
+            @error('langue')<p class="modal-field-error">{{ $message }}</p>@enderror
+
+            <label>{{ __('home.book_format_label') }}
+                <select name="format" required>
+                    <option value="">{{ __('home.auth_choose_placeholder') }}</option>
+                    @foreach(\App\Http\Controllers\BookController::FORMATS as $code)
+                        <option value="{{ $code }}" @selected(old('format') === $code)>
+                            {{ __('home.book_format_' . $code) }}
+                        </option>
+                    @endforeach
+                </select>
+            </label>
+            @error('format')<p class="modal-field-error">{{ $message }}</p>@enderror
+
             <label>{{ __('home.book_pages_label') }}
                 <input type="number" name="nombre_pages" min="1" max="20000" inputmode="numeric"
-                    placeholder="{{ __('home.book_pages_placeholder') }}" value="{{ old('nombre_pages') }}">
+                       placeholder="{{ __('home.book_pages_placeholder') }}" value="{{ old('nombre_pages') }}">
             </label>
-@error('nombre_pages')<p class="modal-field-error">{{ $message }}</p>@enderror
-<fieldset class="modal-fieldset">
+            @error('nombre_pages')<p class="modal-field-error">{{ $message }}</p>@enderror
+
+            <fieldset class="modal-fieldset">
                 <legend>{{ __('home.book_shipping_legend') }}</legend>
                 <label class="modal-radio-card">
                     <input type="checkbox" name="livraison_disponible" value="1" {{ old('livraison_disponible') ? 'checked' : '' }}>
@@ -99,15 +105,16 @@
                     </span>
                 </label>
             </fieldset>
+
             <fieldset class="modal-fieldset">
                 <legend>{{ __('home.book_delivery_legend') }}</legend>
                 <p class="field-hint" style="margin:0 0 12px;">{{ __('home.book_delivery_hint') }}</p>
                 <div class="modal-form-row">
                     <label>{{ __('home.book_delivery_min_label') }}
-                        <input type="number" name="delai_livraison_min" min="1" max="60" value="{{ old('delai_livraison_min', $book->delai_livraison_min) }}" required>
+                        <input type="number" name="delai_livraison_min" min="1" max="60" value="{{ old('delai_livraison_min', 1) }}" required>
                     </label>
                     <label>{{ __('home.book_delivery_max_label') }}
-                        <input type="number" name="delai_livraison_max" min="1" max="60" value="{{ old('delai_livraison_max', $book->delai_livraison_max) }}" required>
+                        <input type="number" name="delai_livraison_max" min="1" max="60" value="{{ old('delai_livraison_max', 1) }}" required>
                     </label>
                 </div>
                 @error('delai_livraison_min')<p class="modal-field-error">{{ $message }}</p>@enderror

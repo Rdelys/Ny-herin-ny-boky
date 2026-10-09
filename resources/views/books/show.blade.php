@@ -6,6 +6,7 @@
 @php
     $isSeller   = auth()->check() && auth()->user()->isSeller();
     $inStock    = $book->quantite > 0;
+    $enPromo    = $book->en_promo;
     $image      = $book->image_path
         ? asset('storage/'.$book->image_path)
         : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/800/1067';
@@ -114,6 +115,22 @@
         z-index: 3;
         backdrop-filter: blur(8px);
         box-shadow: 0 6px 16px -8px rgba(0,0,0,.35);
+    }
+
+    /* Étiquette promo sur l'image */
+    .pp-promo-tag {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        z-index: 3;
+        padding: 7px 14px;
+        border-radius: 999px;
+        background: #b3261e;
+        color: #fff;
+        font-size: .82rem;
+        font-weight: 800;
+        letter-spacing: .03em;
+        box-shadow: 0 8px 18px -8px rgba(179,38,30,.7);
     }
 
     .pp-zoom-btn {
@@ -234,6 +251,10 @@
         position: relative;
         overflow: hidden;
     }
+    .pp-price-card.is-promo {
+        background: linear-gradient(135deg, rgba(179,38,30,.07), rgba(233,178,63,.12));
+        border-color: rgba(179,38,30,.18);
+    }
     .pp-price-card::before {
         content: '';
         position: absolute;
@@ -243,6 +264,26 @@
         background: radial-gradient(circle, rgba(233,178,63,.22), transparent 70%);
         pointer-events: none;
     }
+    .pp-price-block {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        position: relative;
+        z-index: 1;
+    }
+    .pp-price-line {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .pp-old-price {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #9c8b7d;
+        text-decoration: line-through;
+        text-decoration-thickness: 1.5px;
+    }
     .pp-price {
         font-family: var(--serif,Georgia,serif);
         font-weight: 700;
@@ -250,6 +291,16 @@
         color: var(--maroon-800,#55101d);
         line-height: 1;
         letter-spacing: -.02em;
+    }
+    .pp-price-card.is-promo .pp-price { color: #b3261e; }
+    .pp-promo-badge {
+        font-size: .78rem;
+        font-weight: 800;
+        letter-spacing: .03em;
+        padding: 5px 12px;
+        border-radius: 999px;
+        background: #b3261e;
+        color: #fff;
     }
     .pp-stock {
         display: inline-flex;
@@ -261,6 +312,8 @@
         background: rgba(92,138,55,.14);
         padding: 6px 14px;
         border-radius: 999px;
+        position: relative;
+        z-index: 1;
     }
     .pp-stock::before {
         content: '';
@@ -542,6 +595,9 @@
                     <div class="pp-media" id="ppMedia">
                         <img id="ppImage" src="{{ $image }}" alt="{{ $book->titre }}">
                         <span class="book-tag {{ $book->etat !== 'neuf' ? 'occasion' : '' }}">{{ __('home.book_condition_' . $book->etat) }}</span>
+                        @if($enPromo)
+                            <span class="pp-promo-tag">{{ $book->promo_label }}</span>
+                        @endif
                         <a href="{{ route('sellers.show', $book->seller) }}" class="pp-seller-float">
                             <span class="dot"></span>
                             {{ $sellerName }}
@@ -570,9 +626,19 @@
                     <p class="pp-author">{{ $book->auteur }}</p>
                 @endif
 
-                <div class="pp-price-card">
+                <div class="pp-price-card {{ $enPromo ? 'is-promo' : '' }}">
                     @if($book->prix_achat_client)
-                        <strong class="pp-price">{{ number_format($book->prix_achat_client, 0, ',', ' ') }} Ar</strong>
+                        <div class="pp-price-block">
+                            @if($enPromo)
+                                <span class="pp-old-price">{{ number_format($book->prix_achat_client_original, 0, ',', ' ') }} Ar</span>
+                            @endif
+                            <div class="pp-price-line">
+                                <strong class="pp-price">{{ number_format($book->prix_achat_client, 0, ',', ' ') }} Ar</strong>
+                                @if($enPromo)
+                                    <span class="pp-promo-badge">{{ $book->promo_label }}</span>
+                                @endif
+                            </div>
+                        </div>
                     @endif
                     @if($inStock)
                         <span class="pp-stock">{{ __('home.order_available_label') }} : <b>{{ $book->quantite }}</b></span>
@@ -717,6 +783,7 @@
 
 <script>
 (function(){
+    // Prix client déjà remisé si promotion (Book::prix_achat_client)
     var PRICE = {{ (int) ($book->prix_achat_client ?? 0) }};
     var MAX   = {{ (int) $book->quantite }};
 

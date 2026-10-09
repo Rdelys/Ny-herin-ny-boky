@@ -2,7 +2,30 @@
     $url        = route('books.show', $book);
     $image      = $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667';
     $sellerName = $book->seller->sellerProfile->nom_entreprise ?? $book->seller->name;
+    $enPromo    = $book->en_promo;
 @endphp
+
+@once
+<style>
+    /* Pastille de prix en promotion (sur la couverture) */
+    .book-price-float.is-promo{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1px;
+        line-height: 1.1;
+        background: rgba(179,38,30,.94);
+    }
+    .book-price-float .bpf-old{
+        font-family: var(--sans, system-ui, sans-serif);
+        font-size: .68rem;
+        font-weight: 500;
+        opacity: .8;
+        text-decoration: line-through;
+        text-decoration-thickness: 1.5px;
+    }
+</style>
+@endonce
 
 <article class="book-card {{ $book->quantite <= 0 ? 'is-out-of-stock' : '' }}">
 
@@ -16,6 +39,9 @@
             {{ __('home.book_condition_' . $book->etat) }}
         </span>
 
+        {{-- ============ AJOUT : étiquette promo (-20%, -1 100 Ar) ============ --}}
+        @include('partials.book-price', ['book' => $book, 'mode' => 'tag'])
+
         <button type="button" class="book-wishlist" aria-label="{{ __('home.books_wishlist') }}">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M12 21s-7.5-4.6-10-9.1C.6 8.4 2 4.9 5.4 4.1c2-.5 4 .3 5 2 1-1.7 3-2.5 5-2 3.4.8 4.8 4.3 3.4 7.8C19.5 16.4 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
@@ -26,8 +52,14 @@
             <span class="book-out-of-stock">{{ __('home.books_out_of_stock') }}</span>
         @endif
 
+        {{-- ============ MODIFIÉ : prix avec ancien prix barré si promo ============ --}}
         @if($book->prix_achat_client)
-            <span class="book-price-float">{{ number_format($book->prix_achat_client, 0, ',', ' ') }} Ar</span>
+            <span class="book-price-float {{ $enPromo ? 'is-promo' : '' }}">
+                @if($enPromo)
+                    <s class="bpf-old">{{ number_format($book->prix_achat_client_original, 0, ',', ' ') }} Ar</s>
+                @endif
+                <span>{{ number_format($book->prix_achat_client, 0, ',', ' ') }} Ar</span>
+            </span>
         @endif
 
         <a href="{{ $url }}" class="book-quickview">{{ __('home.books_quick_view') }}</a>

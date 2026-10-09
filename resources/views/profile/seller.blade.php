@@ -16,10 +16,10 @@
     // Le formulaire d'ajout de livre vit dans un modal : s'il y a une erreur
     // de validation sur l'un de ses champs, il faut le rouvrir automatiquement
     // au chargement, sinon l'erreur reste invisible derrière un modal fermé.
-    $addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_achat', 'prix_location', 'quantite', 'categorie', 'etat', 'langue', 'format', 'nombre_pages', 'image']);
+    $addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_achat', 'prix_location', 'promo_type', 'promo_valeur', 'quantite', 'categorie', 'etat', 'langue', 'format', 'nombre_pages', 'image']);
 
-    // CORRECTION/AJOUT : toute erreur sur le formulaire de profil (dont
-    // numero_contact) ou de mot de passe rouvre l'onglet « profil ».
+    // Toute erreur sur le formulaire de profil (dont numero_contact) ou de
+    // mot de passe rouvre l'onglet « profil ».
     if ($errors->hasAny(['current_password', 'password', 'name', 'email', 'nom_entreprise', 'localisation', 'code_postal', 'numero_contact', 'numero_paiement'])) {
         $tabActif = 'profil';
     }
@@ -67,7 +67,7 @@
                             <p>{{ $profile->code_postal ?: '—' }}</p>
                         </div>
 
-                        {{-- ============ AJOUT : numéro personnel de contact (privé) ============ --}}
+                        {{-- numéro personnel de contact (privé) --}}
                         <div>
                             <p class="book-genre" style="margin-bottom:4px;">{{ __('home.profile_contact_number') }}</p>
                             <p>{{ $profile->numero_contact ?: '—' }}</p>
@@ -114,7 +114,7 @@
                     <span class="profile-stat-sub">{{ $totalStock }} {{ __('home.profile_stock_count') }}</span>
                 </div>
 
-                {{-- ============ commandes annulées ============ --}}
+                {{-- commandes annulées --}}
                 <div class="profile-stat-card profile-stat-card-cancelled">
                     <span class="profile-stat-label">{{ __('home.profile_orders_cancelled') }}</span>
                     <strong class="profile-stat-value">{{ $commandesAnnulees }}</strong>
@@ -195,7 +195,24 @@
                                         <td><span class="book-genre" style="margin:0;">{{ $book->categorie }}</span></td>
                                         <td>{{ $book->langue_label ?? '—' }}</td>
                                         <td>{{ $book->format_label ?? '—' }}</td>
-                                        <td>{{ $book->prix_achat ? number_format($book->prix_achat, 0, ',', ' ').' Ar' : '—' }}</td>
+
+                                        {{-- ============ prix vendeur, avec promotion ============ --}}
+                                        <td>
+                                            @if(! $book->prix_achat)
+                                                —
+                                            @elseif($book->en_promo)
+                                                <s style="color:#9c8b7d; font-size:.82em;">{{ number_format($book->prix_achat, 0, ',', ' ') }} Ar</s><br>
+                                                <strong style="color:#b3261e;">{{ number_format($book->prix_achat_promo, 0, ',', ' ') }} Ar</strong>
+                                                <span class="book-tag" style="position:static; display:inline-block; background:rgba(179,38,30,.12); color:#b3261e; margin-left:4px;">
+                                                    {{ $book->promo_type === 'percent'
+                                                        ? '-' . $book->promo_valeur . '%'
+                                                        : '-' . number_format($book->promo_valeur, 0, ',', ' ') . ' Ar' }}
+                                                </span>
+                                            @else
+                                                {{ number_format($book->prix_achat, 0, ',', ' ') }} Ar
+                                            @endif
+                                        </td>
+
                                         <td>
                                             @if($book->quantite <= 0)
                                                 <span class="book-tag" style="position:static; background:rgba(179,38,30,.92); color:#fff;">{{ __('home.books_out_of_stock') }}</span>
@@ -279,7 +296,7 @@
                         @error('localisation')<p class="modal-field-error">{{ $message }}</p>@enderror
                         @error('code_postal')<p class="modal-field-error">{{ $message }}</p>@enderror
 
-                        {{-- ============ AJOUT : numéro personnel de contact ============ --}}
+                        {{-- numéro personnel de contact --}}
                         <label>{{ __('home.profile_contact_number') }}
                             <input type="tel" name="numero_contact" inputmode="tel" autocomplete="tel"
                                    value="{{ old('numero_contact', $profile->numero_contact ?? '') }}"

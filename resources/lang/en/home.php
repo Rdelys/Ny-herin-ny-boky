@@ -497,4 +497,19 @@ return [
     'auth_contact_number_placeholder' => '034 xx xxx xx',
     'auth_contact_number_hint' => 'Your personal contact number is never shown publicly: only our team uses it to reach you.',
     'profile_contact_number' => 'Personal contact number',
-];
+'book_promo_legend'        => 'Promotion',
+'book_promo_hint'          => 'Applies a discount to the sale price. It is shown everywhere on the site.',
+'book_promo_type_label'    => 'Promotion type',
+'book_promo_none'          => 'No promotion',
+'book_promo_percent'       => 'Percentage (%)',
+'book_promo_amount'        => 'Fixed amount (Ar)',
+'book_promo_value_label'   => 'Discount value',
+'book_promo_client_hint'   => 'Customer price with promotion:',
+'book_promo_instead_of'    => 'instead of',
+'book_promo_error_no_price'=> 'Set a sale price first to apply a promotion.',
+'book_promo_error_percent' => 'The percentage cannot exceed :max%.',
+'book_promo_error_amount'  => 'The discount must be lower than the sale price.',
+'cart_savings_label' => 'You save',
+
+
+    ];
