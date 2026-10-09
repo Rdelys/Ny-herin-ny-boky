@@ -10,21 +10,6 @@
         ? asset('storage/'.$book->image_path)
         : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/800/1067';
     $sellerName = $book->seller->sellerProfile->nom_entreprise ?? $book->seller->name;
-
-    // ⚠️ Remplacez par votre vraie source si vous avez une table de quartiers.
-    $districts = $districts ?? array_values(array_unique([
-        'Analakely', 'Antaninarenina', 'Ambatomitsangana', 'Isoraka', 'Tsaralalàna',
-        'Antohomadinika', 'Ankadifotsy', 'Ambohipo', 'Ambohijatovo', 'Andravoahangy',
-        'Ankadikely', 'Ivandry', 'Analamahitsy', 'Ankorondrano', 'Ambanidia',
-        'Antanimena', 'Mahamasina', 'Ampefiloha', 'Anosy', 'Andoharanofotsy',
-        'Itaosy', 'Ankadimbahoaka', 'Anosibe', 'Ambolokandrina', "Andrefan'Ambohijanahary",
-        'Ambohipo Ambony', 'Ankatso', 'Ambatobe', 'Soavimasoandro', 'Miandrarivo',
-        'Antsahavola', 'Ambodivona', 'Ankorondrano Avaratra', 'Ankadivato', 'Amparibe',
-        'Ambatonakanga', 'Amboasarikely', 'Ambohipo Ambany', "Andohan'Analakely", 'Ankazomanga',
-        'Anosipatrana', 'Antsobolo', 'Mahazoarivo', 'Ambohimitsimbina',
-        'Antanimora', 'Andranomena', 'Ambohibao', 'Ankaditapaka', 'Amboniloha',
-    ]));
-    sort($districts);
 @endphp
 
 @section('content')
@@ -95,7 +80,6 @@
         cursor: zoom-in;
         background: linear-gradient(160deg, #f6efdd, #d9c99f);
     }
-    /* ✅ Correction de l'étirement : object-fit contain sur fond neutre */
     .pp-media img {
         position: absolute;
         inset: 0;
@@ -111,7 +95,6 @@
     }
     .pp-media.is-zooming img { transform: scale(2.1); }
 
-    /* Effet de brillance au survol */
     .pp-media::after {
         content: '';
         position: absolute;
@@ -153,7 +136,6 @@
     }
     .pp-media.is-zooming .pp-zoom-btn { opacity: 0; transform: scale(.8); }
 
-    /* Badge vendeur flottant */
     .pp-seller-float {
         position: absolute;
         left: 16px;
@@ -238,7 +220,7 @@
         font-style: italic;
     }
 
-    /* ---------- BLOC PRIX IMMERSIF ---------- */
+    /* ---------- BLOC PRIX ---------- */
     .pp-price-card {
         display: flex;
         align-items: center;
@@ -401,92 +383,6 @@
         padding: 22px;
         color: #6b5a4d;
         font-size: .92rem;
-    }
-
-    /* ---------- QUARTIER ---------- */
-    .pp-district { display: flex; flex-direction: column; gap: 8px; }
-    .pp-district-search { position: relative; }
-    .pp-district-search input {
-        width: 100%;
-        padding: 13px 40px 13px 16px;
-        border: 1px solid rgba(85,16,29,.18);
-        border-radius: 12px;
-        background: #fffdf7;
-        font-size: .92rem;
-        color: var(--ink,#2a1a14);
-        outline: none;
-        transition: border-color .2s ease, box-shadow .2s ease;
-    }
-    .pp-district-search input:focus {
-        border-color: var(--gold,#e9b23f);
-        box-shadow: 0 0 0 4px rgba(233,178,63,.18);
-    }
-    .pp-district-icon {
-        position: absolute;
-        right: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #9c8b7d;
-        pointer-events: none;
-    }
-    .pp-district-list {
-        max-height: 200px;
-        overflow-y: auto;
-        border: 1px solid rgba(85,16,29,.1);
-        border-radius: 12px;
-        background: #fffdf7;
-        padding: 5px;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        box-shadow: 0 8px 20px -12px rgba(61,11,21,.25);
-    }
-    .pp-district-list:empty { display: none; }
-    .pp-district-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 12px;
-        border: 0;
-        border-radius: 8px;
-        background: transparent;
-        text-align: left;
-        font-size: .9rem;
-        color: var(--ink,#2a1a14);
-        cursor: pointer;
-        transition: background .15s ease, color .15s ease;
-    }
-    .pp-district-item:hover,
-    .pp-district-item.is-active {
-        background: rgba(233,178,63,.2);
-        color: var(--maroon-800,#55101d);
-    }
-    .pp-district-empty {
-        padding: 14px;
-        text-align: center;
-        font-size: .86rem;
-        color: #9c8b7d;
-        font-style: italic;
-    }
-    .pp-district-selected {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: .8rem;
-        color: #395e26;
-        background: rgba(92,138,55,.14);
-        padding: 5px 12px;
-        border-radius: 999px;
-        align-self: flex-start;
-    }
-    .pp-district-selected button {
-        border: 0;
-        background: transparent;
-        color: inherit;
-        font-size: 1rem;
-        line-height: 1;
-        cursor: pointer;
-        padding: 0 2px;
     }
 
     /* ============================================
@@ -718,27 +614,6 @@
                     <form method="POST" action="{{ route('cart.add') }}" id="ppForm" class="pp-buy">
                         @csrf
                         <input type="hidden" name="book_id" value="{{ $book->id }}">
-                        <input type="hidden" name="district" id="ppDistrictInput" value="{{ old('district') }}">
-
-                        <div class="pp-district">
-                            <span class="pp-label">{{ __('home.order_district_label') }}</span>
-                            <div class="pp-district-search">
-                                <input type="text" id="ppDistrictSearch"
-                                       placeholder="{{ __('home.order_district_search_placeholder') }}"
-                                       autocomplete="off" inputmode="search">
-                                <span class="pp-district-icon" aria-hidden="true">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/>
-                                        <path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                                    </svg>
-                                </span>
-                            </div>
-                            <div class="pp-district-list" id="ppDistrictList" role="listbox"></div>
-                            <span class="pp-district-selected" id="ppDistrictSelected" hidden>
-                                <span id="ppDistrictSelectedLabel"></span>
-                                <button type="button" id="ppDistrictClear" aria-label="&times;">&times;</button>
-                            </span>
-                        </div>
 
                         <div class="pp-delivery">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -879,7 +754,10 @@
         lb.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
     }
-    media.addEventListener('click', openLb);
+    media.addEventListener('click', function(e){
+        if (e.target.closest('a')) return;
+        openLb();
+    });
     document.getElementById('zoomClose').addEventListener('click', closeLb);
     lb.addEventListener('click', function(e){ if (e.target === lb) closeLb(); });
     zimg.addEventListener('click', function(e){
@@ -912,89 +790,6 @@
         document.getElementById('ppQtyPlus').addEventListener('click',  function(){ qty.value = (parseInt(qty.value, 10) || 1) + 1; updateTotal(); });
         qty.addEventListener('input', updateTotal);
         updateTotal();
-    }
-
-    /* ---------- recherche quartier ---------- */
-    var DISTRICTS = @json($districts);
-    var dInput = document.getElementById('ppDistrictInput');
-    var dSearch = document.getElementById('ppDistrictSearch');
-    var dList = document.getElementById('ppDistrictList');
-    var dSel = document.getElementById('ppDistrictSelected');
-    var dSelLabel = document.getElementById('ppDistrictSelectedLabel');
-    var dClear = document.getElementById('ppDistrictClear');
-    var PLACEHOLDER = @json(__('home.order_district_search_placeholder'));
-    var NO_RESULT = @json(__('home.order_district_no_result'));
-
-    if (dSearch && dList) {
-        var active = -1;
-        function norm(s){ return (s || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
-
-        function render(q){
-            var n = norm(q);
-            var found = DISTRICTS.filter(function(d){ return norm(d).indexOf(n) !== -1; });
-            dList.innerHTML = '';
-            active = -1;
-            if (!found.length) {
-                var empty = document.createElement('div');
-                empty.className = 'pp-district-empty';
-                empty.textContent = NO_RESULT;
-                dList.appendChild(empty);
-                return;
-            }
-            found.slice(0, 100).forEach(function(name){
-                var b = document.createElement('button');
-                b.type = 'button';
-                b.className = 'pp-district-item';
-                b.setAttribute('role', 'option');
-                b.dataset.value = name;
-                b.textContent = name;
-                b.addEventListener('click', function(){ choose(name); });
-                dList.appendChild(b);
-            });
-        }
-        function choose(name){
-            dInput.value = name;
-            dSelLabel.textContent = name;
-            dSel.hidden = false;
-            dSearch.value = '';
-            dSearch.placeholder = name;
-            dList.innerHTML = '';
-        }
-        function clearChoice(){
-            dInput.value = '';
-            dSel.hidden = true;
-            dSelLabel.textContent = '';
-            dSearch.value = '';
-            dSearch.placeholder = PLACEHOLDER;
-            render('');
-            dSearch.focus();
-        }
-        function highlight(items){
-            items.forEach(function(el, i){
-                el.classList.toggle('is-active', i === active);
-                if (i === active) el.scrollIntoView({ block: 'nearest' });
-            });
-        }
-
-        dSearch.addEventListener('input', function(){ render(this.value); });
-        dSearch.addEventListener('focus', function(){ if (!dList.children.length) render(this.value); });
-        dSearch.addEventListener('keydown', function(e){
-            var items = dList.querySelectorAll('.pp-district-item');
-            if (!items.length) return;
-            if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, items.length - 1); highlight(items); }
-            else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(active - 1, 0); highlight(items); }
-            else if (e.key === 'Enter') {
-                e.preventDefault();
-                if (active >= 0 && items[active]) choose(items[active].dataset.value);
-                else if (items.length === 1) choose(items[0].dataset.value);
-            } else if (e.key === 'Escape') { dList.innerHTML = ''; active = -1; }
-        });
-        dClear.addEventListener('click', clearChoice);
-        document.addEventListener('click', function(e){
-            if (!e.target.closest('.pp-district')) { dList.innerHTML = ''; active = -1; }
-        });
-
-        if (dInput.value) { choose(dInput.value); } else { render(''); }
     }
 })();
 </script>
