@@ -12,6 +12,7 @@ class SellerProfile extends Model
         'localisation',
         'code_postal',
         'numero_paiement',
+        'numero_contact',
         'mode_paiement',
         'commission_status',
     ];

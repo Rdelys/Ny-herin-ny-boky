@@ -79,6 +79,8 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'min:8'],
             'localisation' => ['nullable', 'string', 'max:255'],
             'code_postal' => ['nullable', 'string', 'max:20'],
+            // Numéro personnel pour joindre le vendeur (privé, usage équipe).
+            'numero_contact' => ['required', 'string', 'max:30', 'regex:/^[0-9+\s().-]{8,30}$/'],
             'numero_paiement' => ['nullable', 'string', 'max:30'],
             // L'abonnement est désactivé pour l'instant : seule "commission" est acceptée,
             // même si le formulaire envoyait autre chose.
@@ -96,6 +98,7 @@ class AuthController extends Controller
             'nom_entreprise' => $data['nom_entreprise'],
             'localisation' => $data['localisation'] ?? null,
             'code_postal' => $data['code_postal'] ?? null,
+            'numero_contact' => $data['numero_contact'],
             'numero_paiement' => $data['numero_paiement'] ?? null,
             'mode_paiement' => 'commission',
             'commission_status' => '10%',

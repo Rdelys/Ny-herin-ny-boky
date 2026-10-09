@@ -99,24 +99,9 @@
                         <label>{{ __('home.auth_books_wanted_label') }}
                             <select name="types_livres_recherches">
                                 <option value="">{{ __('home.auth_choose_placeholder') }}</option>
-                                <option>{{ __('home.auth_genre_1') }}</option>
-                                <option>{{ __('home.auth_genre_2') }}</option>
-                                <option>{{ __('home.auth_genre_3') }}</option>
-                                <option>{{ __('home.auth_genre_4') }}</option>
-                                <option>{{ __('home.auth_genre_5') }}</option>
-                                <option>{{ __('home.auth_genre_6') }}</option>
-                                <option>{{ __('home.auth_genre_7') }}</option>
-                                <option>{{ __('home.auth_genre_8') }}</option>
-                                <option>{{ __('home.auth_genre_9') }}</option>
-                                <option>{{ __('home.auth_genre_10') }}</option>
-                                <option>{{ __('home.auth_genre_11') }}</option>
-                                <option>{{ __('home.auth_genre_12') }}</option>
-                                <option>{{ __('home.auth_genre_13') }}</option>
-                                <option>{{ __('home.auth_genre_14') }}</option>
-                                <option>{{ __('home.auth_genre_15') }}</option>
-                                <option>{{ __('home.auth_genre_16') }}</option>
-                                <option>{{ __('home.auth_genre_17') }}</option>
-                                <option>{{ __('home.auth_genre_18') }}</option>
+                                @for ($i = 1; $i <= 18; $i++)
+                                    <option>{{ __('home.auth_genre_'.$i) }}</option>
+                                @endfor
                             </select>
                         </label>
                     </div>
@@ -163,40 +148,32 @@
                         <input type="password" name="password" minlength="8" required>
                     </label>
                     <label>{{ __('home.auth_location') }}
-                        <input type="text" name="localisation" placeholder="{{ __('home.auth_location_placeholder') }}">
+                        <input type="text" name="localisation" placeholder="{{ __('home.auth_location_placeholder') }}" value="{{ old('_auth_form') === 'registerSeller' ? old('localisation') : '' }}">
                     </label>
                 </div>
 
                 <div class="modal-form-row">
                     <label>{{ __('home.auth_postal_code') }}
-                        <input type="text" name="code_postal">
+                        <input type="text" name="code_postal" value="{{ old('_auth_form') === 'registerSeller' ? old('code_postal') : '' }}">
                     </label>
-                    <label>{{ __('home.auth_payment_number') }}
-                        <input type="text" name="numero_paiement" placeholder="{{ __('home.auth_payment_number_placeholder') }}">
+                    {{-- Nouveau : numéro personnel de contact (privé) --}}
+                    <label>{{ __('home.auth_contact_number') }}
+                        <input type="tel" name="numero_contact" inputmode="tel" autocomplete="tel"
+                               placeholder="{{ __('home.auth_contact_number_placeholder') }}"
+                               value="{{ old('_auth_form') === 'registerSeller' ? old('numero_contact') : '' }}" required>
                     </label>
                 </div>
+                @error('numero_contact')
+                    <p class="modal-field-error">{{ $message }}</p>
+                @enderror
 
-                <fieldset class="modal-fieldset">
-                    <legend>{{ __('home.auth_payment_mode_legend') }}</legend>
+                <label>{{ __('home.auth_payment_number') }}
+                    <input type="text" name="numero_paiement" placeholder="{{ __('home.auth_payment_number_placeholder') }}" value="{{ old('_auth_form') === 'registerSeller' ? old('numero_paiement') : '' }}">
+                </label>
+                <small class="modal-hint">{{ __('home.auth_contact_number_hint') }}</small>
 
-                    <div class="modal-radio-group">
-                        <label class="modal-radio-card">
-                            <input type="radio" name="mode_paiement" value="commission" checked>
-                            <span>
-                                <strong>{{ __('home.auth_payment_commission_title', ['rate' => rtrim(rtrim(number_format(\App\Models\Setting::commissionRate(), 2, ',', ' '), '0'), ',')]) }}</strong>
-                                <small>{{ __('home.auth_payment_commission_desc') }}</small>
-                            </span>
-                        </label>
-
-                        <label class="modal-radio-card is-disabled">
-                            <input type="radio" name="mode_paiement" value="abonnement" disabled>
-                            <span>
-                                <strong>{{ __('home.auth_payment_subscription_title') }} <em class="modal-badge-soon">{{ __('home.auth_payment_soon') }}</em></strong>
-                                <small>{{ __('home.auth_payment_subscription_desc') }}</small>
-                            </span>
-                        </label>
-                    </div>
-                </fieldset>
+                {{-- Choix du mode de paiement désactivé pour l'instant (commission uniquement) :
+                     voir AuthController::registerSeller. --}}
 
                 <button type="submit" class="btn-modal-primary">{{ __('home.auth_continue_submit') }}</button>
             </form>

@@ -74,7 +74,8 @@ return [
     'auth_lastname' => 'Fanampin\'anarana',
     'auth_location' => 'Toerana',
     'auth_location' => 'Adiresy marina',
-    'auth_location_placeholder' => 'Toko, ...','auth_choose_placeholder' => 'safidio ...',
+    'auth_location_placeholder' => 'Toko, ...',
+    'auth_choose_placeholder' => 'safidio ...',
     'auth_reason_1' => 'Hianatra sy hanaja ny boky',
     'auth_reason_2' => 'Hitady boky malagasy',
     'auth_reason_3' => 'Hamaky ho fahafinaretana',
@@ -491,4 +492,9 @@ return [
     'order_district_label' => 'Fokontany fitaterana',
 'order_district_search_placeholder' => 'Mitady fokontany...',
 'order_district_no_result' => 'Tsy nahitana fokontany',
+
+    'auth_contact_number' => 'Laharana manokana hifandraisana',
+    'auth_contact_number_placeholder' => '034 xx xxx xx',
+    'auth_contact_number_hint' => "Tsy aseho ampahibemaso ny laharanao manokana : ny ekipanay ihany no mampiasa azy hifandraisana aminao.",
+    'profile_contact_number' => 'Laharana manokana hifandraisana',
 ];

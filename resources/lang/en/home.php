@@ -492,4 +492,9 @@ return [
     'order_district_label' => 'Delivery district',
 'order_district_search_placeholder' => 'Search for a district...',
 'order_district_no_result' => 'No district found',
+
+    'auth_contact_number' => 'Personal contact number',
+    'auth_contact_number_placeholder' => '034 xx xxx xx',
+    'auth_contact_number_hint' => 'Your personal contact number is never shown publicly: only our team uses it to reach you.',
+    'profile_contact_number' => 'Personal contact number',
 ];

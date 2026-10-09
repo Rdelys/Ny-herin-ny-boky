@@ -13,12 +13,16 @@
 
     $books->appends(['tab' => 'livres']);
 
-    // Le formulaire d'ajout de livre vit maintenant dans un modal : s'il y a
-    // une erreur de validation sur l'un de ses champs, il faut le rouvrir
-    // automatiquement au chargement, sinon l'erreur reste invisible derrière
-    // un modal fermé.
-$addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_achat', 'prix_location', 'quantite', 'categorie', 'etat', 'langue', 'format', 'nombre_pages', 'image']);    if ($errors->hasAny(['current_password', 'password'])) { $tabActif = 'profil'; }
-    
+    // Le formulaire d'ajout de livre vit dans un modal : s'il y a une erreur
+    // de validation sur l'un de ses champs, il faut le rouvrir automatiquement
+    // au chargement, sinon l'erreur reste invisible derrière un modal fermé.
+    $addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_achat', 'prix_location', 'quantite', 'categorie', 'etat', 'langue', 'format', 'nombre_pages', 'image']);
+
+    // CORRECTION/AJOUT : toute erreur sur le formulaire de profil (dont
+    // numero_contact) ou de mot de passe rouvre l'onglet « profil ».
+    if ($errors->hasAny(['current_password', 'password', 'name', 'email', 'nom_entreprise', 'localisation', 'code_postal', 'numero_contact', 'numero_paiement'])) {
+        $tabActif = 'profil';
+    }
 @endphp
 
 @section('content')
@@ -62,6 +66,13 @@ $addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_acha
                             <p class="book-genre" style="margin-bottom:4px;">{{ __('home.profile_postal_code') }}</p>
                             <p>{{ $profile->code_postal ?: '—' }}</p>
                         </div>
+
+                        {{-- ============ AJOUT : numéro personnel de contact (privé) ============ --}}
+                        <div>
+                            <p class="book-genre" style="margin-bottom:4px;">{{ __('home.profile_contact_number') }}</p>
+                            <p>{{ $profile->numero_contact ?: '—' }}</p>
+                        </div>
+
                         <div>
                             <p class="book-genre" style="margin-bottom:4px;">{{ __('home.profile_payment_number') }}</p>
                             <p>{{ $profile->numero_paiement ?: '—' }}</p>
@@ -103,7 +114,7 @@ $addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_acha
                     <span class="profile-stat-sub">{{ $totalStock }} {{ __('home.profile_stock_count') }}</span>
                 </div>
 
-                {{-- ============ AJOUT : commandes annulées ============ --}}
+                {{-- ============ commandes annulées ============ --}}
                 <div class="profile-stat-card profile-stat-card-cancelled">
                     <span class="profile-stat-label">{{ __('home.profile_orders_cancelled') }}</span>
                     <strong class="profile-stat-value">{{ $commandesAnnulees }}</strong>
@@ -268,6 +279,15 @@ $addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_acha
                         @error('localisation')<p class="modal-field-error">{{ $message }}</p>@enderror
                         @error('code_postal')<p class="modal-field-error">{{ $message }}</p>@enderror
 
+                        {{-- ============ AJOUT : numéro personnel de contact ============ --}}
+                        <label>{{ __('home.profile_contact_number') }}
+                            <input type="tel" name="numero_contact" inputmode="tel" autocomplete="tel"
+                                   value="{{ old('numero_contact', $profile->numero_contact ?? '') }}"
+                                   placeholder="034 xx xxx xx" required>
+                        </label>
+                        <p class="field-hint">{{ __('home.auth_contact_number_hint') }}</p>
+                        @error('numero_contact')<p class="modal-field-error">{{ $message }}</p>@enderror
+
                         <label>{{ __('home.profile_payment_number') }}
                             <input type="text" name="numero_paiement" value="{{ old('numero_paiement', $profile->numero_paiement ?? '') }}" placeholder="034 xx xxx xx">
                         </label>
@@ -276,6 +296,7 @@ $addBookHasError = $errors->hasAny(['titre', 'auteur', 'description', 'prix_acha
 
                         <button type="submit" class="btn-modal-primary">{{ __('home.profile_save') }}</button>
                     </form>
+
                     <h3 class="add-book-title">{{ __('home.profile_change_password') }}</h3>
                     <form method="POST" action="{{ route('profile.password.update') }}" class="modal-form">
                         @csrf

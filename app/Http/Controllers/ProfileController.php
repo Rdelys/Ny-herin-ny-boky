@@ -17,37 +17,37 @@ class ProfileController extends Controller
      * Affiche le profil : vue "vendeur" ou "client" selon le rôle de l'utilisateur connecté.
      */
     public function show(Request $request): View
-{
-    $user = $request->user();
+    {
+        $user = $request->user();
 
-    if ($user->isSeller()) {
-        $argent = Order::query()
-            ->facturables()
-            ->where('seller_id', $user->id)
-            ->selectRaw('COALESCE(SUM(montant_vendeur), 0) as total')
-            ->selectRaw('SUM(CASE WHEN paiement_vendeur = ? THEN montant_vendeur ELSE 0 END) as en_attente', [Order::PAIEMENT_DU])
-            ->selectRaw('SUM(CASE WHEN paiement_vendeur = ? THEN montant_vendeur ELSE 0 END) as paye', [Order::PAIEMENT_ENVOYE])
-            ->selectRaw('COUNT(*) as commandes')
-            ->first();
+        if ($user->isSeller()) {
+            $argent = Order::query()
+                ->facturables()
+                ->where('seller_id', $user->id)
+                ->selectRaw('COALESCE(SUM(montant_vendeur), 0) as total')
+                ->selectRaw('SUM(CASE WHEN paiement_vendeur = ? THEN montant_vendeur ELSE 0 END) as en_attente', [Order::PAIEMENT_DU])
+                ->selectRaw('SUM(CASE WHEN paiement_vendeur = ? THEN montant_vendeur ELSE 0 END) as paye', [Order::PAIEMENT_ENVOYE])
+                ->selectRaw('COUNT(*) as commandes')
+                ->first();
 
-        // Commandes annulées : exclues de "facturables", comptées à part.
-        $commandesAnnulees = Order::query()
-            ->where('seller_id', $user->id)
-            ->where('statut', 'annulee')
-            ->count();
+            // Commandes annulées : exclues de "facturables", comptées à part.
+            $commandesAnnulees = Order::query()
+                ->where('seller_id', $user->id)
+                ->where('statut', 'annulee')
+                ->count();
 
-        return view('profile.seller', [
-            'user' => $user,
-            'profile' => $user->sellerProfile,
-            'books' => $user->books()->latest()->paginate(10),
-            'orders' => $user->sales()->with(['buyer', 'deliverer'])->latest()->get(),
-            'argentEnAttente' => (int) $argent->en_attente,
-            'argentPaye' => (int) $argent->paye,
-            'totalCommandes' => (int) $argent->commandes,
-            'totalStock' => (int) $user->books()->sum('quantite'),
-            'commandesAnnulees' => $commandesAnnulees,
-        ]);
-    }
+            return view('profile.seller', [
+                'user' => $user,
+                'profile' => $user->sellerProfile,
+                'books' => $user->books()->latest()->paginate(10),
+                'orders' => $user->sales()->with(['buyer', 'deliverer'])->latest()->get(),
+                'argentEnAttente' => (int) $argent->en_attente,
+                'argentPaye' => (int) $argent->paye,
+                'totalCommandes' => (int) $argent->commandes,
+                'totalStock' => (int) $user->books()->sum('quantite'),
+                'commandesAnnulees' => $commandesAnnulees,
+            ]);
+        }
 
         return view('profile.client', [
             'user' => $user,
@@ -73,6 +73,7 @@ class ProfileController extends Controller
             'nom_entreprise' => ['nullable', 'string', 'max:160'],
             'localisation' => ['nullable', 'string', 'max:160'],
             'code_postal' => ['nullable', 'string', 'max:20'],
+            'numero_contact' => ['required', 'string', 'max:30', 'regex:/^[0-9+\s().-]{8,30}$/'],
             'numero_paiement' => ['nullable', 'string', 'max:40'],
         ]);
 
@@ -85,6 +86,7 @@ class ProfileController extends Controller
             'nom_entreprise' => $data['nom_entreprise'],
             'localisation' => $data['localisation'],
             'code_postal' => $data['code_postal'],
+            'numero_contact' => $data['numero_contact'],
             'numero_paiement' => $data['numero_paiement'],
         ]);
 
@@ -93,7 +95,7 @@ class ProfileController extends Controller
             ->with('success', __('home.profile_updated'));
     }
 
-     public function updateClient(Request $request): RedirectResponse
+    public function updateClient(Request $request): RedirectResponse
     {
         $user = $request->user();
 
@@ -123,7 +125,7 @@ class ProfileController extends Controller
             ->with('success', __('home.profile_updated'));
     }
 
-     public function updatePassword(Request $request): RedirectResponse
+    public function updatePassword(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'current_password' => ['required', 'current_password'],
@@ -158,5 +160,4 @@ class ProfileController extends Controller
 
         return redirect('/')->with('success', __('home.profile_account_deleted'));
     }
-
 }

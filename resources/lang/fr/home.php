@@ -106,7 +106,7 @@ return [
     'auth_login_link' => 'Se connecter',
     'auth_company_name' => "Nom de l'entreprise",
     'auth_postal_code' => 'Code postal',
-    'auth_payment_number' => "Numéro pour recevoir l'argent",
+    'auth_payment_number' => "Numéro pour recevoir le paiement",
     'auth_payment_number_placeholder' => '034 xx xxx xx',
     'auth_payment_mode_legend' => 'Mode de paiement',
     'auth_payment_commission_title' => 'Commission (-:rate%)',
@@ -487,4 +487,9 @@ return [
     'order_district_label' => 'Quartier de livraison',
 'order_district_search_placeholder' => 'Rechercher un quartier...',
 'order_district_no_result' => 'Aucun quartier trouvé',
+
+    'auth_contact_number' => 'Numéro personnel de contact',
+    'auth_contact_number_placeholder' => '034 xx xxx xx',
+    'auth_contact_number_hint' => "Votre numéro personnel de contact n'est jamais affiché publiquement : seule notre équipe l'utilise pour vous joindre.",
+    'profile_contact_number' => 'Numéro personnel de contact',
 ];
