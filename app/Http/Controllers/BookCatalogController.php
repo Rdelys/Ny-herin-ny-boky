@@ -39,4 +39,27 @@ class BookCatalogController extends Controller
             'categories' => BookController::CATEGORIES,
         ]);
     }
+
+    /**
+     * Fiche produit (/livres/{book}) : remplace l'ancienne modal.
+     */
+    public function show(Book $book): View
+    {
+        $book->load('seller.sellerProfile');
+
+        // Autres livres de la même catégorie, en stock.
+        $related = Book::query()
+            ->with('seller.sellerProfile')
+            ->where('id', '!=', $book->id)
+            ->where('quantite', '>', 0)
+            ->when($book->categorie, fn ($q) => $q->where('categorie', $book->categorie))
+            ->latest()
+            ->take(4)
+            ->get();
+
+        return view('books.show', [
+            'book' => $book,
+            'related' => $related,
+        ]);
+    }
 }

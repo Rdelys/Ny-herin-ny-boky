@@ -42,72 +42,8 @@
             @else
                 <div class="book-grid">
                     @foreach($books as $book)
-                        <article class="book-card {{ $book->quantite <= 0 ? 'is-out-of-stock' : '' }}">
-                            <div class="book-cover">
-                                <img src="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}" alt="{{ $book->titre }}" loading="lazy">
-                                <div class="book-cover-gradient"></div>
-                                <span class="book-tag {{ $book->etat !== 'neuf' ? 'occasion' : '' }}">{{ __('home.book_condition_' . $book->etat) }}</span>
-                                @if($book->quantite <= 0)
-                                    <span class="book-out-of-stock">{{ __('home.books_out_of_stock') }}</span>
-                                @endif
-                                @if($book->prix_achat_client)
-                                    <span class="book-price-float">{{ number_format($book->prix_achat_client, 0, ',', ' ') }} Ar</span>
-                                @endif
-                            </div>
-                            <div class="book-body">
-                                @if($book->categorie)
-                                    <span class="book-genre">{{ $book->categorie }}</span>
-                                @endif
-                                <h3 class="book-title">{{ $book->titre }}</h3>
-                                @if($book->auteur)
-                                    <p class="book-author">{{ $book->auteur }}</p>
-                                @endif
-                                <a href="{{ route('sellers.show', $book->seller) }}" class="book-seller">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                        <path d="M3 7l9-4 9 4-9 4-9-4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-                                        <path d="M3 7v7c0 2 4 4 9 4s9-2 9-4V7" stroke="currentColor" stroke-width="1.6"/>
-                                    </svg>
-                                    {{ $book->seller->sellerProfile->nom_entreprise ?? $book->seller->name }}
-                                </a>
-
-                                {{-- ============ AJOUT : délai de livraison ============ --}}
-                                <span class="book-delivery-badge">{{ $book->delai_livraison_label }}</span>
-@if($book->langue_flag)
-    <span class="book-language-badge" title="{{ $book->langue_label }}">
-        <span class="fi fi-{{ $book->langue_flag }} fis"></span>
-    </span>
-@endif
-@if($book->format)
-    <span class="book-format-badge">{{ $book->format_label }}</span>
-@endif
-                                <div class="book-foot">
-                                <div class="book-foot">
-                                    <span class="book-loc">{{ $book->seller->sellerProfile->localisation ?? '—' }}</span>
-                                    @if($book->quantite > 0)
-                                    <button type="button" class="book-add" aria-label="{{ __('home.books_add') }}"
-                                        data-book-order
-                                    data-book-id="{{ $book->id }}"
-                                    data-book-author="{{ $book->auteur }}"
-                                    data-book-category="{{ $book->categorie }}"
-                                    data-book-condition="{{ __('home.book_condition_' . $book->etat) }}"
-                                    data-book-description="{{ $book->description }}"
-                                        data-book-title="{{ $book->titre }}"
-                                        data-book-image="{{ $book->image_path ? asset('storage/'.$book->image_path) : 'https://picsum.photos/seed/nhb-book-'.$book->id.'/500/667' }}"
-                                        data-book-seller="{{ $book->seller->sellerProfile->nom_entreprise ?? $book->seller->name }}"
-                                        data-book-price="{{ $book->prix_achat_client }}"
-                                        data-book-max="{{ $book->quantite }}"
-data-book-delivery="{{ $book->delai_livraison_label }}"
-data-book-language="{{ $book->langue_label }}"
-data-book-format="{{ $book->format_label }}">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path d="M5 12H19M12 5V19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-                                        </svg>
-                                    </button>
-                                    @endif
-                                </div>
-                            </div>
-                        </article>
-                    @endforeach
+    @include('partials.book-card', ['book' => $book])
+@endforeach
                 </div>
 
                 @if($books->hasPages())

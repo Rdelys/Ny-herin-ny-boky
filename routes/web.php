@@ -86,7 +86,7 @@ Route::delete('/vendeur/livres/{book}', [BookController::class, 'destroy'])
 
 // Catalogue public + recherche (barre de recherche du header, menu "Livres")
 Route::get('/livres', [BookCatalogController::class, 'index'])->name('books.index');
-
+Route::get('/livres/{book}', [BookCatalogController::class, 'show'])->whereNumber('book')->name('books.show');
 // Pages vendeurs : liste, puis fiche d'un vendeur (tous ses livres)
 Route::get('/vendeur', [SellerController::class, 'index'])->name('sellers.index');
 Route::get('/vendeur/{seller}', [SellerController::class, 'show'])->name('sellers.show');
@@ -97,7 +97,7 @@ Route::post('/panier', [CartController::class, 'add'])->name('cart.add');
 Route::patch('/panier/{book}', [CartController::class, 'update'])->whereNumber('book')->name('cart.update');
 Route::delete('/panier/{book}', [CartController::class, 'destroy'])->whereNumber('book')->name('cart.remove');
 
-// Pages statiques (À propos / Confidentialité / CGV)
+// Pages statiques (À propos / Confidentialité / CGV)aa
 Route::view('/a-propos', 'pages.about')->name('pages.about');
 Route::view('/confidentialite', 'pages.privacy')->name('pages.privacy');
 Route::view('/cgv', 'pages.terms')->name('pages.terms');

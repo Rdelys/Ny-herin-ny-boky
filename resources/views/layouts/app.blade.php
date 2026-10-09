@@ -2160,6 +2160,15 @@
     .apk-badge{ width: 100%; }
 }
 
+.book-card .book-title a::after{ content:''; position:absolute; inset:0; z-index:1; }
+.book-card .book-seller,
+.book-card .book-wishlist,
+.book-card .book-quickview,
+.book-card .book-add{ position:relative; z-index:2; }
+.book-card .book-wishlist,
+.book-card .book-quickview{ position:absolute; }
+.book-add{ text-decoration:none; }
+
     </style>
     @stack('styles')
     @stack('head')
