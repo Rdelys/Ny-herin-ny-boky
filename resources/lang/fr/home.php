@@ -507,4 +507,14 @@ return [
 'book_promo_error_amount'  => 'La remise doit être inférieure au prix de vente.',
 'cart_savings_label' => 'Vous économisez',
 
+'book_delivery_unit_label'  => 'Unité du délai',
+'book_delivery_unit_hours'  => 'Heures',
+'book_delivery_unit_days'   => 'Jours',
+'book_delivery_hours'       => 'Livraison sous :n h',
+'book_delivery_hours_range' => 'Livraison sous :min à :max h',
+
+'book_delivery_min_hours_label' => 'Heures minimum',
+'book_delivery_max_hours_label' => 'Heures maximum',
+'book_delivery_hint_hours'      => 'Indiquez le délai en heures (ex. 2 à 5 h si vous livrez le jour même).',
+
     ];

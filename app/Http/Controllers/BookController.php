@@ -42,6 +42,11 @@ class BookController extends Controller
 
     protected function rules(): array
     {
+        // Plafond du délai selon l'unité choisie (168 h ou 60 jours).
+        $delaiMax = request('delai_livraison_unite') === Book::DELAI_UNITE_HEURES
+            ? Book::DELAI_MAX_HEURES
+            : Book::DELAI_MAX_JOURS;
+
         return [
             'titre' => ['required', 'string', 'max:255'],
             'auteur' => ['nullable', 'string', 'max:255'],
@@ -57,8 +62,9 @@ class BookController extends Controller
             'format' => ['required', Rule::in(self::FORMATS)],
             'nombre_pages' => ['nullable', 'integer', 'min:1', 'max:20000'],
             'livraison_disponible' => ['nullable', 'boolean'],
-            'delai_livraison_min' => ['required', 'integer', 'min:1', 'max:60'],
-            'delai_livraison_max' => ['required', 'integer', 'min:1', 'max:60', 'gte:delai_livraison_min'],
+            'delai_livraison_unite' => ['required', Rule::in(Book::DELAI_UNITES)],
+            'delai_livraison_min' => ['required', 'integer', 'min:1', 'max:' . $delaiMax],
+            'delai_livraison_max' => ['required', 'integer', 'min:1', 'max:' . $delaiMax, 'gte:delai_livraison_min'],
             'image' => ['nullable', 'image', 'max:4096'],
         ];
     }
@@ -129,6 +135,7 @@ class BookController extends Controller
             'livraison_disponible' => $request->boolean('livraison_disponible'),
             'delai_livraison_min' => $data['delai_livraison_min'],
             'delai_livraison_max' => $data['delai_livraison_max'],
+            'delai_livraison_unite' => $data['delai_livraison_unite'],
         ]);
 
         return redirect()
@@ -171,6 +178,7 @@ class BookController extends Controller
             'livraison_disponible' => $request->boolean('livraison_disponible'),
             'delai_livraison_min' => $data['delai_livraison_min'],
             'delai_livraison_max' => $data['delai_livraison_max'],
+            'delai_livraison_unite' => $data['delai_livraison_unite'],
         ])->save();
 
         return redirect()

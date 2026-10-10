@@ -511,4 +511,12 @@ return [
 'book_promo_error_percent' => 'Tsy tokony hihoatra ny :max % ny isan-jato.',
 'book_promo_error_amount'  => 'Tsy maintsy ambany noho ny vidin\'ny fividianana ny fihenam-bidy.',
 'cart_savings_label' => 'Voavonjy ianao',
+'book_delivery_unit_label'  => 'Sehatry ny fe-potoana',
+'book_delivery_unit_hours'  => 'Ora',
+'book_delivery_unit_days'   => 'Andro',
+'book_delivery_hours'       => 'Fanaterana ao anatin\'ny :n ora',
+'book_delivery_hours_range' => 'Fanaterana ao anatin\'ny :min ka hatramin\'ny :max ora',
+'book_delivery_min_hours_label' => 'Ora fara-fahakeliny',
+'book_delivery_max_hours_label' => 'Ora faran\'ny betsaka',
+'book_delivery_hint_hours'      => 'Ampidiro amin\'ny ora ny fe-potoana (oh. 2 ka hatramin\'ny 5 ora raha ao anatin\'ny andro iray ihany).',
 ];

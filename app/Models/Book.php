@@ -10,6 +10,12 @@ class Book extends Model
     public const PROMO_AMOUNT = 'amount';
     public const PROMO_MAX_PERCENT = 90;
 
+    public const DELAI_UNITE_HEURES = 'heures';
+    public const DELAI_UNITE_JOURS = 'jours';
+    public const DELAI_UNITES = [self::DELAI_UNITE_HEURES, self::DELAI_UNITE_JOURS];
+    public const DELAI_MAX_HEURES = 168; // 7 jours
+    public const DELAI_MAX_JOURS = 60;
+
     protected $fillable = [
         'seller_id',
         'titre',
@@ -29,6 +35,7 @@ class Book extends Model
         'livraison_disponible',
         'delai_livraison_min',
         'delai_livraison_max',
+        'delai_livraison_unite',
     ];
 
     private const LANGUE_FLAGS = [
@@ -48,20 +55,57 @@ class Book extends Model
         ];
     }
 
-    /** Libellé prêt à afficher : "Disponible, livraison sous 24h" ou "Livraison sous X à Y jours". */
+    /* ============================================================
+       DÉLAI DE LIVRAISON (heures ou jours)
+    ============================================================ */
+
+    /** Le délai est-il exprimé en heures ? */
+    public function getDelaiEnHeuresAttribute(): bool
+    {
+        return $this->delai_livraison_unite === self::DELAI_UNITE_HEURES;
+    }
+
+    /** Délai minimum converti en heures (pour comparer avec le VIP, etc.). */
+    public function getDelaiLivraisonMinHeuresAttribute(): int
+    {
+        return (int) $this->delai_livraison_min * ($this->delai_en_heures ? 1 : 24);
+    }
+
+    /** Délai maximum converti en heures. */
+    public function getDelaiLivraisonMaxHeuresAttribute(): int
+    {
+        return (int) $this->delai_livraison_max * ($this->delai_en_heures ? 1 : 24);
+    }
+
+    /**
+     * Libellé prêt à afficher :
+     * - heures : "Livraison sous 2 h" / "Livraison sous 2 à 5 h"
+     * - jours  : "Disponible, livraison sous 24h" / "Livraison sous X jours" / "X à Y jours"
+     */
     public function getDelaiLivraisonLabelAttribute(): string
     {
-        if ($this->delai_livraison_min <= 1 && $this->delai_livraison_max <= 1) {
+        $min = (int) $this->delai_livraison_min;
+        $max = (int) $this->delai_livraison_max;
+
+        if ($this->delai_en_heures) {
+            if ($min === $max) {
+                return __('home.book_delivery_hours', ['n' => $min]);
+            }
+
+            return __('home.book_delivery_hours_range', ['min' => $min, 'max' => $max]);
+        }
+
+        if ($min <= 1 && $max <= 1) {
             return __('home.book_delivery_now');
         }
 
-        if ($this->delai_livraison_min == $this->delai_livraison_max) {
-            return __('home.book_delivery_days', ['n' => $this->delai_livraison_min]);
+        if ($min == $max) {
+            return __('home.book_delivery_days', ['n' => $min]);
         }
 
         return __('home.book_delivery_range', [
-            'min' => $this->delai_livraison_min,
-            'max' => $this->delai_livraison_max,
+            'min' => $min,
+            'max' => $max,
         ]);
     }
 

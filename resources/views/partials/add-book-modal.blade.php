@@ -38,7 +38,7 @@
             @error('quantite')<p class="modal-field-error">{{ $message }}</p>@enderror
             <p class="field-hint" id="prixAchatClientHint"></p>
 
-            {{-- ============ AJOUT : PROMOTION (% ou somme directe) ============ --}}
+            {{-- ============ PROMOTION (% ou somme directe) ============ --}}
             @include('partials.book-promo-fields', ['book' => null])
 
             <label>{{ __('home.book_rental_price') }}
@@ -106,20 +106,8 @@
                 </label>
             </fieldset>
 
-            <fieldset class="modal-fieldset">
-                <legend>{{ __('home.book_delivery_legend') }}</legend>
-                <p class="field-hint" style="margin:0 0 12px;">{{ __('home.book_delivery_hint') }}</p>
-                <div class="modal-form-row">
-                    <label>{{ __('home.book_delivery_min_label') }}
-                        <input type="number" name="delai_livraison_min" min="1" max="60" value="{{ old('delai_livraison_min', 1) }}" required>
-                    </label>
-                    <label>{{ __('home.book_delivery_max_label') }}
-                        <input type="number" name="delai_livraison_max" min="1" max="60" value="{{ old('delai_livraison_max', 1) }}" required>
-                    </label>
-                </div>
-                @error('delai_livraison_min')<p class="modal-field-error">{{ $message }}</p>@enderror
-                @error('delai_livraison_max')<p class="modal-field-error">{{ $message }}</p>@enderror
-            </fieldset>
+            {{-- ============ DÉLAI DE LIVRAISON (heures ou jours) ============ --}}
+            @include('partials.book-delivery-fields', ['book' => null])
 
             <label>{{ __('home.book_image_label') }}
                 <input type="file" name="image" accept="image/*">
@@ -132,3 +120,17 @@
         </form>
     </div>
 </div>
+
+{{-- Rouvre le modal si l'erreur vient du délai de livraison ou de la promo
+     (ces champs ne sont pas dans la liste de profile/seller.blade.php). --}}
+@if($errors->hasAny(['delai_livraison_unite', 'delai_livraison_min', 'delai_livraison_max', 'promo_type', 'promo_valeur']))
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            var overlay = document.getElementById('addBookModalOverlay');
+            if (overlay) {
+                overlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    </script>
+@endif

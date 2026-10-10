@@ -19,12 +19,16 @@ class DeliveryService
     /** Marge (minutes) sur la fenêtre VIP : la page peut rester ouverte quelques minutes. */
     private const SLOT_TOLERANCE = 20;
 
-    /** Délai cumulé du panier en heures : le livre le plus lent décide. */
+    /**
+     * Délai cumulé du panier en heures : le livre le plus lent décide.
+     * Chaque livre peut être en heures OU en jours : on utilise les accesseurs
+     * du modèle, déjà convertis en heures (Book::delai_livraison_*_heures).
+     */
     public static function lead(Collection $books): array
     {
         return [
-            'min_h' => max(1, (int) ($books->max('delai_livraison_min') ?? 1)) * 24,
-            'max_h' => max(1, (int) ($books->max('delai_livraison_max') ?? 1)) * 24,
+            'min_h' => max(1, (int) ($books->max(fn ($b) => $b->delai_livraison_min_heures) ?? 1)),
+            'max_h' => max(1, (int) ($books->max(fn ($b) => $b->delai_livraison_max_heures) ?? 1)),
         ];
     }
 

@@ -511,5 +511,14 @@ return [
 'book_promo_error_amount'  => 'The discount must be lower than the sale price.',
 'cart_savings_label' => 'You save',
 
+'book_delivery_unit_label'  => 'Delay unit',
+'book_delivery_unit_hours'  => 'Hours',
+'book_delivery_unit_days'   => 'Days',
+'book_delivery_hours'       => 'Delivery within :n h',
+'book_delivery_hours_range' => 'Delivery within :min to :max h',
+
+'book_delivery_min_hours_label' => 'Minimum hours',
+'book_delivery_max_hours_label' => 'Maximum hours',
+'book_delivery_hint_hours'      => 'Enter the delay in hours (e.g. 2 to 5 h for same-day delivery).',
 
     ];
